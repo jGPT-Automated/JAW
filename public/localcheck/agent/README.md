@@ -1,9 +1,9 @@
-# LocalCheck working site — current checkpoint 2026-10-18.2
+# Current working state — October 18, v3
 
-Start with ../index.html and ../data/decisions.json, then HOME-01.md. Owner has now SELECTED Home Overview+Activity. This replaces Feed/Upcoming and the earlier custom Feed sketch. Overview uses exact expanded-drawer reference without bottom pills; Activity uses selected timeline reversed, future aboveNow/pastbelow, full-width/condensed rows and bidirectional scroll. Court action opens same existing Court page; Court stays unchanged. Schedule owns availability/game creation. Mobile implementation not started.
+Current visual tracker: https://www.modernweb.store/localcheck/index.html . V3 contains the latest Activity / Schedule / Court Week mock refinements. Check request-coverage.html for coverage of annotations added after the older feedback file. These are sample-data mocks, not mobile implementation.
 
-JAW host: public/localcheck/index.html, reachable from Command Center LocalCheck nav. Back link returns to https://www.modernweb.store/command. JAW Activity moved first/default; JAW favicon is simpleJ mark. No auth/backend changes.
+Release order: PR77 merge then OTA, next app PR intended #78 for the scoped redesign. See PR78-PROMPT.md and RELEASE-SEQUENCE.md. No mobile merge or OTA executed by this documentation update.
 
-Historical PR77 baseline d018a570624bd3b96ee606f585dfaa5e5cc6d5aa vs main03fcd664b46187e45507465ab47f792f9035ec02. Recheck current mobile head before app edits. Forty historical LC IDs preserved with explicit supersessions in data/decisions.json. Only owner merges/releases.
+Verification: JavaScript syntax and local link/anchor checks; actual browser mock interactions (Overview/Activity, bidirectional timeline, return Now centering, roster overflow, planning multi-select Save/Cancel, selected-slot consistency); no page overflow at 375, 393 and 430 pixels. Actual bottom-nav screenshot used as visual reference only; mobile work must reuse the real component. Preserve the original reference images and historical audit.
 
-Other work held: challenge target/handoff unresolved Missed/deadline/baseline; Android needs previewAPK but auto-check-in not a blocker; Expo25skills installed, Appllama pending. Do not expand this card into those tracks.
+Pending separate tasks: Google service account and Android APK installation. Android auto-check-in/notification parity may be deferred. Native behavior and real API persistence have not been tested by this HTML task.

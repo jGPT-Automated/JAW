@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-18.2",
+  "version": "2026-10-18.3",
   "audit_baseline": "d018a570624bd3b96ee606f585dfaa5e5cc6d5aa",
   "historical_audit_decisions": [
     {
@@ -431,6 +431,16 @@
       "status": "deferred; outside current card",
       "previous": "Earlier court-page action removal proposal",
       "current": "Owner now says court page stays the same. Do not bundle prior Court changes into Home."
+    },
+    {
+      "id": "COURT-01",
+      "status": "owner refinement v3 supersedes blanket unchanged",
+      "current": "Same route/tabs; remove shared footer and Week editing actions; preserve Court Games create entry"
+    },
+    {
+      "id": "HOME-ACTIVITY-ACTION",
+      "status": "owner refinement v3",
+      "current": "Focused future timeblock has attendance entry; supersedes blanket no Home planning action"
     }
   ],
   "app_changes_this_turn": false,
@@ -452,5 +462,18 @@
       "S-REF-02": "04-court-week-selected.jpg"
     },
     "naming_note": "Activity chosen from owner explicit tab selection; Pulse only a floated alternative"
+  },
+  "release_sequence": {
+    "pr77": "Existing polish; owner merge then separate OTA",
+    "next_app_pr": "Home/Activity/Schedule/Court action boundaries; intended #78",
+    "remaining_slots": "#79 essential flows; #80 final readiness",
+    "no_release_actions_performed": true
+  },
+  "latest_mock_revision": {
+    "status": "v3 prepared for review; mobile not implemented",
+    "home_nav": "Actual tab bar reference, not text-only substitute",
+    "activity": "Reference timeblocks; focused middle cards; names+overflow; Now line+floating return; top fade/blur; focused future attendance entry",
+    "schedule": "Taller heatmap, plan-week toggle/multi-select/Save/Cancel; card near bottom; Going right of attendance row; no FAB; original simple rows",
+    "court_week": "Pure information; no CheckIn/Plan footer or Week editing controls; Court Games/CreateGame preserved"
   }
 }
