@@ -475,5 +475,12 @@
     "activity": "Reference timeblocks; focused middle cards; names+overflow; Now line+floating return; top fade/blur; focused future attendance entry",
     "schedule": "Taller heatmap, plan-week toggle/multi-select/Save/Cancel; card near bottom; Going right of attendance row; no FAB; original simple rows",
     "court_week": "Pure information; no CheckIn/Plan footer or Week editing controls; Court Games/CreateGame preserved"
+  },
+  "v4_responsive_refinements": {
+    "status": "mock target; not mobile implementation",
+    "date": "2026-10-18",
+    "activity": "Only Now expanded by default; other rows tap to expand; empty hours short; hour centered vertically.",
+    "court": "Heatmap fills spare space; no View button; centered game row is press target with chevron.",
+    "schedule": "Regular flex-fit target plus compact single-content-scroll variant; no FAB; fixed bottom nav outside content; validate safe areas and large text."
   }
 }
