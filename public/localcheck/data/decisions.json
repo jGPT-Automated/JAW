@@ -1,0 +1,419 @@
+{
+  "version": "2026-10-18.1",
+  "audit_baseline": "d018a570624bd3b96ee606f585dfaa5e5cc6d5aa",
+  "historical_audit_decisions": [
+    {
+      "id": "LC-01",
+      "priority": "P1",
+      "area": "Home",
+      "locked_request": "Feed + Upcoming; active players above Feed. Upcoming is the selected daily timeline of visits and games.",
+      "status": "Missing",
+      "current": "Home still defines Feed / Locals / Schedule and renders a second heatmap. No Upcoming timeline is implemented.",
+      "acceptance": "Home has exactly Feed and Upcoming; select a day and see real visits and games chronologically.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/HomeScreen.tsx#L43"
+    },
+    {
+      "id": "LC-02",
+      "priority": "P1",
+      "area": "Home",
+      "locked_request": "Check-in/out and small Court action at the top; remove Plan and the bottom action stack.",
+      "status": "Opposite of latest decision",
+      "current": "Actions are pinned above bottom navigation and include Plan. The PR moved actions out of the older hero into this bottom row.",
+      "acceptance": "Compare against approved top action placement; no Home Plan control and no bottom action block.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/HomeScreen.tsx#L392 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/ui/HomeCourtHero.tsx#L17"
+    },
+    {
+      "id": "LC-03",
+      "priority": "P1",
+      "area": "Home",
+      "locked_request": "Conroe replaces the house at the top-right, aligned with the sport label.",
+      "status": "Missing",
+      "current": "Home uses LocalTag (house in a square); city remains below the court name.",
+      "acceptance": "City occupies the agreed top-right position; no house beside it.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/ui/HomeCourtHero.tsx#L6"
+    },
+    {
+      "id": "LC-04",
+      "priority": "P1",
+      "area": "Favorites",
+      "locked_request": "Free: one favorite/local court. Paid: multiple favorites. Home and Schedule have favorite-court dropdowns.",
+      "status": "Not started",
+      "current": "PR tracker explicitly says favorites need backend storage and are not started. Schedule can pick a court, but that is not a persisted, entitlement-aware favorites system.",
+      "acceptance": "Persist favorites; enforce entitlement on the server; switch Home and Schedule without replacing favorites. Paid numeric cap remains unspecified.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/docs/FEEDBACK_TRACKER.md#L97 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/HomeScreen.tsx#L54"
+    },
+    {
+      "id": "LC-05",
+      "priority": "P1",
+      "area": "Home / Court",
+      "locked_request": "Locals belongs on the court page, ranked by Elo; no extra unselected sorting options.",
+      "status": "Partial",
+      "current": "Court Players view remains; Home still has Locals. Removing Home Locals is not done.",
+      "acceptance": "Court locals remain accessible and Elo ordered; Home has no Locals tab.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/HomeScreen.tsx#L48 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/court/%5Bid%5D.tsx#L364"
+    },
+    {
+      "id": "LC-06",
+      "priority": "P1",
+      "area": "All feeds",
+      "locked_request": "Use the locked understated dot / VS / calendar treatment; no bright outlined or glowing check-in icons.",
+      "status": "Not delivered",
+      "current": "Shared ActivityRow uses login/logout icons, sport-colored game emblems, and an orange border/shadow on check-ins. Drawer Recent Activity already uses quiet dots, so the product is inconsistent.",
+      "acceptance": "Compare Home, court feed and player activity directly to feed-understated.png. Preserve event distinctions; remove dominant orange glow.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/ui/ActivityRow.tsx#L218 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/sheet/CourtSheetContent.tsx#L388"
+    },
+    {
+      "id": "LC-07",
+      "priority": "P1",
+      "area": "Feed copy",
+      "locked_request": "Use consistent event hierarchy for recent and older checkout rows.",
+      "status": "PR introduces the inconsistency",
+      "current": "pairVisits splitToday deliberately keeps today\u2019s check-in / checkout separate and turns older pairs into played-duration rows. Tests enforce that behavior.",
+      "acceptance": "Same event type has the same primary/secondary information order across day boundaries; keep useful duration/time.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/HomeScreen.tsx#L136 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/lib/activityPresentation.ts#L15 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/lib/activityPresentation.test.mts#L3"
+    },
+    {
+      "id": "LC-08",
+      "priority": "P1",
+      "area": "Shared metrics",
+      "locked_request": "Normal-size h with clear space; do not shrink h to solve crowding.",
+      "status": "Opposite of latest decision",
+      "current": "MetricValue adds thin spacing but sets the unit to 16pt while numerals are 22\u201328pt. The attached current Home image visibly retains the small h.",
+      "acceptance": "Hours render with the agreed full-size unit and sufficient spacing across Home, cards, drawer and Info.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/court/CourtParts.tsx#L3"
+    },
+    {
+      "id": "LC-09",
+      "priority": "P2",
+      "area": "Court header",
+      "locked_request": "Busy chart above the court tabs, following the chosen middle D/header reference.",
+      "status": "Implemented in source",
+      "current": "Court header now shows name on the left, a large live count on the right and the daily chart above all tabs.",
+      "acceptance": "Fresh capture of each court tab at the review head confirms header and chart; check long names.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/court/%5Bid%5D.tsx#L284"
+    },
+    {
+      "id": "LC-10",
+      "priority": "P2",
+      "area": "Court header",
+      "locked_request": "Fade / blur the background court art so it does not compete with text.",
+      "status": "Not demonstrated",
+      "current": "Header still renders CourtArt with no change to that art component in this PR. Text shadow is not evidence of the requested art blur/fade.",
+      "acceptance": "Show a populated, long-name court header at small and large sizes with subdued art.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/court/%5Bid%5D.tsx#L248"
+    },
+    {
+      "id": "LC-11",
+      "priority": "P1",
+      "area": "Court page",
+      "locked_request": "Data view only: remove Check-in and Plan Visit; availability creation stays on standalone Schedule.",
+      "status": "Missing / inherited behavior",
+      "current": "Court page still renders Plan Visit and CheckInButton; interactive Week actions also remain. These actions existed before this PR, so this is an unfulfilled removal request, not proven newly introduced behavior.",
+      "acceptance": "Court tabs show data without the rejected check-in/planning footer or duplicate availability controls.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/court/%5Bid%5D.tsx#L426 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/CourtSchedulePanel.tsx#L455"
+    },
+    {
+      "id": "LC-12",
+      "priority": "P1",
+      "area": "Schedule",
+      "locked_request": "Faithfully use selected 2d composition, with seven days across, 6 AM\u2013midnight down, taller heatmap and prominent attendance.",
+      "status": "Partial; target not matched",
+      "current": "Days are across and hours down, but the old short AM/PM time window remains. The captured view has a separate Add My Time box and separate upcoming game card. This is not the selected combined card/full-height composition.",
+      "acceptance": "Show selected mock alongside implementation; apply axis exception, use available height and show prominent actual attendance. Verify 6 AM\u2013midnight range rather than copying mock labels.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/%28tabs%29/schedule.tsx#L85 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/%28tabs%29/schedule.tsx#L2177"
+    },
+    {
+      "id": "LC-13",
+      "priority": "P1",
+      "area": "Schedule",
+      "locked_request": "Keep favorite court selector at top; Add time / plus and Schedule game accessible here.",
+      "status": "Partial",
+      "current": "One-line court picker is restored and planning/game creation are available through existing controls. Favorites and selected top pill/composition are not implemented; the orange floating + remains.",
+      "acceptance": "Selected dropdown and both actions fit the approved layout and remain usable; no floating control hides a card action.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/%28tabs%29/schedule.tsx#L1341 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/%28tabs%29/schedule.tsx#L38"
+    },
+    {
+      "id": "LC-14",
+      "priority": "P1",
+      "area": "Schedule / Week",
+      "locked_request": "Avoid unnecessary scrolling and keep primary actions visible.",
+      "status": "Partial / policy conflict",
+      "current": "Standalone Schedule now uses an outer ScrollView when content cannot fit; CourtSchedulePanel has outer and inner vertical scroll areas. This prevents some clipping, but is different from the repeated no-page-scroll request. Repo docs simultaneously say never scrolls and allow small-phone scrolling.",
+      "acceptance": "At 375, 393 and 430 widths, verify agreed composition and reachable actions; document unavoidable accessibility overflow as an explicit exception.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/%28tabs%29/schedule.tsx#L682 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/CourtSchedulePanel.tsx#L65"
+    },
+    {
+      "id": "LC-15",
+      "priority": "P2",
+      "area": "Week panel",
+      "locked_request": "Axis labels closer to grid; compact equal columns and buttons; centered empty game text.",
+      "status": "Implemented in source",
+      "current": "Month/hour labels are right aligned against the grid, columns use equal flex bases, empty text is centered and shared smaller buttons replace bespoke controls.",
+      "acceptance": "Compare empty and populated selected slots; full names and text fit without shrinking below agreed scale.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/CourtSchedulePanel.tsx#L507"
+    },
+    {
+      "id": "LC-16",
+      "priority": "P1",
+      "area": "Explore drawer",
+      "locked_request": "Preserve card \u2192 peek \u2192 expanded drawer and reachable check-in. Fix Here Now clipping.",
+      "status": "Partial; known open defect",
+      "current": "Shared measured peek and fixed expanded layout are implemented. Latest PR comment explicitly reports intermittent 375\u00d7667 peek expansion showing half of Here Now, about one run in two.",
+      "acceptance": "Repeatedly open/close populated and empty drawers at 375/393/430; no clipped tiles or accidental larger peek.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/sheet/CourtSheetHost.tsx#L4 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/sheet/CourtSheetContent.tsx#L550"
+    },
+    {
+      "id": "LC-17",
+      "priority": "P1",
+      "area": "Explore drawer",
+      "locked_request": "Daily activity view without heading/day label, arrows or Busiest commentary; heatmap owns the double-click interaction.",
+      "status": "Missing",
+      "current": "Drawer still renders CourtBusyChart with title Today. The shared chart always includes day stepper and busy caption. No requested heatmap double-click behavior is added by this PR.",
+      "acceptance": "Drawer shows quiet current-day bars only. Do not apply the drawer arrow ban to Home where arrows were later allowed.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/sheet/CourtSheetContent.tsx#L355 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/court/CourtBusyChart.tsx#L1"
+    },
+    {
+      "id": "LC-18",
+      "priority": "P1",
+      "area": "Charts",
+      "locked_request": "Remove Busiest around commentary.",
+      "status": "Missing",
+      "current": "busyCaption still generates Busiest around and explanatory text. It is displayed in the court header and drawer.",
+      "acceptance": "No visible Busiest sentence in the affected chart surfaces; retain accessible chart meaning.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/lib/courtBusyModel.ts#L1 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/court/CourtBusyChart.tsx#L1"
+    },
+    {
+      "id": "LC-19",
+      "priority": "P1",
+      "area": "Explore map",
+      "locked_request": "Narrow live count; legend top-left; map controls bottom-right.",
+      "status": "Partial / wrong placement",
+      "current": "Native legend moved from lower-left to a centered row under the live count; locate-me moved into bottom row. The top-left placement is not implemented. No web map implementation file is changed in this PR, so web/native parity is unproven.",
+      "acceptance": "Capture working web and native maps: compact status, top-left legend, bottom-right relevant controls without overlapping nearest action.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/NativeMapScreen.tsx#L698"
+    },
+    {
+      "id": "LC-20",
+      "priority": "P1",
+      "area": "Game detail",
+      "locked_request": "Reduce repeated court/format/host metadata; preserve meaningful date, attendance and game type.",
+      "status": "Partial improvement",
+      "current": "Court name is in the top bar; duplicate Where/Host detail rows are removed. Format still appears as a metric and can also occur in the stored title, as PHONETEST \u00b7 3V3 does. Do not silently rewrite stored titles.",
+      "acceptance": "Verify title containing 3v3 and title without it; one intentional format treatment and clear ranked/casual state.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/run/%5Bid%5D.tsx#L6"
+    },
+    {
+      "id": "LC-21",
+      "priority": "P2",
+      "area": "Game detail",
+      "locked_request": "Submit Result / View Result must remain reachable with full 5v5 rosters.",
+      "status": "Implemented in source; native check pending",
+      "current": "Result actions were moved to an absolute bottom footer outside the roster ScrollView. The visual test list includes full and started 5v5 fixtures.",
+      "acceptance": "On phone: full 5v5 and started game, keyboard and safe area; action remains visible and opens correct flow.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/run/%5Bid%5D.tsx#L6 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/scripts/visual-qa/screens.mjs#L25"
+    },
+    {
+      "id": "LC-22",
+      "priority": "P1",
+      "area": "Inbox / Challenge",
+      "locked_request": "Game On and Waiting open the same dedicated challenge/game detail flow, not generic Log Game.",
+      "status": "Partial fix; central issue remains",
+      "current": "Already logged challenges open /match. Accepted ranked challenges without matchId still route to /compete?tab=log, including a redirect inside the dedicated challenge page.",
+      "acceptance": "Open each inbox state and profile View Challenge; pending/accepted stay in dedicated lifecycle; logged score opens match review.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/%28tabs%29/elo.tsx#L213 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/challenge/%5Bid%5D.tsx#L74"
+    },
+    {
+      "id": "LC-23",
+      "priority": "P2",
+      "area": "Inbox",
+      "locked_request": "More space below Challenges heading and between cards.",
+      "status": "Not addressed in relevant diff",
+      "current": "Me changes restyle tabs and improve clipped revised-by copy; the requested challenge-group spacing is not changed.",
+      "acceptance": "Fresh inbox capture shows clear heading-to-card and card-to-card gaps.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/%28tabs%29/elo.tsx#L596"
+    },
+    {
+      "id": "LC-24",
+      "priority": "P1",
+      "area": "Log Game",
+      "locked_request": "Final Score fixed immediately above Log Game; larger rosters fill space above.",
+      "status": "Partial; score placement missing",
+      "current": "Submit button is pinned outside the scrolling form, but Final Score remains inside it, following the roster. Pinning only the button does not meet the specified score placement.",
+      "acceptance": "1v1 through larger teams, with keyboard: Final Score stays directly above submit in consistent position.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/game/LogGameForm.tsx#L991 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/game/LogGameForm.tsx#L1190"
+    },
+    {
+      "id": "LC-25",
+      "priority": "P1",
+      "area": "Log Game",
+      "locked_request": "Remove Win \u2014 positive ELO change and equivalent outcome commentary; put nothing there.",
+      "status": "Missing",
+      "current": "Both Win \u2014 positive ELO change and Loss \u2014 negative ELO change remain in the shared form.",
+      "acceptance": "Enter winning and losing scores; neither message appears.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/game/LogGameForm.tsx#L1178"
+    },
+    {
+      "id": "LC-26",
+      "priority": "P2",
+      "area": "Log Game",
+      "locked_request": "Remove duplicate inline YOU; clarify ambiguous Add Player \u00b7 2v2 control without redesigning Compete.",
+      "status": "Missing",
+      "current": "Column label YOU and inline YOU badge both remain. ADD PLAYER \u00b7 next-team-size wording is retained.",
+      "acceptance": "One clear self label; choose a concise approved team-size action label before implementing it.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/game/LogGameForm.tsx#L1064 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/game/LogGameForm.tsx#L1101"
+    },
+    {
+      "id": "LC-27",
+      "priority": "P2",
+      "area": "Player profile",
+      "locked_request": "Preserve head-to-head verdict; improve alignment using supplied variants. Do not delete text.",
+      "status": "Preserved / partial styling",
+      "current": "Verdict is still rendered by seriesStatus; names/ratings moved to their own row and footer labels share a baseline. Exact preferred final visual variant is not established by this PR.",
+      "acceptance": "Keep verdict; compare actual populated H2H to selected PDF/mock variant and fit full names.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/ui/HeadToHeadSummary.tsx#L61"
+    },
+    {
+      "id": "LC-28",
+      "priority": "P2",
+      "area": "Player profile",
+      "locked_request": "View Challenge fully visible alongside Log Game/friend control.",
+      "status": "Source improvement; visual acceptance pending",
+      "current": "Footer uses shared StickyActionBar with smaller padding and shrinkable single-line labels; full display in all friend states is not proven by the attached six-view record.",
+      "acceptance": "Test all four friendship states and View Challenge at smallest supported width; no ellipsis or tiny corrective text.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/ui/StickyActionBar.tsx#L12 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/player/%5Bid%5D.tsx#L298"
+    },
+    {
+      "id": "LC-29",
+      "priority": "P1",
+      "area": "LocalPlus",
+      "locked_request": "Short action label, separate account error; better balanced content and better graphic.",
+      "status": "Partial",
+      "current": "Retry shortened to COULDN\u2019T VERIFY \u2014 TAP TO RETRY, still an error sentence in the button. Fine print contrast improved. Main content/art/composition did not receive the requested redesign.",
+      "acceptance": "Short Retry action + separate readable explanation; balanced content and approved art. Exact graphic remains a design choice.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/localplus.tsx#L173"
+    },
+    {
+      "id": "LC-30",
+      "priority": "P2",
+      "area": "Settings",
+      "locked_request": "Shorten the redundant two-line notifications helper.",
+      "status": "Missing",
+      "current": "Settings changes affect switch thumb and muted values, not the helper sentence. Current record still shows the long wrapped explanation.",
+      "acceptance": "Concise approved helper fits naturally at default size and can grow accessibly with larger text.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/settings.tsx#L674"
+    },
+    {
+      "id": "LC-31",
+      "priority": "P1",
+      "area": "Onboarding",
+      "locked_request": "Stable centered welcome-art frame across screen heights; better blend.",
+      "status": "Partial implementation; not verified across real devices",
+      "current": "PR explicitly computes art width and subject position and adds fades. Hero height still depends on window height and flex space; code intent alone does not establish the desired composition.",
+      "acceptance": "Compare actual iPhone short/tall safe areas and keyboard-free welcome to approved centered composition, no drift or gap.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/onboarding.tsx#L282"
+    },
+    {
+      "id": "LC-32",
+      "priority": "P1",
+      "area": "Onboarding",
+      "locked_request": "Lower username/sport fields; remove obvious helper copy; maintain editable username and accessible short constraint.",
+      "status": "Missing / bug unverified",
+      "current": "This is how locals will know you, first-name suggestion and sport explanation remain. Form is still top padded. Username input is editable except while saving; reported editing/focus failure needs reproduction.",
+      "acceptance": "Remove rejected copy, rebalance form, test delete/replace/type without forced blur; label actual failure only after reproducing.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/onboarding.tsx#L422 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/onboarding.tsx#L429"
+    },
+    {
+      "id": "LC-33",
+      "priority": "P1",
+      "area": "Onboarding",
+      "locked_request": "U.S.-wide map \u2192 share location or address \u2192 court selection.",
+      "status": "Partial",
+      "current": "Default map model is continental U.S.; map has location and city search and real-coordinate pins. Search is City, State, not the requested address flow.",
+      "acceptance": "Initial U.S. view; location allowed/denied and manual address path all resolve court selection without trapping the user.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/lib/courtPickerMapModel.ts#L1 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/onboarding.tsx#L506"
+    },
+    {
+      "id": "LC-34",
+      "priority": "P1",
+      "area": "Onboarding",
+      "locked_request": "Selected court gets orange top-down rectangle; confirm uses existing Add Court dolly/tilt/rotate, then auto check-in permission.",
+      "status": "Missing",
+      "current": "Picker uses a static Mapbox image, round selected pin and scale/fade reveal. Next step uses GeofenceVisual. No rectangle or reused Add Court camera choreography exists here.",
+      "acceptance": "Record transition video: top-down orange rectangle \u2192 confirmation \u2192 angled dolly/rotation \u2192 truthful opt-in. A static screenshot cannot verify motion.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/onboarding/CourtPickerMap.tsx#L166 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/onboarding.tsx#L613"
+    },
+    {
+      "id": "LC-35",
+      "priority": "P1",
+      "area": "Onboarding",
+      "locked_request": "After auto-check-in choice, enter app; remove separate notifications step from this sequence.",
+      "status": "Missing",
+      "current": "State explicitly includes step 4 alerts; completing auto check-in advances to it. Notification capability should remain elsewhere.",
+      "acceptance": "Revised progress matches final sequence; auto-check-in choice leads into app with no redundant fourth screen.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/onboarding.tsx#L245"
+    },
+    {
+      "id": "LC-36",
+      "priority": "P2",
+      "area": "Copy / privacy",
+      "locked_request": "Concise product language; truthful foreground and background location explanation.",
+      "status": "Requires verification",
+      "current": "Discovery says location once; auto-check-in screen separately requests background capability. These can be separate stages, but privacy promises must be checked against actual service behavior, not inferred from UI.",
+      "acceptance": "Document location collection, retention and geofencing behavior; approved concise copy accurately distinguishes nearby discovery from opt-in auto-check-in.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/app/onboarding.tsx#L526"
+    },
+    {
+      "id": "LC-37",
+      "priority": "P2",
+      "area": "Shared UI",
+      "locked_request": "Preserve consistent real drawers and challenge drawer feel.",
+      "status": "Implemented in source",
+      "current": "FormSheet, review-rules sheet and QR display now share RunFlowSheet/AppBottomSheetModal. Profile Log Game opens a prefilled sheet instead of navigating away.",
+      "acceptance": "On phone verify swipe dismissal, backdrop, back, focus and keyboard in all shared sheets.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/sheet/FormSheet.tsx#L1 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/game/LogGameSheet.tsx#L1"
+    },
+    {
+      "id": "LC-38",
+      "priority": "P2",
+      "area": "Game score",
+      "locked_request": "Timeline markers align; played date is correct; Hide Score compact; countdown centered.",
+      "status": "Implemented in source; wider evidence needed",
+      "current": "Rail spacing and local-date parsing fixed with tests. Hide Score row uses shared control and bottom placement; compact countdown text centered.",
+      "acceptance": "Native and web captures of pending, final, revised and team score states confirm alignment and fit.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/match/GameActivityList.tsx#L13 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/lib/gameActivity.ts#L151 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/match/ScoreCard.tsx#L575 ; https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/components/match/HideScoreToggle.tsx#L46"
+    },
+    {
+      "id": "LC-39",
+      "priority": "P2",
+      "area": "Launch courts",
+      "locked_request": "Intentional Houston/Austin seeds: roughly 10 basketball + 10 pickleball per city; partner research; broad website directory separate.",
+      "status": "Outside PR / still unaccounted for",
+      "current": "No court seed import, curated list, partner research or directory toggle is delivered by PR #77. Older PDF top-25/import plans do not establish completion of the newer 40-court request.",
+      "acceptance": "Separate curated 40-court inventory with verified sport/access/source and partner prospects; no fabricated activity.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/docs/CURRENT_STATE.md#L94"
+    },
+    {
+      "id": "LC-40",
+      "priority": "P2",
+      "area": "App Store / marketing",
+      "locked_request": "High-quality actual screenshots, listing copy and social/challenge story; App Clip exploration.",
+      "status": "Outside PR / unfinished workstream",
+      "current": "Six engineering screenshots do not equal an App Store package. No submission listing assets, app preview video or App Clip work is changed by PR #77.",
+      "acceptance": "Only capture final approved native build; track listing copy, sizes, assets and App Clip scope separately after UI acceptance.",
+      "evidence": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d018a570624bd3b96ee606f585dfaa5e5cc6d5aa/docs/CURRENT_STATE.md#L94"
+    }
+  ],
+  "supersessions": [
+    {
+      "id": "LC-03",
+      "status": "reopened placement only",
+      "reason": "Latest owner favorite-marker proposal uses the same header location. City not silently removed or locked in an unapproved new position."
+    },
+    {
+      "id": "LC-02",
+      "status": "refined target",
+      "reason": "Latest owner retains Court action with simple arrow; remove Plan/bottom stack. Exact icon/navigation gesture pending."
+    }
+  ],
+  "app_changes_this_turn": false
+}
