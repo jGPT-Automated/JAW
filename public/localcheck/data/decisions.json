@@ -1,5 +1,5 @@
 {
-  "version": "2026-10-18.1",
+  "version": "2026-10-18.2",
   "audit_baseline": "d018a570624bd3b96ee606f585dfaa5e5cc6d5aa",
   "historical_audit_decisions": [
     {
@@ -413,7 +413,44 @@
       "id": "LC-02",
       "status": "refined target",
       "reason": "Latest owner retains Court action with simple arrow; remove Plan/bottom stack. Exact icon/navigation gesture pending."
+    },
+    {
+      "id": "LC-01",
+      "status": "superseded by owner on 2026-10-18",
+      "previous": "Feed + Upcoming",
+      "current": "Overview + Activity; expanded drawer dashboard and reversed timeline"
+    },
+    {
+      "id": "HOME-01",
+      "status": "navigation choice resolved",
+      "previous": "Court button vs header tap unresolved",
+      "current": "Top Court button opens existing court page. Keep existing Court design unchanged for this card."
+    },
+    {
+      "id": "COURT-01",
+      "status": "deferred; outside current card",
+      "previous": "Earlier court-page action removal proposal",
+      "current": "Owner now says court page stays the same. Do not bundle prior Court changes into Home."
     }
   ],
-  "app_changes_this_turn": false
+  "app_changes_this_turn": false,
+  "selected_home_direction": {
+    "status": "owner-selected; not implemented",
+    "date": "2026-10-18",
+    "tabs": [
+      "Overview",
+      "Activity"
+    ],
+    "overview": "Expanded Explore drawer design, top check-in/out and Court, no bottom drawer pills",
+    "activity": "Selected full-width timeline, condensed rows; future above Now, past below; scroll both ways across date boundaries",
+    "court": "Existing court page unchanged; same Court route",
+    "schedule": "Add future availability and schedule games; full-width slot detail and large heatmap",
+    "references": {
+      "H-REF-01": "09-explore-drawer-expanded.jpg",
+      "H-REF-02": "upcoming-timeline.png",
+      "S-REF-01": "schedule-2d.png",
+      "S-REF-02": "04-court-week-selected.jpg"
+    },
+    "naming_note": "Activity chosen from owner explicit tab selection; Pulse only a floated alternative"
+  }
 }

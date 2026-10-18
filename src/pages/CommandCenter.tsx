@@ -10,7 +10,7 @@ import ProtocolDoctrine from '@/components/command/ProtocolDoctrine';
 type TabId = 'topology' | 'agents' | 'activity' | 'roadmap' | 'protocol';
 
 export default function CommandCenter() {
-  const [activeTab, setActiveTab] = useState<TabId>('topology');
+  const [activeTab, setActiveTab] = useState<TabId>('activity');
   const [phase, setPhase] = useState(0);
   const navigate = useNavigate();
 
@@ -28,9 +28,9 @@ export default function CommandCenter() {
   }, []);
 
   const tabs: { id: TabId; label: string }[] = [
+    { id: 'activity', label: 'Activity' },
     { id: 'topology', label: 'Topology' },
     { id: 'agents', label: 'Agents' },
-    { id: 'activity', label: 'Activity' },
     { id: 'roadmap', label: 'Roadmap' },
     { id: 'protocol', label: 'Protocol' },
   ];
@@ -80,6 +80,7 @@ export default function CommandCenter() {
 
       {/* Tab navigation */}
       <nav
+        aria-label="Command Center"
         className="border-b border-border px-4 md:px-10 flex gap-0 overflow-x-auto transition-all duration-700"
         style={{ opacity: phase >= 1 ? 1 : 0 }}
       >
@@ -102,6 +103,13 @@ export default function CommandCenter() {
             )}
           </button>
         ))}
+        <a
+          href="/localcheck/index.html"
+          className="relative px-4 md:px-5 py-3 text-sm text-muted-foreground hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] shrink-0"
+          style={{ fontFamily: "'Instrument Sans', sans-serif" }}
+        >
+          LocalCheck
+        </a>
       </nav>
 
       {/* Content */}
