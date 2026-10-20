@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auto check-in geofence · LocalCheck</title>
+  <style>
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:82px}body{margin:0;background:#f4f3ef;color:#202622;font:16px/1.6 system-ui,-apple-system,sans-serif}a{color:#235d49;text-underline-offset:4px}a:focus-visible{outline:3px solid #336dca;outline-offset:4px}header{position:sticky;top:0;z-index:2;background:#f4f3eff5;border-bottom:1px solid #cfd2c9;padding:14px 4vw;display:flex;gap:24px;justify-content:space-between;align-items:center}nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}nav a{text-decoration:none}main{max-width:1040px;margin:auto;padding:48px 26px 80px}.eyebrow{text-transform:uppercase;font-size:12px;letter-spacing:.15em;color:#5b675d;font-weight:700}h1{font-size:clamp(38px,6vw,64px);letter-spacing:-.055em;line-height:1.05;margin:10px 0 18px}.lead{font-size:20px;color:#586159;max-width:760px}.panel{margin:30px 0;padding:22px 24px;background:#fafaf6;border:1px solid #cfd2c9;border-radius:8px}.panel h2{margin:0 0 10px;font-size:24px;letter-spacing:-.03em}.panel p{margin:8px 0}.flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0}.step{padding:17px;background:#e9ece5;border:1px solid #cfd2c9;border-radius:6px}.step b{display:block;color:#234e3e}.step span{font-size:14px;color:#59635b}.capture{max-width:440px;margin:0 auto;border:1px solid #cfd2c9;background:#111;border-radius:8px;overflow:hidden}.capture img{display:block;width:100%;height:auto}.caption{margin:12px auto 0;max-width:600px;text-align:center;color:#586159;font-size:14px}.source-list{display:grid;gap:12px;margin:16px 0}.source{padding:16px 18px;background:#fff;border:1px solid #d4d7cf;border-radius:6px}.source h3{margin:0 0 5px;font-size:18px}.source p{margin:4px 0}.tag{display:inline-block;margin-right:6px;padding:2px 7px;border-radius:3px;background:#e4eadf;color:#234e3e;font-size:12px;font-weight:700}.note{border-left:3px solid #bd6a27;background:#ebe9df;padding:16px 20px;margin:20px 0}footer{border-top:1px solid #cfd2c9;padding-top:20px;color:#5b675d;font-size:14px}@media(max-width:720px){header{align-items:flex-start;flex-direction:column;gap:10px}main{padding:30px 18px 60px}.flow{grid-template-columns:1fr 1fr}.panel{padding:18px}}@media(max-width:420px){.flow{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html"><strong>LocalCheck / Working file</strong></a>
+    <nav aria-label="LocalCheck pages"><a href="index.html">Home</a><a href="screens.html">Screens</a><a href="threads.html">Threads &amp; logs</a></nav>
+  </header>
+  <main>
+    <p class="eyebrow">One flow · auto check-in geofence</p>
+    <h1>Settings drawer → local court → 150 m circle</h1>
+    <p class="lead">This page traces only the geofence shown in the Auto Check-In drawer: where the screen lives, where the selected court is saved, and where the radius is set.</p>
+
+    <div class="flow" aria-label="Geofence flow">
+      <div class="step"><b>1 · Open settings</b><span>Settings → Preferences → AUTO CHECK-IN</span></div>
+      <div class="step"><b>2 · Load the saved court</b><span>Current local court comes from the signed-in profile.</span></div>
+      <div class="step"><b>3 · Build the region</b><span>Court coordinates + the shared 150 m radius.</span></div>
+      <div class="step"><b>4 · Watch on iPhone</b><span>Native location service registers enter/leave events.</span></div>
+    </div>
+
+    <section class="panel" aria-labelledby="screen-heading">
+      <h2 id="screen-heading">The drawer in the app preview</h2>
+      <figure>
+        <div class="capture"><img src="evidence/geofence-settings-2026-10-20.jpg" alt="LocalCheck Settings page with the Auto Check-In drawer open. It shows the court circle, Auto check-in switch, Location status, and sharing rows."></div>
+        <figcaption class="caption">Captured from the open LocalCheck settings preview on October 20, 2026. This is browser UI evidence; it does not demonstrate native geofence activation.</figcaption>
+      </figure>
+      <p>The <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/app/settings.tsx#L377">AUTO CHECK-IN row in Settings</a> opens the <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/components/autoCheckIn/AutoCheckInSettingsSheet.tsx#L14">AutoCheckInSettingsSheet</a>. That drawer renders the <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/components/autoCheckIn/GeofenceVisual.tsx#L18">circle visual</a>.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="settings-heading">
+      <h2 id="settings-heading">Where the user’s court setting lives</h2>
+      <p><span class="tag">Supabase</span> The selected local court ID is stored on <code>public.profiles.local_court_id</code>. The Settings court picker calls <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/context/AppContext.tsx#L648">setLocalCourt</a>, which writes the field through <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/services/profileService.ts#L221">updateProfileFields</a>. The geofence context gets that court’s ID and coordinates from the loaded profile/court.</p>
+      <p>The on/off status is the phone’s registered geofence plus its location permission; it is derived in <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/context/AutoCheckInContext.tsx#L45">AutoCheckInContext</a> and checked with Expo Location in <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/services/autoCheckInService.ts#L113">isAutoCheckInRunning</a>. There is no separate auto-check-in on/off field in the profile path shown here.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="radius-heading">
+      <h2 id="radius-heading">Where the radius is defined</h2>
+      <p><span class="tag">150 metres</span> The single source is <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/lib/autoCheckInModel.ts#L7">AUTO_CHECK_IN_RADIUS_M</a>. The <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/lib/autoCheckInModel.ts#L45">regionFor function</a> puts that value into the geofence radius. The visual label uses the same constant in <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/components/autoCheckIn/GeofenceVisual.tsx#L36">GeofenceVisual</a>.</p>
+      <p>When enabled, <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/services/autoCheckInService.ts#L129">enableAutoCheckIn</a> passes that region to <code>Location.startGeofencingAsync</code>. A local-court change updates the active region through <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/services/autoCheckInService.ts#L160">syncAutoCheckIn</a>.</p>
+    </section>
+
+    <div class="note"><strong>Why the preview switch does not turn it on:</strong> the app marks geofencing unavailable outside a native iOS build. In the browser preview, the drawer can show the circle and settings, but cannot register the phone’s geofence. The platform check is in <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/services/autoCheckInService.ts#L35">isAutoCheckInAvailable</a>; the Settings screen disables the switch when that state is unavailable, through <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/app/settings.tsx#L501">canToggle</a>.</div>
+
+    <footer>Source snapshot: <a href="https://github.com/jGPT-Automated/LocalCheck_Expo/commit/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb">LocalCheck_Expo merged PR77 commit</a>. Evidence is source-code mapping plus the browser screenshot; no database query or native-device test was performed for this page. <a href="threads.html#lc-geofence-001">Work log ↗</a>.</footer>
+  </main>
+</body>
+</html>
