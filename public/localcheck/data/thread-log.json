@@ -402,6 +402,37 @@
       "follows": [
         "lc-log-004"
       ]
+    },
+    {
+      "id": "lc-nav-notifications-001",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-20T13:37:48Z",
+      "kind": "Implementation",
+      "title": "Standardize LocalCheck navigation and add the notification map",
+      "summary": "Applied the same seven navigation destinations across the LocalCheck workspace, added the Notifications page with the requested type/trigger/destination/wording/log table, and added the geofence map as a section on Screens & flows. The local production build and link checks passed; the branch update and Vercel preview are not published yet.",
+      "current_state": "Local files changed only; no LocalCheck app code or database changed. Next: commit the scoped JAW site changes to PR #5, publish, and verify the exact preview.",
+      "detail": "Kept the prior detailed geofence URL as a reference and promoted Screens & flows as its shared section. Notification table source links are pinned to LocalCheck_Expo commit d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb. The notification page distinguishes persisted inbox rows, phone push delivery records, and Me activity_events. Existing unrelated changes in scripts/localcheck-log.mjs remain unstaged and preserved.",
+      "links": [
+        {
+          "label": "This chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        },
+        {
+          "label": "JAW PR #5",
+          "url": "https://github.com/jGPT-Automated/JAW/pull/5"
+        },
+        {
+          "label": "Notification map",
+          "url": "https://github.com/jGPT-Automated/JAW/blob/codex/localcheck-threads-log/public/localcheck/notifications.html"
+        },
+        {
+          "label": "Screens & flows",
+          "url": "https://github.com/jGPT-Automated/JAW/blob/codex/localcheck-threads-log/public/localcheck/screens.html"
+        }
+      ],
+      "follows": [
+        "lc-geofence-001"
+      ]
     }
   ],
   "pull_requests": [
