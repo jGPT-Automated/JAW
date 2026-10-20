@@ -1,0 +1,560 @@
+{
+  "schema_version": 1,
+  "timezone": "America/Chicago",
+  "canonical_url": "https://www.modernweb.store/localcheck/threads.html",
+  "current_thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+  "threads": [
+    {
+      "id": "01a10725-bade-7505-b881-a18d915fe0f7",
+      "title": "Fix SEO and Indexing Issues",
+      "created_at": "2026-10-04T13:41:16.000Z",
+      "source": "codex://threads/01a10725-bade-7505-b881-a18d915fe0f7?hostId=durable",
+      "context": "SEO and build history. A local environment workaround became an unnecessary build configuration change; the agent acknowledged the resulting deployment regression. Preserve the established runtime."
+    },
+    {
+      "id": "01a1372f-d303-7e40-b93c-ecbf7e73fb73",
+      "title": "Build comprehensive Firecrawl skill",
+      "created_at": "2026-10-13T21:34:03.000Z",
+      "source": "codex://threads/01a1372f-d303-7e40-b93c-ecbf7e73fb73",
+      "context": "Existing SEO/AEO research, Atlas decisions and growth-report handoff. Full state HTML grouped by city, deterministic anchors and state text/JSON supersede arbitrary pagination. Reuse settled evidence."
+    },
+    {
+      "id": "6ad1b5d8-da38-83ea-9d8c-3246946118fe",
+      "title": "LocalCheck Documentation Drift",
+      "created_at": "2026-10-16T05:27:53.568Z",
+      "source": "codex://threads/6ad1b5d8-da38-83ea-9d8c-3246946118fe",
+      "context": "Documentation drift report identified stale PR77 status and conflicting design instructions. Its deployment uncertainty predates the later phone-activation confirmation. Preserve findings with dates; newer evidence can supersede older status."
+    },
+    {
+      "id": "01a145f9-8b48-76d3-960f-1aaeab1aefd8",
+      "title": "Prepare App Store launch assets",
+      "created_at": "2026-10-16T18:29:04.000Z",
+      "source": "codex://threads/01a145f9-8b48-76d3-960f-1aaeab1aefd8",
+      "context": "App screenshots, responsive mock targets, court intake and App Store materials. Larger Home/Schedule work was separated from PR77. Public working-file targets are mocks until accepted implementation evidence exists."
+    },
+    {
+      "id": "01a14b8d-29b7-7c60-83a8-438d0a8b3bba",
+      "title": "LocalCheck Field Test Handoff",
+      "created_at": "2026-10-17T20:28:25.000Z",
+      "source": "codex://threads/01a14b8d-29b7-7c60-83a8-438d0a8b3bba",
+      "context": "Field-test-labelled chat. Recent reviewed turns actually concerned hook workflow changes. Its title alone is not proof of field-test results; open the original for the full record."
+    },
+    {
+      "id": "01a14b91-e98f-77b0-ab8f-0a499445d301",
+      "title": "Investigate why UI defects pass CI and…",
+      "created_at": "2026-10-17T20:33:36.000Z",
+      "source": "codex://threads/01a14b91-e98f-77b0-ab8f-0a499445d301",
+      "context": "Investigation of visible UI defects escaping CI. Code checks and successful previews did not establish rendered-state acceptance. Historical unmerged-PR statements predate the later PR77 merge."
+    },
+    {
+      "id": "01a14b9c-5146-71d0-b38d-49dce56c635d",
+      "title": "Review mobile update and plan real-court…",
+      "created_at": "2026-10-17T20:44:58.000Z",
+      "source": "codex://threads/01a14b9c-5146-71d0-b38d-49dce56c635d",
+      "context": "Source-grounded court-test expectations for arrival, local notification, delayed posting, exit and Add Court. Timing expectations are not measured test results. Its older OTA status is superseded."
+    },
+    {
+      "id": "01a1518e-24e4-7c51-bb70-5fc9839bd43a",
+      "title": "Verify PR77 merge and OTA safety",
+      "created_at": "2026-10-19T00:27:12.000Z",
+      "source": "codex://threads/01a1518e-24e4-7c51-bb70-5fc9839bd43a",
+      "context": "PR77 merge/OTA evidence, owner phone activation, observer-account preparation and release desk history. Later handoff points back to this existing shared workspace; the competing local tracker is historical."
+    },
+    {
+      "id": "01a1524e-a5aa-7333-8ca5-b9b6b35c5219",
+      "title": "Plan LocalCheck launch work",
+      "created_at": "2026-10-19T03:57:28.000Z",
+      "source": "codex://threads/01a1524e-a5aa-7333-8ca5-b9b6b35c5219",
+      "context": "Launch orchestration proposal and owner corrections. Hidden Markdown plans and long unclear replies were rejected. Prior proposals are not approval to implement."
+    },
+    {
+      "id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "title": "Log work and confirm plans",
+      "created_at": "2026-10-19T04:20:47.000Z",
+      "source": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "context": "Current coordinator. Goal: finish the website consistently with the app, finish app readiness for Apple, then prioritize app/review issues. Owner now authorizes this shared append-only Threads & logs tab; questions and answers belong here.",
+      "related": [
+        "01a1518e-24e4-7c51-bb70-5fc9839bd43a",
+        "01a1524e-a5aa-7333-8ca5-b9b6b35c5219"
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "id": "import-6ad1b5d8-da38-83ea-9d8c-3246946118fe",
+      "thread_id": "6ad1b5d8-da38-83ea-9d8c-3246946118fe",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier documentation drift evidence linked",
+      "summary": "Documentation drift report identified stale PR77 status and conflicting design instructions. Its deployment uncertainty predates the later phone-activation confirmation. Preserve findings with dates; newer evidence can supersede older status.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/6ad1b5d8-da38-83ea-9d8c-3246946118fe"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "import-01a10725-bade-7505-b881-a18d915fe0f7",
+      "thread_id": "01a10725-bade-7505-b881-a18d915fe0f7",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier work linked into the shared record",
+      "summary": "SEO and build history. A local environment workaround became an unnecessary build configuration change; the agent acknowledged the resulting deployment regression. Preserve the established runtime.",
+      "detail": "Imported from the portions of this chat already reviewed in the current coordination chat. This is a bounded context summary, not a fresh exhaustive audit or a new implementation claim. Original chat creation time is shown separately.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/01a10725-bade-7505-b881-a18d915fe0f7?hostId=durable"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "import-01a1372f-d303-7e40-b93c-ecbf7e73fb73",
+      "thread_id": "01a1372f-d303-7e40-b93c-ecbf7e73fb73",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier work linked into the shared record",
+      "summary": "Existing SEO/AEO research, Atlas decisions and growth-report handoff. Full state HTML grouped by city, deterministic anchors and state text/JSON supersede arbitrary pagination. Reuse settled evidence.",
+      "detail": "Imported from the portions of this chat already reviewed in the current coordination chat. This is a bounded context summary, not a fresh exhaustive audit or a new implementation claim. Original chat creation time is shown separately.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/01a1372f-d303-7e40-b93c-ecbf7e73fb73"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "import-01a145f9-8b48-76d3-960f-1aaeab1aefd8",
+      "thread_id": "01a145f9-8b48-76d3-960f-1aaeab1aefd8",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier work linked into the shared record",
+      "summary": "App screenshots, responsive mock targets, court intake and App Store materials. Larger Home/Schedule work was separated from PR77. Public working-file targets are mocks until accepted implementation evidence exists.",
+      "detail": "Imported from the portions of this chat already reviewed in the current coordination chat. This is a bounded context summary, not a fresh exhaustive audit or a new implementation claim. Original chat creation time is shown separately.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/01a145f9-8b48-76d3-960f-1aaeab1aefd8"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "import-01a14b8d-29b7-7c60-83a8-438d0a8b3bba",
+      "thread_id": "01a14b8d-29b7-7c60-83a8-438d0a8b3bba",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier work linked into the shared record",
+      "summary": "Field-test-labelled chat. Recent reviewed turns actually concerned hook workflow changes. Its title alone is not proof of field-test results; open the original for the full record.",
+      "detail": "Imported from the portions of this chat already reviewed in the current coordination chat. This is a bounded context summary, not a fresh exhaustive audit or a new implementation claim. Original chat creation time is shown separately.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/01a14b8d-29b7-7c60-83a8-438d0a8b3bba"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "import-01a14b91-e98f-77b0-ab8f-0a499445d301",
+      "thread_id": "01a14b91-e98f-77b0-ab8f-0a499445d301",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier work linked into the shared record",
+      "summary": "Investigation of visible UI defects escaping CI. Code checks and successful previews did not establish rendered-state acceptance. Historical unmerged-PR statements predate the later PR77 merge.",
+      "detail": "Imported from the portions of this chat already reviewed in the current coordination chat. This is a bounded context summary, not a fresh exhaustive audit or a new implementation claim. Original chat creation time is shown separately.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/01a14b91-e98f-77b0-ab8f-0a499445d301"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "import-01a14b9c-5146-71d0-b38d-49dce56c635d",
+      "thread_id": "01a14b9c-5146-71d0-b38d-49dce56c635d",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier work linked into the shared record",
+      "summary": "Source-grounded court-test expectations for arrival, local notification, delayed posting, exit and Add Court. Timing expectations are not measured test results. Its older OTA status is superseded.",
+      "detail": "Imported from the portions of this chat already reviewed in the current coordination chat. This is a bounded context summary, not a fresh exhaustive audit or a new implementation claim. Original chat creation time is shown separately.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/01a14b9c-5146-71d0-b38d-49dce56c635d"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "import-01a1518e-24e4-7c51-bb70-5fc9839bd43a",
+      "thread_id": "01a1518e-24e4-7c51-bb70-5fc9839bd43a",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier work linked into the shared record",
+      "summary": "PR77 merge/OTA evidence, owner phone activation, observer-account preparation and release desk history. Later handoff points back to this existing shared workspace; the competing local tracker is historical.",
+      "detail": "Imported from the portions of this chat already reviewed in the current coordination chat. This is a bounded context summary, not a fresh exhaustive audit or a new implementation claim. Original chat creation time is shown separately.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/01a1518e-24e4-7c51-bb70-5fc9839bd43a"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "import-01a1524e-a5aa-7333-8ca5-b9b6b35c5219",
+      "thread_id": "01a1524e-a5aa-7333-8ca5-b9b6b35c5219",
+      "recorded_at": "2026-10-19T04:40:55Z",
+      "kind": "Imported context",
+      "title": "Earlier work linked into the shared record",
+      "summary": "Launch orchestration proposal and owner corrections. Hidden Markdown plans and long unclear replies were rejected. Prior proposals are not approval to implement.",
+      "detail": "Imported from the portions of this chat already reviewed in the current coordination chat. This is a bounded context summary, not a fresh exhaustive audit or a new implementation claim. Original chat creation time is shown separately.",
+      "links": [
+        {
+          "label": "Original chat",
+          "url": "codex://threads/01a1524e-a5aa-7333-8ca5-b9b6b35c5219"
+        }
+      ],
+      "follows": []
+    },
+    {
+      "id": "lc-log-001",
+      "kind": "Recorded history",
+      "title": "Earlier actions and corrections in this chat",
+      "summary": "Two 6.1 Sol workers were dispatched without exact-assignment sign-off. Field context retrieval completed; the website worker was interrupted near its final response. Jesse rejected the later Terra reading assignment. Both workers remain stopped.",
+      "detail": "The coordinator created a competing local release record and repeated a court question before recovering the earlier answer. Owner corrected the approval process, model budget and interruption decision. These failures are preserved instead of silently rewritten as authorized work. No account, product, database, native build, OTA or Apple submission change was performed by these workers.",
+      "links": [
+        {
+          "label": "This chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        }
+      ],
+      "follows": [],
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-19T04:40:55Z"
+    },
+    {
+      "id": "lc-log-002",
+      "kind": "Owner decision",
+      "title": "Use this existing online workspace; add without overwriting",
+      "summary": "Jesse authorized a Threads & logs tab in the existing JAW website. Add dated per-thread entries, PR and evidence links, and backlinks. Read the shared record before every turn. Keep existing screenshots, mocks and other authors’ work intact. No further chat question widgets.",
+      "detail": "Routine maintenance of this shared record is approved. Questions and responses belong in the HTML workflow. New agent work needs a concrete purpose and recorded sign-off; research and long-context retrieval use 5.6 Terra/Luna, with at most one justified 6.1 Sol. Do not restart the interrupted website worker.",
+      "links": [
+        {
+          "label": "Existing working file",
+          "url": "https://www.modernweb.store/localcheck/index.html"
+        },
+        {
+          "label": "Existing request ledger",
+          "url": "https://www.modernweb.store/localcheck/roadmap.html"
+        }
+      ],
+      "follows": [
+        "lc-log-001"
+      ],
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-19T04:40:55Z"
+    },
+    {
+      "id": "lc-log-003",
+      "kind": "Implementation",
+      "title": "Add the shared thread index and append-only update process",
+      "summary": "Added chronological chat navigation, timestamped work entries, evidence backlinks, PR snapshots and a reply form. Original pages receive only an additional navigation link. Build and browser verification are being completed before publication.",
+      "current_state": "Adding and verifying this shared documentation tab. Product work and both earlier workers remain stopped.",
+      "detail": "Native HTML elements reuse the existing paper/green working-file visual pattern. Custom code is limited to this documentation timeline, static rendering, search and GitHub-backed reply flow. Drafts stay on-device until GitHub publication; no public write endpoint, account credentials, package scripts or app runtime configuration are introduced.",
+      "links": [
+        {
+          "label": "Source repository",
+          "url": "https://github.com/jGPT-Automated/JAW"
+        },
+        {
+          "label": "Source base",
+          "url": "https://github.com/jGPT-Automated/JAW/commit/f8f0bd4da5348a996f6e75c4f3bfc4259932c8f1"
+        }
+      ],
+      "follows": [
+        "lc-log-002"
+      ],
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-19T04:40:55Z"
+    },
+    {
+      "id": "lc-notif-001",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-19T04:44:42Z",
+      "kind": "Owner test result",
+      "title": "Friend check-in missing from browser notification inbox",
+      "summary": "Jesse reported accepting a friendship, enabling friend check-in alerts, then checking in without a notification appearing in the recipient inbox. He explicitly distinguished the persistent inbox from device push delivery. This observation is recorded as owner evidence.",
+      "detail": "The current chat does not identify the exact accounts or event row. Do not erase this result or infer the owner never tested it. The source/deployed-code investigation below establishes the manual-path gap without claiming the exact user event was queried.",
+      "links": [
+        {
+          "label": "Owner report in this chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        }
+      ],
+      "follows": [
+        "lc-log-003"
+      ]
+    },
+    {
+      "id": "lc-notif-002",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-19T04:44:42Z",
+      "kind": "Verified finding",
+      "title": "Live manual Check In path does not create a friend-inbox row",
+      "summary": "Read-only inspection of LocalCheckProd confirmed public.check_in inserts check_ins, whose triggers update activity/metrics, broadcast invalidations and schedule checkout; none creates a friend notification. Friend rows are created by auto-check-in posting. The inbox itself reads own persisted notifications newest first, limited to 50.",
+      "current_state": "Inbox gap confirmed in deployed functions; no database or app fix deployed. Shared log publication is being finished. Product implementation remains unassigned.",
+      "detail": "Verified explicit project qkrnmyexzvaxiqfxwwfb / LocalCheckProd before querying catalog definitions. Inspected public.check_in, private.post_auto_check_in, create_notification, check_ins triggers and their functions, and activity_events trigger. Auto friend eligibility: sender share_auto_check_ins on, profile not Private, accepted friendship, receiver notify_friend_check_ins on, no blocks, hidden-account recipient eligibility, no same sender/recipient friend alert in prior two hours. Push disabled/no token does not prevent inbox insertion. No private user row, account credential or real test event was mutated. Separate source issue: fetchNotifications turns read errors into an empty array, so the screen can show an empty state after a failed fetch; that was not established as the cause of Jesse’s event.",
+      "links": [
+        {
+          "label": "Manual RPC at merged source",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/supabase/migrations/20260723034511_v2_behavior_rpcs_and_metrics.sql#L575"
+        },
+        {
+          "label": "Auto-post notification path",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/supabase/migrations/20261012180000_qstash_timers.sql#L445"
+        },
+        {
+          "label": "Inbox query",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/services/notificationService.ts#L58"
+        }
+      ],
+      "follows": [
+        "lc-notif-001"
+      ]
+    },
+    {
+      "id": "lc-notif-003",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-19T04:46:23Z",
+      "kind": "Owner requirement",
+      "title": "Inbox logging is independent of phone push capability",
+      "summary": "Jesse clarified that the browser-disabled Push notifications toggle must not prevent notification-inbox logging. Keep phone-push behavior separate; the inbox should retain eligible user notifications even without device push. A test account was supplied privately; its credentials are excluded from the shared record.",
+      "detail": "Read-only inspection of the supplied BASE observer at this snapshot: receive-friend-alert preference on, global push off, zero inbox rows and zero accepted friendships. This is the supplied observer baseline, not a claim about the identities or friendship involved in Jesse’s earlier reported test. No account state changed. The confirmed deployed manual-notification gap remains.",
+      "links": [
+        {
+          "label": "Owner clarification in this chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        }
+      ],
+      "follows": [
+        "lc-notif-001",
+        "lc-notif-002"
+      ]
+    },
+    {
+      "id": "lc-log-004",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-19T04:46:23Z",
+      "kind": "Checks completed",
+      "title": "Verify the log page without changing the existing product",
+      "summary": "Vite production build passed; existing test suite passed (1 test); changed JavaScript passed ESLint; log ordering/IDs/backlinks and static output validation passed. Browser checks passed for search/empty results, deep links, visible keyboard focus, narrow 375 px layout, draft restoration and published-reply empty state. No shared reply was submitted during QA.",
+      "current_state": "Publishing the shared documentation tab and the verified inbox findings. Manual-check-in notification gap is recorded; no database/app fix deployed. Both earlier workers remain stopped.",
+      "detail": "Repository-wide lint reported 26 errors and 7 warnings, all in unchanged baseline source files. Existing npm lock is out of sync; installed declared dependencies locally without changing lock/package/runtime files, then used the authoritative npm build/lint/test scripts. Original seven HTML pages were byte-checked: all original content preserved after removing the added Threads & logs navigation links. Source-only medium Firecrawl job 01a15279-1cee-7306-952e-9aa98361ec1b completed, three citation-bearing findings schema-valid, 15 credits; same job retrieved more than 20 seconds apart. Live database findings are separately backed by read-only catalog queries.",
+      "links": [
+        {
+          "label": "Preserved original source base",
+          "url": "https://github.com/jGPT-Automated/JAW/commit/f8f0bd4da5348a996f6e75c4f3bfc4259932c8f1"
+        }
+      ],
+      "follows": [
+        "lc-log-003",
+        "lc-notif-003"
+      ]
+    },
+    {
+      "id": "lc-geofence-001",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-20T10:09:48Z",
+      "kind": "Implementation",
+      "title": "Map the auto-check-in geofence and add a linked page",
+      "summary": "Created a focused geofence page with the settings drawer screenshot and direct source links. It shows that the local court is stored in public.profiles.local_court_id and the radius is defined once as 150 m. The web preview can show the drawer, but geofence registration requires native iOS.",
+      "current_state": "Geofence page is on the open JAW PR #5 branch; its exact Vercel preview is READY. LocalCheck app code and database were not changed. No live database query or native-device test was performed.",
+      "detail": "Scope was limited to the geofence screen and source map. Verified the source paths at LocalCheck_Expo commit d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb. Captured the requested browser settings view and linked the settings row, drawer component, profile write, radius constant, region builder, and native registration code. Added one page plus a Geofence navigation link from Home and Screens. Existing unrelated local edits to scripts/localcheck-log.mjs were left untouched.",
+      "links": [
+        {
+          "label": "This chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        },
+        {
+          "label": "Geofence page preview",
+          "url": "https://jaw-qqmkvvczz-jgpt-automated.vercel.app/localcheck/geofence.html"
+        },
+        {
+          "label": "Captured settings screenshot",
+          "url": "https://jaw-qqmkvvczz-jgpt-automated.vercel.app/localcheck/evidence/geofence-settings-2026-10-20.jpg"
+        },
+        {
+          "label": "JAW page commit",
+          "url": "https://github.com/jGPT-Automated/JAW/commit/e2e6d4cdc38a15223e3400e7d2ce6d91fb361f2c"
+        },
+        {
+          "label": "JAW PR #5",
+          "url": "https://github.com/jGPT-Automated/JAW/pull/5"
+        }
+      ],
+      "follows": [
+        "lc-log-004"
+      ]
+    },
+    {
+      "id": "lc-nav-notifications-001",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-20T13:37:48Z",
+      "kind": "Implementation",
+      "title": "Standardize LocalCheck navigation and add the notification map",
+      "summary": "Applied the same seven navigation destinations across the LocalCheck workspace, added the Notifications page with the requested type/trigger/destination/wording/log table, and added the geofence map as a section on Screens & flows. The local production build and link checks passed; the branch update and Vercel preview are not published yet.",
+      "current_state": "Local files changed only; no LocalCheck app code or database changed. Next: commit the scoped JAW site changes to PR #5, publish, and verify the exact preview.",
+      "detail": "Kept the prior detailed geofence URL as a reference and promoted Screens & flows as its shared section. Notification table source links are pinned to LocalCheck_Expo commit d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb. The notification page distinguishes persisted inbox rows, phone push delivery records, and Me activity_events. Existing unrelated changes in scripts/localcheck-log.mjs remain unstaged and preserved.",
+      "links": [
+        {
+          "label": "This chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        },
+        {
+          "label": "JAW PR #5",
+          "url": "https://github.com/jGPT-Automated/JAW/pull/5"
+        },
+        {
+          "label": "Notification map",
+          "url": "https://github.com/jGPT-Automated/JAW/blob/codex/localcheck-threads-log/public/localcheck/notifications.html"
+        },
+        {
+          "label": "Screens & flows",
+          "url": "https://github.com/jGPT-Automated/JAW/blob/codex/localcheck-threads-log/public/localcheck/screens.html"
+        }
+      ],
+      "follows": [
+        "lc-geofence-001"
+      ]
+    },
+    {
+      "id": "lc-nav-notifications-002",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-20T13:43:00Z",
+      "kind": "Deployment result",
+      "title": "Preview verified for shared navigation and Notifications map",
+      "summary": "Commit e8dff7934230ff516fc73d1e4d3d74193cb97884 is pushed to JAW PR #5. The Notifications page preview responds HTTP 200 and contains the new page and shared seven-item navigation.",
+      "current_state": "Vercel preview is available and serving the update. PR #5 remains open; no production deployment or LocalCheck app/database change was made.",
+      "detail": "Checked https://jaw-git-codex-localcheck-threads-log-jgpt-automated.vercel.app/localcheck/notifications.html at 2026-10-20T13:42:22Z; Vercel returned 200 OK. Local production build succeeded; Playwright verified all seven nav links, the 10-row notification inventory, and narrow-screen nav wrapping. The prior implementation entry remains unchanged and this entry records the later published state.",
+      "links": [
+        {
+          "label": "This chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        },
+        {
+          "label": "JAW PR #5",
+          "url": "https://github.com/jGPT-Automated/JAW/pull/5"
+        },
+        {
+          "label": "Notifications preview",
+          "url": "https://jaw-git-codex-localcheck-threads-log-jgpt-automated.vercel.app/localcheck/notifications.html"
+        },
+        {
+          "label": "Screens & flows preview",
+          "url": "https://jaw-git-codex-localcheck-threads-log-jgpt-automated.vercel.app/localcheck/screens.html#geofence"
+        },
+        {
+          "label": "Home & Court preview",
+          "url": "https://jaw-git-codex-localcheck-threads-log-jgpt-automated.vercel.app/localcheck/index.html#scope"
+        }
+      ],
+      "follows": [
+        "lc-nav-notifications-001"
+      ]
+    },
+    {
+      "id": "lc-screens-correction-001",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-20T17:10:23Z",
+      "kind": "Correction",
+      "title": "Date the selected direction and identify the current Schedule source",
+      "summary": "Replaced the ambiguous “Latest direction” label with the explicit owner-selected decision date, October 18, 2026. Marked the Schedule create-game gallery image as a historical workbook capture with unknown original capture date/source URL, and linked the live Schedule preview that updates in place.",
+      "current_state": "The correction is live in JAW PR #5 preview. Current app UI was checked in the existing authenticated browser session at 372 × 930; its Schedule page shows October 20–26 and the Schedule a Game drawer. The older gallery capture is clearly labeled historical.",
+      "detail": "Current app source: https://localcheck-app-preview.vercel.app/schedule. An anonymous Firecrawl request redirected to /auth, so it was not used as screenshot evidence. The current screen and drawer were viewed in the user’s existing preview session. The old embedded Schedule create-game screenshot is part of the original workbook set; its original capture date/URL are not recorded in this page. Updated only public/localcheck/screens.html. Build, append-only log validation, git diff --check and textual checks passed. Vercel deployment for JAW commit 40fb4b0cac7f9da9642013fdefb9a3365066ac7b is READY and returned HTTP 200 with the correction text. PR #5 remains open; no LocalCheck app or database changes.",
+      "links": [
+        {
+          "label": "This chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        },
+        {
+          "label": "JAW PR #5",
+          "url": "https://github.com/jGPT-Automated/JAW/pull/5"
+        },
+        {
+          "label": "Corrected Screens & flows preview",
+          "url": "https://jaw-c8n852fm8-jgpt-automated.vercel.app/localcheck/screens.html"
+        },
+        {
+          "label": "Current LocalCheck Schedule preview",
+          "url": "https://localcheck-app-preview.vercel.app/schedule"
+        },
+        {
+          "label": "October 18 owner-selected contract",
+          "url": "https://jaw-c8n852fm8-jgpt-automated.vercel.app/localcheck/index.html#home"
+        }
+      ],
+      "follows": [
+        "lc-nav-notifications-002"
+      ]
+    }
+  ],
+  "pull_requests": [
+    {
+      "repo": "LocalCheck_Expo",
+      "number": 77,
+      "state": "Merged",
+      "commit": "d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb",
+      "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/77",
+      "checked_at": "2026-10-19T04:36:56Z"
+    },
+    {
+      "repo": "LocalCheck_WEB",
+      "number": 21,
+      "state": "Open",
+      "commit": "8537a75125177e64fd1499f6ef13a9fd9f0a3621",
+      "url": "https://github.com/jGPT-Automated/LocalCheck_WEB/pull/21",
+      "checked_at": "2026-10-19T04:36:56Z"
+    },
+    {
+      "repo": "LocalCheck_WEB",
+      "number": 22,
+      "state": "Open",
+      "commit": "214c279639203ba010ac339cabce139faff0df1c",
+      "url": "https://github.com/jGPT-Automated/LocalCheck_WEB/pull/22",
+      "checked_at": "2026-10-19T04:36:56Z"
+    },
+    {
+      "repo": "LocalCheck_WEB",
+      "number": 24,
+      "state": "Open",
+      "commit": "7fcdb9af3ec36f47b4556411b752a6071bf4eb77",
+      "url": "https://github.com/jGPT-Automated/LocalCheck_WEB/pull/24",
+      "checked_at": "2026-10-19T04:36:56Z"
+    },
+    {
+      "repo": "LocalCheck_WEB",
+      "number": 25,
+      "state": "Open",
+      "commit": "81be70e9b721f285fe0c211c8e25bc23df15e24a",
+      "url": "https://github.com/jGPT-Automated/LocalCheck_WEB/pull/25",
+      "checked_at": "2026-10-19T04:36:56Z"
+    },
+    {
+      "repo": "JAW",
+      "number": 5,
+      "state": "Open; preview READY",
+      "commit": "e2e6d4cdc38a15223e3400e7d2ce6d91fb361f2c",
+      "url": "https://github.com/jGPT-Automated/JAW/pull/5",
+      "checked_at": "2026-10-20T10:09:48Z",
+      "preview_url": "https://jaw-qqmkvvczz-jgpt-automated.vercel.app/localcheck/geofence.html",
+      "preview_status": "READY"
+    }
+  ]
+}

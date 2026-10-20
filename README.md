@@ -266,3 +266,8 @@ Click any agent → **View history** opens `ConversationViewer` with the full Te
 
 ### Tables
 `agents`, `agent_credentials`, `agent_messages`, `message_queue`, `telegram_bot_state`, `activity_logs`.
+
+
+## LocalCheck shared work history
+
+Use [Threads & logs](https://www.modernweb.store/localcheck/threads.html) for dated chat logs, decisions, test outcomes, PR/commit/preview evidence and owner replies. Add entries; preserve prior authors’ work. Read [the LocalCheck continuation contract](public/localcheck/AGENTS.md) before every LocalCheck turn.
