@@ -468,6 +468,41 @@
       "follows": [
         "lc-nav-notifications-001"
       ]
+    },
+    {
+      "id": "lc-screens-correction-001",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-20T17:10:23Z",
+      "kind": "Correction",
+      "title": "Date the selected direction and identify the current Schedule source",
+      "summary": "Replaced the ambiguous “Latest direction” label with the explicit owner-selected decision date, October 18, 2026. Marked the Schedule create-game gallery image as a historical workbook capture with unknown original capture date/source URL, and linked the live Schedule preview that updates in place.",
+      "current_state": "The correction is live in JAW PR #5 preview. Current app UI was checked in the existing authenticated browser session at 372 × 930; its Schedule page shows October 20–26 and the Schedule a Game drawer. The older gallery capture is clearly labeled historical.",
+      "detail": "Current app source: https://localcheck-app-preview.vercel.app/schedule. An anonymous Firecrawl request redirected to /auth, so it was not used as screenshot evidence. The current screen and drawer were viewed in the user’s existing preview session. The old embedded Schedule create-game screenshot is part of the original workbook set; its original capture date/URL are not recorded in this page. Updated only public/localcheck/screens.html. Build, append-only log validation, git diff --check and textual checks passed. Vercel deployment for JAW commit 40fb4b0cac7f9da9642013fdefb9a3365066ac7b is READY and returned HTTP 200 with the correction text. PR #5 remains open; no LocalCheck app or database changes.",
+      "links": [
+        {
+          "label": "This chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        },
+        {
+          "label": "JAW PR #5",
+          "url": "https://github.com/jGPT-Automated/JAW/pull/5"
+        },
+        {
+          "label": "Corrected Screens & flows preview",
+          "url": "https://jaw-c8n852fm8-jgpt-automated.vercel.app/localcheck/screens.html"
+        },
+        {
+          "label": "Current LocalCheck Schedule preview",
+          "url": "https://localcheck-app-preview.vercel.app/schedule"
+        },
+        {
+          "label": "October 18 owner-selected contract",
+          "url": "https://jaw-c8n852fm8-jgpt-automated.vercel.app/localcheck/index.html#home"
+        }
+      ],
+      "follows": [
+        "lc-nav-notifications-002"
+      ]
     }
   ],
   "pull_requests": [
