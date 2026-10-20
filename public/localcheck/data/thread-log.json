@@ -367,6 +367,41 @@
         "lc-log-003",
         "lc-notif-003"
       ]
+    },
+    {
+      "id": "lc-geofence-001",
+      "thread_id": "01a15263-fdfa-7c70-84b6-6cc7d57d3d77",
+      "recorded_at": "2026-10-20T10:09:48Z",
+      "kind": "Implementation",
+      "title": "Map the auto-check-in geofence and add a linked page",
+      "summary": "Created a focused geofence page with the settings drawer screenshot and direct source links. It shows that the local court is stored in public.profiles.local_court_id and the radius is defined once as 150 m. The web preview can show the drawer, but geofence registration requires native iOS.",
+      "current_state": "Geofence page is on the open JAW PR #5 branch; its exact Vercel preview is READY. LocalCheck app code and database were not changed. No live database query or native-device test was performed.",
+      "detail": "Scope was limited to the geofence screen and source map. Verified the source paths at LocalCheck_Expo commit d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb. Captured the requested browser settings view and linked the settings row, drawer component, profile write, radius constant, region builder, and native registration code. Added one page plus a Geofence navigation link from Home and Screens. Existing unrelated local edits to scripts/localcheck-log.mjs were left untouched.",
+      "links": [
+        {
+          "label": "This chat",
+          "url": "codex://threads/01a15263-fdfa-7c70-84b6-6cc7d57d3d77"
+        },
+        {
+          "label": "Geofence page preview",
+          "url": "https://jaw-qqmkvvczz-jgpt-automated.vercel.app/localcheck/geofence.html"
+        },
+        {
+          "label": "Captured settings screenshot",
+          "url": "https://jaw-qqmkvvczz-jgpt-automated.vercel.app/localcheck/evidence/geofence-settings-2026-10-20.jpg"
+        },
+        {
+          "label": "JAW page commit",
+          "url": "https://github.com/jGPT-Automated/JAW/commit/e2e6d4cdc38a15223e3400e7d2ce6d91fb361f2c"
+        },
+        {
+          "label": "JAW PR #5",
+          "url": "https://github.com/jGPT-Automated/JAW/pull/5"
+        }
+      ],
+      "follows": [
+        "lc-log-004"
+      ]
     }
   ],
   "pull_requests": [
@@ -409,6 +444,16 @@
       "commit": "81be70e9b721f285fe0c211c8e25bc23df15e24a",
       "url": "https://github.com/jGPT-Automated/LocalCheck_WEB/pull/25",
       "checked_at": "2026-10-19T04:36:56Z"
+    },
+    {
+      "repo": "JAW",
+      "number": 5,
+      "state": "Open; preview READY",
+      "commit": "e2e6d4cdc38a15223e3400e7d2ce6d91fb361f2c",
+      "url": "https://github.com/jGPT-Automated/JAW/pull/5",
+      "checked_at": "2026-10-20T10:09:48Z",
+      "preview_url": "https://jaw-qqmkvvczz-jgpt-automated.vercel.app/localcheck/geofence.html",
+      "preview_status": "READY"
     }
   ]
 }
