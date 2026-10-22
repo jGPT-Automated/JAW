@@ -1,6 +1,6 @@
 {
   "updated": "2026-10-22",
-  "summary": "Expo UI work is still in discovery. App Store readiness has PR #79 open with verified config fixes and one verified blocker: the live privacy policy and support page contradict the app's location use.",
+  "summary": "Expo UI work is still in discovery. App Store readiness PR #79 is green and ready for your review. The one submission blocker is the website location wording.",
   "legend": {
     "verified": "Checked directly (command output, test run, screenshot, or merged PR).",
     "belief": "Reported by a thread or inferred; not independently checked.",
@@ -42,7 +42,7 @@
       "id": "app-store",
       "name": "App Store readiness",
       "repo": "jGPT-Automated/LocalCheck_Expo",
-      "state": "In progress",
+      "state": "PR #79 ready for review",
       "steps": [
         {
           "text": "Read repo config (app.json, eas.json, AGENTS.md, skills)",
@@ -96,8 +96,8 @@
         {
           "title": "App Store readiness (#79)",
           "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/79",
-          "state": "Open",
-          "evidence": "expo-doctor 18/18"
+          "state": "Open, CI green, ready for review (not merged)",
+          "evidence": "expo-doctor 18/18; quality, docs-updated and Expo Go preview checks pass"
         }
       ]
     },
@@ -152,6 +152,10 @@
     {
       "date": "2026-10-22",
       "text": "App Store readiness: PR #79 opened; location-text blocker recorded."
+    },
+    {
+      "date": "2026-10-22",
+      "text": "PR #79 CI all green; ready for review, not merged."
     }
   ]
 }
