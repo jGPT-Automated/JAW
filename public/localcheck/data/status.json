@@ -1,0 +1,58 @@
+{
+  "updated": "2026-10-22",
+  "summary": "Two workstreams opened October 22: Expo UI improvements and App Store readiness. Both are in discovery. Nothing below is built, merged or verified yet.",
+  "legend": {
+    "verified": "Checked directly (command output, test run, screenshot, or merged PR).",
+    "belief": "Reported by a thread or inferred; not independently checked.",
+    "open": "Not started or in progress.",
+    "needs-you": "Requires a decision or action from Jesse."
+  },
+  "tracks": [
+    {
+      "id": "expo-ui",
+      "name": "Expo UI improvements",
+      "repo": "jGPT-Automated/LocalCheck_Expo",
+      "state": "In progress",
+      "steps": [
+        {"text": "Read AGENTS.md, skills, open branches and PRs", "status": "open", "note": "Thread reported this as in progress at 16:52 UTC."},
+        {"text": "Verify audit numbers with grep", "status": "open"},
+        {"text": "Implement top UI fixes in small PRs", "status": "open"},
+        {"text": "Lint, typecheck, tests, screenshots", "status": "open"},
+        {"text": "Report PR links", "status": "open"}
+      ],
+      "prs": []
+    },
+    {
+      "id": "app-store",
+      "name": "App Store readiness",
+      "repo": "jGPT-Automated/LocalCheck_Expo",
+      "state": "In progress",
+      "steps": [
+        {"text": "Read repo config (app.json, eas.json, AGENTS.md, skills)", "status": "open", "note": "Thread reported this as in progress at 16:53 UTC."},
+        {"text": "Research current Apple and Expo requirements", "status": "open"},
+        {"text": "Fix config gaps, privacy, EAS profiles", "status": "open"},
+        {"text": "Draft store listing text", "status": "open"},
+        {"text": "Open PR and report", "status": "open"}
+      ],
+      "prs": []
+    },
+    {
+      "id": "docs",
+      "name": "Tracking and docs (this page)",
+      "repo": "jGPT-Automated/JAW",
+      "state": "Live",
+      "steps": [
+        {"text": "Status page and data file added under /localcheck/", "status": "verified", "note": "status.html and data/status.json in this PR."},
+        {"text": "Project artifact published", "status": "open"}
+      ],
+      "prs": []
+    }
+  ],
+  "needs_you": [
+    {"text": "Confirm the docs repo is JAW. No repo named JAWS exists on your account; JAW already hosts the LocalCheck working file at /localcheck/, so this page was added there.", "status": "needs-you"},
+    {"text": "Existing pending items from the working file: Google service-account setup and an installable Android test build.", "status": "belief", "note": "Taken from public/localcheck/agent/README.md, not re-checked."}
+  ],
+  "log": [
+    {"date": "2026-10-22", "text": "Status page created. Expo UI and App Store threads started; no results reported yet."}
+  ]
+}
