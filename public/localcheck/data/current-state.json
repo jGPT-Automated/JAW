@@ -8,7 +8,7 @@
       "name": "Home",
       "state": "Verified in browser",
       "observed": "Local court, live count, weekly court hours, locals, Check In, Here Now, Up Next, hourly activity and recent activity. Court arrow opens the full court screen.",
-      "next": "Keep the current behavior as the baseline. Card changes await the owner’s specific direction."
+      "next": "Before launch, make an active visit at a different court visible and avoid an ambiguous Check In that silently switches courts. This is an assessment; exact UI implementation awaits owner direction."
     },
     {
       "id": "court",
@@ -43,14 +43,14 @@
       "name": "Profile & Settings",
       "state": "Verified in browser",
       "observed": "Profile stats and activity load; Inbox contains challenge states. Settings is reachable. Log Out produced no visible confirmation in web; source uses React Native Alert.alert.",
-      "next": "Check logout on native iOS. Treat the web confirmation limitation separately from native launch readiness."
+      "next": "Web logout is a known owner-accepted limitation below the launch line. Owner separately reports native account deletion verified."
     },
     {
       "id": "onboarding",
       "name": "Fresh onboarding",
-      "state": "Blocked on test sign-in",
-      "observed": "The supplied fresh-account sign-in was rejected. The populated account succeeds against the same connected project.",
-      "next": "Owner checks the fresh test account. Do not reset credentials, recreate the account or infer onboarding quality from an authentication failure."
+      "state": "Verified in browser",
+      "observed": "Fresh test account creation and onboarding completed. Walked welcome, username/sport, Conroe city search, Sand Branch court selection, auto check-in explanation and Not Now for alerts. Landed on Home showing Sand Branch as the saved local court.",
+      "next": "Native location, background auto check-in and push permission prompts were not exercised. Owner screenshots provide additional native evidence but are not an independent retest."
     }
   ],
   "decisions": [
@@ -77,29 +77,46 @@
       "title": "Prioritize the launch",
       "answer": "Assess audit recommendations against the actual app and current guidance. Clearly distinguish critical launch work from improvements that can go below the line.",
       "status": "Owner direction"
+    },
+    {
+      "id": "D-20261022-05",
+      "title": "Known browser logout is below the launch line",
+      "answer": "Owner confirms browser logout is a known limitation and not important to the native end product. Do not make repairing web logout a launch prerequisite.",
+      "status": "Owner decided"
     }
   ],
   "questions": [
     {
       "id": "Q-CARD-01",
       "target": "home",
-      "title": "Which card interaction should change?",
-      "detail": "Identify Home’s local-court card, Explore’s court card, or a card within Court detail, then describe what tapping or expanding it should do. No replacement behavior has been approved.",
-      "status": "Awaiting owner direction"
+      "title": "Confirm the smallest active-visit clarity change",
+      "detail": "Owner supplied a mock with a persistent checked-in court header. Proposal: always expose the actual active court and Check Out; distinguish saved local court, browsed court and active visit; make switching an active visit to a different court explicit. Multiple saved courts and navigation changes are separate scope.",
+      "status": "Direction understood; exact implementation open"
     },
     {
       "id": "Q-ONBOARD-01",
       "target": "onboarding",
-      "title": "Fresh account ready for walkthrough?",
-      "detail": "The owner can verify the test account or sign in locally. No credentials belong in this record.",
-      "status": "Awaiting account access"
+      "title": "Native onboarding permission coverage",
+      "detail": "Browser walkthrough reached all onboarding steps using city search, Sand Branch court selection and Not Now for alerts. Auto check-in explicitly requires the App Store app. Native permission and background behavior remain separate device checks.",
+      "status": "Browser flow inspected; native scope separate"
     }
   ],
   "launch": [
     {
+      "level": "Before launch · recommended",
+      "title": "Active visit can disappear from Home’s apparent state",
+      "detail": "Owner encountered the confusion after visiting another court. Source confirms Home compares checkedInCourtId only with localCourt.id (HomeScreen.tsx:103–104) and its Check In calls checkIn(localCourt.id) (:124). AppContext.tsx:610–634 routes this through the atomic check_in operation, which closes the previous court visit. This explains a plausible accidental switch, but does not prove the cause or timing of the owner’s notification. Make the active court visible and switching intentional before launch. A full navigation redesign is not required.",
+      "sources": [
+        "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/components/HomeScreen.tsx#L103",
+        "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/context/AppContext.tsx#L610",
+        "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb/supabase/migrations/20260723034511_v2_behavior_rpcs_and_metrics.sql#L638",
+        "https://www.nngroup.com/articles/visibility-system-status/"
+      ]
+    },
+    {
       "level": "Needs verification",
       "title": "Core write paths and native behavior",
-      "detail": "Check-in, attendance, game creation/review, push, location permissions and purchases remain outside this read-only browser pass. There is not enough evidence here to call the app launch-ready."
+      "detail": "Check-in, attendance, game creation/review, push, location permissions and purchases remain outside this browser walkthrough. There is not enough evidence here to call the app launch-ready."
     },
     {
       "level": "Below the line",
@@ -110,6 +127,11 @@
       "level": "Below the line",
       "title": "A full project dashboard rebuild",
       "detail": "This compact record supports app work now. Rich reply persistence, a new project-management backend and replacing every mock are not required to start the card work."
+    },
+    {
+      "level": "Owner verified",
+      "title": "Avoid reopening completed work without contrary evidence",
+      "detail": "Owner reports native deletion, court creation and Mapbox working. Treat these as owner evidence rather than independent retests. Browser Map rendering was also independently observed."
     }
   ],
   "history": [
@@ -124,6 +146,29 @@
     {
       "date": "2026-10-22",
       "event": "Populated account inspected across Home, Court, Schedule, Compete, Explore, Profile and Settings. Fresh onboarding remains blocked by sign-in."
+    },
+    {
+      "date": "2026-10-22",
+      "event": "Owner supplied mobile evidence and described confusing an active visit with the saved local court. Source inspection confirmed the cross-court Home state mismatch. Owner marked browser logout below the launch line and reported deletion, Mapbox and court creation verified."
+    },
+    {
+      "date": "2026-10-22",
+      "event": "Fresh account created successfully after the earlier sign-in rejection. Onboarding progressed through name/sport, city search/court selection, native auto check-in explanation and alert choice."
+    },
+    {
+      "date": "2026-10-22",
+      "event": "Verified onboarding completion: fresh account landed on Home with the selected Sand Branch local court. No active visit, game, challenge or subscription was created."
+    }
+  ],
+  "verification_reports": [
+    {
+      "source": "Owner report, 2026-10-22",
+      "features": [
+        "Account deletion",
+        "Adding a court",
+        "Mapbox on native"
+      ],
+      "limits": "Reported as verified by the owner; not independently rerun in this browser pass. Screenshots include onboarding, court detail and the Apple sandbox subscription sheet. The subscription sheet alone does not prove entitlement completion or restore behavior."
     }
   ]
 }
