@@ -388,7 +388,7 @@
       "thread": "Docs",
       "state": "open",
       "title": "Findings page added to the working dashboard",
-      "summary": "New page /localcheck/findings.html where agents document each finding with evidence (verified or belief), root cause, a short diff, risk, device verification and PR and preview links. Every finding requires an annotated mobile-viewport screenshot (about 393x852) from the Vercel preview and an official-docs link with the supporting line quoted; without both it shows Incomplete and cannot be approved. F1 to F4 (back swipe, form drawers, small touch targets, small text) now carry both, from the Expo UI thread. F5 (website location wording) is still Incomplete. Copyable prompt and ADD-FINDING-PROMPT.md included.",
+      "summary": "New page /localcheck/findings.html where agents document each finding with evidence (verified or belief), root cause, a short diff, risk, device verification and PR and preview links. Every finding requires an annotated mobile-viewport screenshot (about 393x852) from the Vercel preview and an official-docs link with the supporting line quoted; without both it shows Incomplete and cannot be approved. F1 to F4 (back swipe, form drawers, small touch targets, small text) now carry both, from the Expo UI thread. F5 (website location wording) was completed by the App Store thread: two annotated 393x852 screenshots of the live privacy and support pages, app.json lines 145-147, quoted Apple App Review Guidelines 5.1.1 and Expo Location docs, and proposed website wording. All five findings are now complete. Copyable prompt and ADD-FINDING-PROMPT.md included.",
       "why": "You want findings audited externally before any work is green-lit, instead of agents wandering the repo. Status starts at proposed; only you move it to approved or rejected.",
       "basis": "Verified: page opened on the Vercel preview with screenshots. Finding contents come from the threads' own checks; each evidence row carries its own verified or belief mark.",
       "pr": {
@@ -407,6 +407,10 @@
         {
           "label": "Screenshot: Findings, phone",
           "url": "/localcheck/shots/findings-v3-phone-f1.png"
+        },
+        {
+          "label": "Screenshot: F5 on phone, text wrapped",
+          "url": "/localcheck/shots/findings-f5-phone-after.png"
         }
       ]
     },

@@ -106,7 +106,7 @@ function Detail({ f }: { f: Finding }) {
         </span>
       )}
       {(f.docs ?? []).length > 0 && (
-        <Table>
+        <Table className="table-fixed">
           <TableHeader>
             <TableRow>
               <TableHead>Official documentation</TableHead>
@@ -115,7 +115,7 @@ function Detail({ f }: { f: Finding }) {
           <TableBody>
             {(f.docs ?? []).map((d) => (
               <TableRow key={d.url}>
-                <TableCell className="whitespace-normal">
+                <TableCell className="wrap-anywhere whitespace-normal">
                   <a
                     className="font-medium underline underline-offset-2"
                     href={d.url}
@@ -133,7 +133,7 @@ function Detail({ f }: { f: Finding }) {
           </TableBody>
         </Table>
       )}
-      <Table>
+      <Table className="table-fixed">
         <TableHeader>
           <TableRow>
             <TableHead className="w-24">Basis</TableHead>
@@ -148,7 +148,7 @@ function Detail({ f }: { f: Finding }) {
                   {e.basis === "verified" ? "Verified" : "Belief"}
                 </Badge>
               </TableCell>
-              <TableCell className="whitespace-normal">
+              <TableCell className="wrap-anywhere whitespace-normal">
                 <span className="block font-mono text-xs break-all">
                   {e.kind}: {e.ref}
                 </span>
