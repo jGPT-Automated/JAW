@@ -409,6 +409,46 @@
           "url": "/localcheck/shots/findings-v3-phone-f1.png"
         }
       ]
+    },
+    {
+      "id": "f5-complete",
+      "time": "2026-10-22T17:58:00Z",
+      "thread": "App Store readiness",
+      "state": "done",
+      "title": "F5 completed: annotated mobile screenshots, Apple and Expo docs",
+      "basis": "Verified: pages loaded at 393x852 on 2026-10-22; doc quotes scraped from developer.apple.com and docs.expo.dev.",
+      "summary": "Added annotated privacy and support screenshots, the app.json lines for Always location and background mode, and quoted App Review Guidelines 5.1.1 and Expo Location docs.",
+      "why": "The page showed F5 as Incomplete without annotated mobile screenshots and quoted official docs.",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      },
+      "previews": [
+        {
+          "label": "Findings preview",
+          "url": "https://jaw-git-claude-localcheck-status-docs-jgpt-automated.vercel.app/localcheck/findings.html"
+        }
+      ],
+      "files": [
+        {
+          "path": "public/localcheck/data/findings.json",
+          "adds": 0,
+          "dels": 0,
+          "note": "F5 evidence, screenshots, docs"
+        },
+        {
+          "path": "public/localcheck/shots/f5-privacy-mobile.png",
+          "adds": 0,
+          "dels": 0,
+          "note": "new"
+        },
+        {
+          "path": "public/localcheck/shots/f5-support-mobile.png",
+          "adds": 0,
+          "dels": 0,
+          "note": "new"
+        }
+      ]
     }
   ]
 }

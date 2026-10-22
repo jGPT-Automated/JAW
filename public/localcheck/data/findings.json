@@ -309,22 +309,41 @@
       "updated": "2026-10-22",
       "evidence": [
         {
-          "kind": "screenshot",
-          "ref": "Live privacy policy (desktop screenshot, not a mobile viewport)",
-          "text": "Foreground-only location line, highlighted.",
           "basis": "verified",
-          "url": "/localcheck/shots/privacy-location.png"
+          "kind": "screenshot",
+          "ref": "https://localchecksports.com/privacy (scraped and loaded 2026-10-22)",
+          "text": "Privacy policy, Location: 'uses foreground precise location to find nearby courts'. No mention of background location or auto check-in.",
+          "url": "/localcheck/shots/f5-privacy-mobile.png"
         },
         {
+          "basis": "verified",
+          "kind": "screenshot",
+          "ref": "https://localchecksports.com/support (loaded 2026-10-22)",
+          "text": "Support page: 'Location is only used while the app is in use.'",
+          "url": "/localcheck/shots/f5-support-mobile.png"
+        },
+        {
+          "basis": "verified",
           "kind": "file",
-          "ref": "app.json",
-          "text": "The app requests Always location and background mode for auto check-in.",
-          "basis": "verified"
+          "ref": "LocalCheck_Expo app.json:145-147 on the PR #79 branch (lines 100-102 on main)",
+          "text": "locationAlwaysAndWhenInUsePermission and locationAlwaysPermission ask for Always location ('when the app is closed, your iPhone tells LocalCheck only when you arrive at or leave your local court'); isIosBackgroundLocationEnabled is true, which adds the location background mode."
+        },
+        {
+          "basis": "verified",
+          "kind": "file",
+          "ref": "LocalCheck_Expo docs/RELEASE.md, auto check-in (D35)",
+          "text": "App Review notes must say background location is used only for opt-in auto check-in at the player's one local court."
+        },
+        {
+          "basis": "belief",
+          "kind": "file",
+          "ref": "lib/autoCheckInModel.ts, services/autoCheckInService.ts",
+          "text": "That the geofence code keeps no location trail was not audited, so the suggested wording below depends on it."
         }
       ],
       "cause": "The policy and support page were written before background auto check-in. App Review compares the policy with the binary.",
       "fix": {
-        "summary": "Change the website text to say location is used in the background for auto check-in. The site is not in the Expo repo.",
+        "summary": "Update both web pages. Privacy policy Location line and the support answer 'Why does the app need my location?' should say: 'If you turn on auto check-in, LocalCheck uses background location only to detect when you arrive at or leave your one local court. It does not keep a location trail.' Only true if the geofence code behaves that way (belief, not audited). The site is not in the Expo repo.",
         "diff": null
       },
       "risk": "Submission blocker if left as is.",
@@ -335,12 +354,50 @@
       },
       "previews": [
         {
-          "label": "Screenshot: live privacy policy",
-          "url": "/localcheck/shots/privacy-location.png"
+          "label": "Live privacy policy",
+          "url": "https://localchecksports.com/privacy"
+        },
+        {
+          "label": "Live support page",
+          "url": "https://localchecksports.com/support"
         }
       ],
-      "screenshots": [],
-      "docs": []
+      "screenshots": [
+        {
+          "url": "/localcheck/shots/f5-privacy-mobile.png",
+          "caption": "Live privacy policy: foreground-only location line boxed in red",
+          "viewport": "393x852",
+          "annotated": true
+        },
+        {
+          "url": "/localcheck/shots/f5-support-mobile.png",
+          "caption": "Live support page: 'only used while the app is in use' boxed in red",
+          "viewport": "393x852",
+          "annotated": true
+        }
+      ],
+      "docs": [
+        {
+          "label": "Apple App Review Guidelines 5.1.1: Data Collection and Storage",
+          "url": "https://developer.apple.com/app-store/review/guidelines/#data-collection-and-storage",
+          "quote": "The privacy policy must clearly and explicitly: Identify what data, if any, the app/service collects, how it collects that data, and all uses of that data."
+        },
+        {
+          "label": "Apple App Review Guidelines 5.1.1: Location Services",
+          "url": "https://developer.apple.com/app-store/review/guidelines/#data-collection-and-storage",
+          "quote": "Use Location Services in your app only when it is directly relevant to the features and services provided by the app."
+        },
+        {
+          "label": "Expo Location: isIosBackgroundLocationEnabled",
+          "url": "https://docs.expo.dev/versions/latest/sdk/location/",
+          "quote": "isIosBackgroundLocationEnabled: A boolean to enable location in the UIBackgroundModes in Info.plist."
+        },
+        {
+          "label": "Expo Location: background location on iOS",
+          "url": "https://docs.expo.dev/versions/latest/sdk/location/",
+          "quote": "To be able to run background location on iOS, you need to add the location value to the UIBackgroundModes array in your app's Info.plist file."
+        }
+      ]
     }
   ]
 }
