@@ -62,8 +62,28 @@ export interface Decisions {
   version: string
   historical_audit_decisions: Decision[]
 }
+export interface WorkEntry {
+  id: string
+  time: string
+  thread: "Expo UI" | "App Store" | "Docs"
+  state: "open" | "ci-green" | "blocked" | "info" | "in-progress" | "replaced"
+  title: string
+  basis: string
+  summary: string
+  why: string
+  pr?: { label: string; url: string }
+  previews?: { label: string; url: string }[]
+  links?: { label: string; url: string }[]
+  files?: { path: string; adds: number; dels: number; note: string }[]
+  excerpt?: { file: string; lines: DiffLine[] }
+}
+export interface Worklog {
+  note: string
+  entries: WorkEntry[]
+}
 export interface Bundle {
   status: Status
+  worklog: Worklog
   files: Files
   decisions: Decisions
   prompts: Record<string, string>
@@ -83,10 +103,11 @@ async function getJson<T>(path: string): Promise<T> {
 
 export async function loadBundle(): Promise<Bundle> {
   if (window.__LC__) return window.__LC__
-  const [status, files, decisions] = await Promise.all([
+  const [status, files, decisions, worklog] = await Promise.all([
     getJson<Status>("data/status.json"),
     getJson<Files>("data/files.json"),
     getJson<Decisions>("data/decisions.json"),
+    getJson<Worklog>("data/worklog.json"),
   ])
   const prompts: Record<string, string> = {}
   await Promise.all(
@@ -95,7 +116,7 @@ export async function loadBundle(): Promise<Bundle> {
       prompts[p.file] = res.ok ? await res.text() : `Could not load agent/${p.file}`
     })
   )
-  return { status, files, decisions, prompts }
+  return { status, worklog, files, decisions, prompts }
 }
 
 export const REPO_URL = "https://github.com/jGPT-Automated/LocalCheck_Expo"

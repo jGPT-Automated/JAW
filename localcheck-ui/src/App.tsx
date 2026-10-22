@@ -11,16 +11,17 @@ import {
 import { LocalCheckNav } from "@/lc/nav"
 import { Button } from "@/components/ui/button"
 import { loadBundle, siteUrl, type Bundle } from "@/lc/data"
+import { WorklogTab } from "@/lc/worklog-tab"
 import { OverviewTab } from "@/lc/overview-tab"
 import { FilesTab } from "@/lc/files-tab"
 import { DecisionsTab } from "@/lc/decisions-tab"
 import { PromptsTab } from "@/lc/prompts-tab"
 
-const TABS = ["overview", "files", "decisions", "prompts"] as const
+const TABS = ["worklog", "overview", "files", "decisions", "prompts"] as const
 
 function initialTab() {
   const h = window.location.hash.replace("#", "")
-  return (TABS as readonly string[]).includes(h) ? h : "overview"
+  return (TABS as readonly string[]).includes(h) ? h : "worklog"
 }
 
 export function App() {
@@ -80,11 +81,15 @@ export function App() {
         {bundle && (
           <Tabs variant="underline" value={tab} onValueChange={onTab}>
             <TabsList aria-label="Status sections" wrapperClassName="max-w-full">
+              <TabsTrigger value="worklog">Work log</TabsTrigger>
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="files">Files &amp; diffs</TabsTrigger>
               <TabsTrigger value="decisions">Decisions</TabsTrigger>
               <TabsTrigger value="prompts">Prompts</TabsTrigger>
             </TabsList>
+            <TabsContent value="worklog" className="pt-6">
+              <WorklogTab worklog={bundle.worklog} />
+            </TabsContent>
             <TabsContent value="overview" className="pt-6">
               <OverviewTab status={bundle.status} />
             </TabsContent>

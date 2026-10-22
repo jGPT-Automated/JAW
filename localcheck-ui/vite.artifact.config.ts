@@ -19,6 +19,7 @@ function inlineData(): Plugin {
       for (const p of status.prompts) prompts[p.file] = read(`agent/${p.file}`)
       const bundle = {
         status,
+        worklog: JSON.parse(read("data/worklog.json")),
         files: JSON.parse(read("data/files.json")),
         decisions: JSON.parse(read("data/decisions.json")),
         prompts,

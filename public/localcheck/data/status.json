@@ -1,6 +1,6 @@
 {
   "updated": "2026-10-22",
-  "summary": "Expo UI audit numbers are re-verified and a tiny-text fix PR is next. App Store readiness PR #79 is green and ready for your review. The one submission blocker is the website location wording.",
+  "summary": "Expo UI is now on a gesture and navigation audit. App Store readiness PR #79 is green and ready for your review; the website location wording is the one submission blocker.",
   "legend": {
     "verified": "Checked directly (command output, test run, screenshot, or merged PR).",
     "belief": "Reported by a thread or inferred; not independently checked.",
@@ -12,7 +12,7 @@
       "id": "expo-ui",
       "name": "Expo UI improvements",
       "repo": "jGPT-Automated/LocalCheck_Expo",
-      "state": "Audit verified; tiny-text fix next",
+      "state": "Gesture and navigation audit in progress",
       "steps": [
         {
           "text": "Read AGENTS.md, skills, open branches and PRs",
@@ -30,14 +30,19 @@
           "note": "0 failures, 23 cases above baseline, mostly dense schedule heatmap cells (about 39x17pt) and 9 to 9.5px eyebrow text."
         },
         {
-          "text": "Tiny-text fix (nothing under 11px) with before and after screenshots",
+          "text": "Gesture and navigation audit (priority): swipe, dismiss, drawer and sheet behavior",
           "status": "open",
-          "note": "Decided; will open a PR for your review, not merged."
+          "note": "Reported by the thread: reading code, no findings yet."
+        },
+        {
+          "text": "Tiny-text fix (139 sizes raised to 11) on a branch, no PR yet",
+          "status": "belief",
+          "note": "Reported by the thread; no longer the priority."
         },
         {
           "text": "boxShadow change",
           "status": "open",
-          "note": "Only becomes a PR if iOS rendering can be checked."
+          "note": "Only a PR if iOS rendering can be checked."
         }
       ],
       "prs": []
@@ -164,9 +169,19 @@
     {
       "date": "2026-10-22",
       "text": "Expo UI: audit counts re-verified by grep; old counts retired. Tiny-text PR planned."
+    },
+    {
+      "date": "2026-10-22",
+      "text": "Work log added; Expo UI priority moved to gesture and navigation bugs."
     }
   ],
   "priorities": [
+    {
+      "id": "gestures",
+      "title": "Gesture and navigation bugs",
+      "detail": "Swipes that dismiss on scroll, swipeable drawers, bounce-back. New top priority.",
+      "track": "Expo UI"
+    },
     {
       "id": "loc-text",
       "title": "Fix website location wording",
