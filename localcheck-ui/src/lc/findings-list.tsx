@@ -33,6 +33,11 @@ const SEVERITY: Record<Severity, { label: string; variant: Variant }> = {
   low: { label: "Low", variant: "outline" },
   info: { label: "Info", variant: "outline" },
 }
+const statusBadge = (v: string) =>
+  STATUS[v as FindingStatus] ?? { label: v, variant: "outline" as Variant }
+const severityBadge = (v: string) =>
+  SEVERITY[v as Severity] ?? { label: v, variant: "outline" as Variant }
+
 const FILTERS = [
   "all",
   "proposed",
@@ -230,11 +235,11 @@ export function FindingsList({ findings }: { findings: Finding[] }) {
         <span className="flex flex-wrap items-center gap-2">
           <span className="font-mono text-xs text-muted-foreground">{f.id}</span>
           <Badge variant="outline">{f.area}</Badge>
-          <Badge variant={SEVERITY[f.severity].variant}>
-            {SEVERITY[f.severity].label}
+          <Badge variant={severityBadge(f.severity).variant}>
+            {severityBadge(f.severity).label}
           </Badge>
-          <Badge variant={STATUS[f.status].variant}>
-            {STATUS[f.status].label}
+          <Badge variant={statusBadge(f.status).variant}>
+            {statusBadge(f.status).label}
           </Badge>
           {missing(f).length > 0 && (
             <Badge variant="destructive">Incomplete</Badge>

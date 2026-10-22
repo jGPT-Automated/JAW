@@ -66,7 +66,7 @@ export interface WorkEntry {
   id: string
   time: string
   thread: "Expo UI" | "App Store" | "Docs"
-  state: "open" | "ci-green" | "blocked" | "info" | "in-progress" | "replaced"
+  state: "open" | "ci-green" | "blocked" | "info" | "in-progress" | "replaced" | "done"
   title: string
   basis: string
   summary: string

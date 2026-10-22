@@ -15,6 +15,9 @@ Use this when work changes in LocalCheck_Expo (a PR opens, CI changes, a fact is
 4. Components: every UI element must come from beui.dev or shadcn. No hand-coded components. If something is missing, find the closest beui or shadcn component and use it.
 5. Open or update one PR in JAW. Do not merge it.
 
+## Render check (required before you say anything is verified)
+From `localcheck-ui/`: `npm run build` then `npm run check` (needs Playwright and Chromium). It opens every /localcheck page at 393x852 and 1280x900, fails on any pageerror, console error, failed request, empty body or horizontal overflow, and clicks through from index.html to every other page. After the Vercel preview deploys, run `npm run check -- https://<preview-url> <outDir>` and attach screenshots. State which commit you tested. A data-only change (a new `state` value, a new field) can crash a page, so run it after data changes too.
+
 ## Steps
 1. Read `data/status.json`.
 2. Add a `worklog.json` entry for the change, then update `tracks[].steps`, `tracks[].prs`, `needs_you`, `priorities`, `summary`, `updated`, `log`.

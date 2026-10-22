@@ -453,6 +453,20 @@
           "note": "new"
         }
       ]
+    },
+    {
+      "id": "docs-crash-fix",
+      "time": "2026-10-22T18:15:00Z",
+      "thread": "Docs",
+      "state": "done",
+      "title": "Status page crash fixed; phone nav menu; render check added",
+      "summary": "The status page rendered a blank body because a worklog entry used state done, which the badge map did not know. Badge lookups now fall back for unknown values and done is a known state. On phone the nav is a visible menu instead of a hidden scrolling tab bar. New npm run check opens every /localcheck page at 393x852 and desktop, fails on page errors, console errors, empty bodies or horizontal overflow, and clicks through from index.html. It also caught 5px and 12px phone overflow on roadmap and audit, now fixed.",
+      "why": "An independent tester hit the crash clicking from index.html to status.html. My earlier checks did not cover the status page after the App Store thread added the done entry.",
+      "basis": "Verified: render check passes locally; it reproduced the crash on the deployed preview before the fix (see the commit and screenshots in the thread).",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      }
     }
   ]
 }

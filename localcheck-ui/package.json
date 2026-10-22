@@ -10,7 +10,8 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
-    "build:artifact": "vite build -c vite.artifact.config.ts"
+    "build:artifact": "vite build -c vite.artifact.config.ts",
+    "check": "node scripts/render-check.mjs"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0",

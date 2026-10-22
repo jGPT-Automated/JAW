@@ -26,7 +26,11 @@ const STATE: Record<
   info: { label: "Update", variant: "outline" },
   "in-progress": { label: "In progress", variant: "secondary" },
   replaced: { label: "Replaced", variant: "outline" },
+  done: { label: "Done", variant: "default" },
 }
+
+const stateBadge = (state: string) =>
+  STATE[state as WorkEntry["state"]] ?? { label: state, variant: "outline" as const }
 
 const FILTERS = ["All", "Expo UI", "App Store", "Docs"] as const
 
@@ -132,7 +136,7 @@ export function WorklogTab({ worklog }: { worklog: Worklog }) {
             {when(e.time)}
           </span>
           <Badge variant="outline">{e.thread}</Badge>
-          <Badge variant={STATE[e.state].variant}>{STATE[e.state].label}</Badge>
+          <Badge variant={stateBadge(e.state).variant}>{stateBadge(e.state).label}</Badge>
         </span>
         <span className="font-medium break-words">{e.title}</span>
       </span>

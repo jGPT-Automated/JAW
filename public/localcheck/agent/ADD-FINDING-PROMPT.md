@@ -53,4 +53,5 @@ Use this when you find a bug, risk or proposed change in LocalCheck_Expo (or the
 ## Steps
 1. Read `data/findings.json` and check the id is new.
 2. Append the finding, validate with `python3 -c "import json;json.load(open('public/localcheck/data/findings.json'))"`.
-3. Add a worklog line, commit, push, update the PR, open the preview, screenshot desktop and phone, attach them.
+3. Run the render check (`cd localcheck-ui && npm run check`); it must pass. Use only worklog states the page knows: open, ci-green, blocked, info, in-progress, replaced, done.
+4. Add a worklog line, commit, push, update the PR, open the preview, screenshot desktop and phone, attach them.
