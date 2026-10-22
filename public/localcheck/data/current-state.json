@@ -1,0 +1,129 @@
+{
+  "updated": "2026-10-22",
+  "revision": "d5d9ebcc3b9b833f7a25c639e444a8dc9b7bbfdb",
+  "scope": "Fresh GitHub main clone; connected local web preview at 430 × 932. Browser evidence only; not a native iPhone test or launch certification.",
+  "screens": [
+    {
+      "id": "home",
+      "name": "Home",
+      "state": "Verified in browser",
+      "observed": "Local court, live count, weekly court hours, locals, Check In, Here Now, Up Next, hourly activity and recent activity. Court arrow opens the full court screen.",
+      "next": "Keep the current behavior as the baseline. Card changes await the owner’s specific direction."
+    },
+    {
+      "id": "court",
+      "name": "Court detail",
+      "state": "Verified in browser",
+      "observed": "Live, Games, Players, Week and Info navigation. Live feed loads actual activity. Week shows planned visits and scheduled game markers.",
+      "next": "Week uses two-hour groups starting at 7 AM; Schedule uses one-hour slots. Clearer grouping labels are optional polish, not evidence of a timezone bug."
+    },
+    {
+      "id": "schedule",
+      "name": "Schedule",
+      "state": "Verified in browser",
+      "observed": "Rolling seven-day grid, court selector, hourly counts and game markers. Selecting a populated slot reveals the existing Going state and attendee. Add Times and Schedule Game entry points are present.",
+      "next": "Attendance, game creation, cancellation and multi-user updates still need write-path testing; viewing these screens does not verify those operations."
+    },
+    {
+      "id": "compete",
+      "name": "Compete",
+      "state": "Verified in browser",
+      "observed": "Populated local leaderboard with ELO. Log Game opens sport, court, date, opponent and score controls; submission is disabled until required input is supplied.",
+      "next": "Score submission and opponent review were not executed."
+    },
+    {
+      "id": "explore",
+      "name": "Explore",
+      "state": "Verified in browser",
+      "observed": "List mode loads the local court and another court as metric cards. After refreshing the browser, Map mode renders map tiles, court markers, zoom controls and Find Nearest Court. The earlier missing-key message was a stale preview, not a confirmed app defect.",
+      "next": "Native map gestures, location permission and nearest-court behavior still require testing; no location permission was granted during this pass."
+    },
+    {
+      "id": "profile",
+      "name": "Profile & Settings",
+      "state": "Verified in browser",
+      "observed": "Profile stats and activity load; Inbox contains challenge states. Settings is reachable. Log Out produced no visible confirmation in web; source uses React Native Alert.alert.",
+      "next": "Check logout on native iOS. Treat the web confirmation limitation separately from native launch readiness."
+    },
+    {
+      "id": "onboarding",
+      "name": "Fresh onboarding",
+      "state": "Blocked on test sign-in",
+      "observed": "The supplied fresh-account sign-in was rejected. The populated account succeeds against the same connected project.",
+      "next": "Owner checks the fresh test account. Do not reset credentials, recreate the account or infer onboarding quality from an authentication failure."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D-20261022-01",
+      "title": "Start from a fresh app clone",
+      "answer": "Use GitHub main as the starting point. Do not sync, merge or import older local working copies or their environment files.",
+      "status": "Owner decided"
+    },
+    {
+      "id": "D-20261022-02",
+      "title": "App work comes first",
+      "answer": "Document the current state in a bounded pass. Preserve useful interactive mocks; avoid turning documentation into a separate prerequisite project.",
+      "status": "Owner direction"
+    },
+    {
+      "id": "D-20261022-03",
+      "title": "Keep working evidence outside app source",
+      "answer": "Raw screenshots and drafts live in a sibling workbench folder. Publish concise, portable findings and decisions in the shared documentation site. Never publish credentials.",
+      "status": "Owner decided"
+    },
+    {
+      "id": "D-20261022-04",
+      "title": "Prioritize the launch",
+      "answer": "Assess audit recommendations against the actual app and current guidance. Clearly distinguish critical launch work from improvements that can go below the line.",
+      "status": "Owner direction"
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q-CARD-01",
+      "target": "home",
+      "title": "Which card interaction should change?",
+      "detail": "Identify Home’s local-court card, Explore’s court card, or a card within Court detail, then describe what tapping or expanding it should do. No replacement behavior has been approved.",
+      "status": "Awaiting owner direction"
+    },
+    {
+      "id": "Q-ONBOARD-01",
+      "target": "onboarding",
+      "title": "Fresh account ready for walkthrough?",
+      "detail": "The owner can verify the test account or sign in locally. No credentials belong in this record.",
+      "status": "Awaiting account access"
+    }
+  ],
+  "launch": [
+    {
+      "level": "Needs verification",
+      "title": "Core write paths and native behavior",
+      "detail": "Check-in, attendance, game creation/review, push, location permissions and purchases remain outside this read-only browser pass. There is not enough evidence here to call the app launch-ready."
+    },
+    {
+      "level": "Below the line",
+      "title": "Unifying Week and Schedule labels",
+      "detail": "Different aggregation is confirmed in source. Better range labels can reduce confusion; the observed difference alone is not a critical defect."
+    },
+    {
+      "level": "Below the line",
+      "title": "A full project dashboard rebuild",
+      "detail": "This compact record supports app work now. Rich reply persistence, a new project-management backend and replacing every mock are not required to start the card work."
+    }
+  ],
+  "history": [
+    {
+      "date": "2026-10-22",
+      "event": "Owner chose a fresh GitHub clone and separate app/docs/workbench folders."
+    },
+    {
+      "date": "2026-10-22",
+      "event": "Public runtime configuration saved locally; connected preview launched from fresh app main."
+    },
+    {
+      "date": "2026-10-22",
+      "event": "Populated account inspected across Home, Court, Schedule, Compete, Explore, Profile and Settings. Fresh onboarding remains blocked by sign-in."
+    }
+  ]
+}
