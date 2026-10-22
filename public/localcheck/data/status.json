@@ -245,6 +245,12 @@
       "title": "Next Home / Schedule PR (#78)",
       "file": "PR78-PROMPT.md",
       "summary": "Developer handoff for the Home Overview, Activity and Schedule redesign."
+    },
+    {
+      "id": "finding",
+      "title": "Add a finding",
+      "file": "ADD-FINDING-PROMPT.md",
+      "summary": "Document a finding and proposed fix on the Findings page, in the same format."
     }
   ]
 }

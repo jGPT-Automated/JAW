@@ -6,6 +6,7 @@ export const NAV = [
   { value: "roadmap.html", label: "Roadmap" },
   { value: "screens.html", label: "Screens" },
   { value: "audit.html", label: "PR77 audit" },
+  { value: "findings.html", label: "Findings" },
   { value: "status.html", label: "Status & docs" },
 ]
 

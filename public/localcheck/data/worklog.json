@@ -312,7 +312,7 @@
       "title": "PR #80: back is the edge swipe only; form drawers drag by the grabber only",
       "summary": "Turns off fullScreenGestureEnabled on detail screens so only the left-edge swipe goes back, and adds a contentPanning prop so form drawers (Log game, I'll be there, Pick a court) are dragged by the grabber only.",
       "why": "You reported swipes that pop the screen while scrolling and drawers that move when they should not. Cause 1: fullScreenGestureEnabled: true on every detail screen made a sideways swipe anywhere pop the screen and cancel scrolls; PR #72 has had the same fix open since Oct 15 and was never merged, so main still has the bug. Cause 2: gorhom content panning was on for every drawer, so touching anywhere in a form dragged it down, then it snapped back.",
-      "basis": "Verified on the web build with a mouse drag in the Log game form (a mouse stands in for touch, not a phone test): on main the drawer moved 183px and snapped back; with the fix it stays put and the grabber still moves it. Typecheck and docs check pass. Belief: edge-swipe back is native iOS only and needs a check on your phone in the preview build.",
+      "basis": "Verified on the web build with a mouse drag in the Log game form (a mouse stands in for touch, not a phone test): on main the drawer moved 183px and snapped back; with the fix it stays put and the grabber still moves it. Typecheck and docs check pass. Belief: edge-swipe back is native iOS only and needs a check on your phone in the preview build. PR #80 checks (quality, docs, Vercel build) are green. The Vercel preview loads but stops at sign-in, so the drawer proof is the earlier before/after test on a build of the same code. The Expo Go preview publish was still running at 17:37 UTC; check edge-swipe back through it.",
       "pr": {
         "label": "LocalCheck_Expo PR #80",
         "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/80"
@@ -329,6 +329,10 @@
         {
           "label": "Screenshot: after (drawer stays)",
           "url": "/localcheck/shots/content-drag-after.png"
+        },
+        {
+          "label": "Screenshot: Vercel preview sign-in",
+          "url": "/localcheck/shots/pr80-vercel-preview.png"
         }
       ],
       "files": [
@@ -377,6 +381,30 @@
           }
         ]
       }
+    },
+    {
+      "id": "docs-findings",
+      "time": "2026-10-22T17:45:00Z",
+      "thread": "Docs",
+      "state": "open",
+      "title": "Findings page added to the working dashboard",
+      "summary": "New page /localcheck/findings.html where agents document each finding with evidence (verified or belief), root cause, a short diff, risk, device verification and PR and preview links. Backfilled F1 to F8 from the Expo UI and App Store threads, with a copyable prompt and ADD-FINDING-PROMPT.md.",
+      "why": "You want findings audited externally before any work is green-lit, instead of agents wandering the repo. Status starts at proposed; only you move it to approved or rejected.",
+      "basis": "Verified: page opened on the Vercel preview with screenshots. Finding contents come from the threads' own checks; each evidence row carries its own verified or belief mark.",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      },
+      "previews": [
+        {
+          "label": "Findings page",
+          "url": "/localcheck/findings.html"
+        },
+        {
+          "label": "Add-a-finding prompt",
+          "url": "/localcheck/agent/ADD-FINDING-PROMPT.md"
+        }
+      ]
     }
   ]
 }

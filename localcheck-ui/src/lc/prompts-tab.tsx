@@ -41,7 +41,7 @@ export function PromptsTab({
                   <CodeBlockCopyButton value={prompts[p.file] ?? ""} />
                 </CodeBlockActions>
               </CodeBlockHeader>
-              <CodeBlockContent wrap className="max-h-80">
+              <CodeBlockContent wrap className="max-h-80 [&>code]:grid-cols-[minmax(0,1fr)] data-wrap:wrap-anywhere">
                 {prompts[p.file] ?? ""}
               </CodeBlockContent>
             </CodeBlock>

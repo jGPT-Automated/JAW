@@ -13,6 +13,6 @@ export default defineConfig({
     outDir: "../public/localcheck",
     emptyOutDir: false,
     assetsDir: "ui/assets",
-    rollupOptions: { input: resolve(import.meta.dirname, "status.html") },
+    rollupOptions: { input: [resolve(import.meta.dirname, "status.html"), resolve(import.meta.dirname, "findings.html")] },
   },
 })
