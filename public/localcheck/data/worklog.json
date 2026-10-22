@@ -59,11 +59,11 @@
         },
         {
           "label": "Screenshot: web preview sign-in",
-          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/pr79-web-preview-sign-in.png"
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/dbd348853a93afe47ddfbdf22fe674e4a0648e9a/docs/runbooks/app-store-evidence/pr79-web-preview-sign-in.png"
         },
         {
           "label": "Screenshot: live privacy policy, foreground-only line",
-          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/live-privacy-policy-foreground-location.png"
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/dbd348853a93afe47ddfbdf22fe674e4a0648e9a/docs/runbooks/app-store-evidence/privacy-location.png"
         }
       ],
       "files": [
@@ -296,11 +296,11 @@
       "previews": [
         {
           "label": "Screenshot: web preview sign-in",
-          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/pr79-web-preview-sign-in.png"
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/dbd348853a93afe47ddfbdf22fe674e4a0648e9a/docs/runbooks/app-store-evidence/pr79-web-preview-sign-in.png"
         },
         {
           "label": "Screenshot: live privacy policy",
-          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/live-privacy-policy-foreground-location.png"
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/dbd348853a93afe47ddfbdf22fe674e4a0648e9a/docs/runbooks/app-store-evidence/privacy-location.png"
         }
       ]
     },
