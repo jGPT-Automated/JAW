@@ -4,7 +4,7 @@
   "findings": [
     {
       "id": "F1",
-      "title": "Full-screen back swipe pops screens mid-scroll",
+      "title": "A sideways swipe anywhere on a detail screen pops it, mid-scroll",
       "area": "Gestures",
       "severity": "high",
       "status": "proposed",
@@ -12,27 +12,40 @@
       "evidence": [
         {
           "kind": "file",
-          "ref": "app/_layout.tsx (detailScreenOptions)",
-          "text": "fullScreenGestureEnabled: true for court, run, player, notifications, match, challenge, settings and localplus screens.",
+          "ref": "app/_layout.tsx:75-76",
+          "text": "gestureEnabled: true, fullScreenGestureEnabled: true on court, run, player, notifications, match, challenge, settings and localplus.",
           "basis": "verified"
         },
         {
           "kind": "file",
-          "ref": "react-native-screens issue 3161",
-          "text": "The full-width pan cancels scroll touches.",
+          "ref": "node_modules/react-native-screens/ios/RNSScreenStack.mm:79 and :1254",
+          "text": "Installed react-native-screens 4.16.0 honours the prop on iOS 26: line 79 disables the native recognizer, line 1254 returns topScreen.fullScreenSwipeEnabled.",
+          "basis": "verified"
+        },
+        {
+          "kind": "screenshot",
+          "ref": "F1-back-swipe-zone-main.png",
+          "text": "Web cannot simulate the iOS back gesture (native UIKit only), so this marks the zone the code enables. It is a zone diagram, not a reproduction.",
+          "basis": "verified",
+          "url": "/localcheck/shots/f1-back-swipe-zone-main.png"
+        },
+        {
+          "kind": "command",
+          "ref": "react-native-screens issue 3161 and PR 3173",
+          "text": "Issue reports stuck scroll inertia with the prop on, not a pop; the pop comes from the prop's documented behaviour. PR 3173 (Sep 2025) makes the full-screen swipe the native default on iOS 26 and ignores the prop in newer versions, so behaviour changes after a dependency bump (open Dependabot PR #69).",
           "basis": "belief",
           "url": "https://github.com/software-mansion/react-native-screens/issues/3161"
         },
         {
           "kind": "command",
           "ref": "PR #80 checks",
-          "text": "Quality, docs and Vercel build green. The Vercel preview loads but stops at sign-in, so the drawer proof is the earlier before/after test on a build of the same code. The Expo Go preview publish was still running at 17:37 UTC.",
+          "text": "Quality, docs and Vercel build green. Expo Go preview publish was still running at 17:37 UTC. PR #72 holds the same fix, open since Oct 15, never merged.",
           "basis": "verified"
         }
       ],
-      "cause": "fullScreenGestureEnabled runs a full-width pan on every detail screen, so a sideways swipe anywhere pops the screen and cancels scrolling. The iOS standard is the left-edge swipe.",
+      "cause": "The app opts into a full-width pan on every detail screen; the documented default is off.",
       "fix": {
-        "summary": "Turn the full-screen gesture off; the left-edge swipe and the back icon still work. PR #72 holds the same change and was never merged.",
+        "summary": "Turn the full-screen gesture off (PR #80, same change as open PR #72, which was never merged). Risk is low: the edge swipe and back icon still work.",
         "diff": {
           "file": "app/_layout.tsx",
           "lines": [
@@ -55,7 +68,7 @@
         }
       },
       "risk": "Low. Back by edge swipe and by the back icon are unchanged.",
-      "verify": "On a phone in the PR preview build: swipe from the left edge goes back; a sideways swipe in the middle of a scrolling screen does not. Belief until then; the web build cannot test it. Use the PR's Expo Go preview.",
+      "verify": "On a phone in the PR's Expo Go preview: the edge swipe goes back; a mid-screen sideways swipe on the court page does not. Belief until then.",
       "pr": {
         "label": "LocalCheck_Expo PR #80",
         "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/80"
@@ -66,8 +79,21 @@
           "url": "https://localcheck-app-preview-git-claude-project-ecd1c5-jgpt-automated.vercel.app"
         }
       ],
-      "screenshots": [],
-      "docs": []
+      "screenshots": [
+        {
+          "url": "/localcheck/shots/f1-back-swipe-zone-main.png",
+          "caption": "Red zones: left edge strip is the iOS standard; the big box is what the code enables",
+          "viewport": "393x852",
+          "annotated": true
+        }
+      ],
+      "docs": [
+        {
+          "label": "React Navigation Native Stack: fullScreenGestureEnabled",
+          "url": "https://reactnavigation.org/docs/native-stack-navigator",
+          "quote": "Whether the gesture to dismiss should work on the whole screen. ... Defaults to false."
+        }
+      ]
     },
     {
       "id": "F2",
@@ -80,37 +106,30 @@
         {
           "kind": "file",
           "ref": "components/sheet/AppBottomSheetModal.tsx",
-          "text": "gorhom content panning left on for every drawer.",
+          "text": "Did not set enableContentPanningGesture, whose default is true.",
           "basis": "verified"
         },
         {
           "kind": "file",
-          "ref": "app/(tabs)/schedule.tsx; components/game/LogGameSheet.tsx",
-          "text": "Form drawers (I'll be there, Pick a court, Log game) hold a plain ScrollView or KeyboardAwareScrollView.",
+          "ref": "app/(tabs)/schedule.tsx:434 and :547",
+          "text": "FormSheet drawers hold a plain ScrollView; the Log game form has its own scroll view.",
           "basis": "verified"
         },
         {
           "kind": "command",
           "ref": "Web gesture test, Log game drawer, 393x852, mouse drag 200px inside the form",
-          "text": "main: drawer title y 92 to 275 (moved 183px), then back to 92. Branch: stays at 92. Grabber drag still moves it.",
+          "text": "main: drawer top moved 183px down mid-drag and returned on release. With the fix it moved 0px. Grabber drag still moves it on both builds. A mouse stands in for touch.",
           "basis": "verified",
-          "url": "/localcheck/shots/content-drag-before.png"
-        },
-        {
-          "kind": "screenshot",
-          "ref": "content-drag-after.png",
-          "text": "Drawer stays put with the fix. A mouse stands in for touch, so this is not a phone test.",
-          "basis": "verified",
-          "url": "/localcheck/shots/content-drag-after.png"
+          "url": "/localcheck/shots/f2-drawer-drag-before.png"
         },
         {
           "kind": "command",
           "ref": "PR #80 checks",
-          "text": "Quality, docs and Vercel build green. The Vercel preview loads but stops at sign-in, so the drawer proof is the earlier before/after test on a build of the same code. The Expo Go preview publish was still running at 17:37 UTC.",
+          "text": "Quality, docs and Vercel build green. The Vercel preview stops at sign-in, so the drawer proof is this test on a build of the same code.",
           "basis": "verified"
         }
       ],
-      "cause": "Content panning is enabled on every drawer, so touching anywhere in a form drags it down, then it snaps back up.",
+      "cause": "Content panning is on for forms that should only move by the grabber.",
       "fix": {
         "summary": "New contentPanning prop on AppBottomSheetModal; form drawers pass false so only the grabber row drags. Scrolling and dynamic drawers are unchanged.",
         "diff": {
@@ -135,7 +154,7 @@
         }
       },
       "risk": "Low. Form drawers dismiss by grabber drag, tap-out or swipe down from the grabber only.",
-      "verify": "On a phone: open Log game and try to drag from inside the form (should not move); drag the grabber (should move). Belief until then. Use the PR's Expo Go preview.",
+      "verify": "On a phone: open Log game, drag from inside the form (should not move), then drag the grabber (should move). Belief until then.",
       "pr": {
         "label": "LocalCheck_Expo PR #80",
         "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/80"
@@ -147,151 +166,142 @@
         },
         {
           "label": "Screenshot: before",
-          "url": "/localcheck/shots/content-drag-before.png"
+          "url": "/localcheck/shots/f2-drawer-drag-before.png"
         },
         {
           "label": "Screenshot: after",
-          "url": "/localcheck/shots/content-drag-after.png"
+          "url": "/localcheck/shots/f2-drawer-drag-after.png"
         }
       ],
-      "screenshots": [],
-      "docs": []
+      "screenshots": [
+        {
+          "url": "/localcheck/shots/f2-drawer-drag-before.png",
+          "caption": "main: drawer dragged down from inside the form",
+          "viewport": "393x852",
+          "annotated": true
+        },
+        {
+          "url": "/localcheck/shots/f2-drawer-drag-after.png",
+          "caption": "PR #80: drawer stays put",
+          "viewport": "393x852",
+          "annotated": true
+        }
+      ],
+      "docs": [
+        {
+          "label": "gorhom Bottom Sheet props: enableContentPanningGesture",
+          "url": "https://gorhom.dev/react-native-bottom-sheet/props",
+          "quote": "Enable content panning gesture interaction. (default true; enableHandlePanningGesture default true)"
+        }
+      ]
     },
     {
       "id": "F3",
-      "title": "Same back-swipe fix sits unmerged in PR #72 since Oct 15",
-      "area": "Process",
-      "severity": "medium",
-      "status": "proposed",
-      "updated": "2026-10-22",
-      "evidence": [
-        {
-          "kind": "file",
-          "ref": "PR #72",
-          "text": "Opened Oct 15 with fullScreenGestureEnabled: false; not merged, so main still has the bug.",
-          "basis": "verified",
-          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/72"
-        }
-      ],
-      "cause": "The fix was proposed but never reviewed or merged.",
-      "fix": {
-        "summary": "Merge PR #80, which includes the same change, then close PR #72.",
-        "diff": null
-      },
-      "risk": "Low. Two PRs touch app/_layout.tsx; merge one only.",
-      "verify": "After merging #80, confirm main has fullScreenGestureEnabled: false in app/_layout.tsx.",
-      "pr": {
-        "label": "LocalCheck_Expo PR #72",
-        "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/72"
-      },
-      "previews": [],
-      "screenshots": [],
-      "docs": []
-    },
-    {
-      "id": "F4",
-      "title": "main is above its own visual-QA baseline",
-      "area": "Typography",
+      "title": "Schedule heatmap cells are under Apple's minimum touch size",
+      "area": "Touch targets",
       "severity": "medium",
       "status": "proposed",
       "updated": "2026-10-22",
       "evidence": [
         {
           "kind": "command",
-          "ref": "node scripts/visual-qa/run.mjs on main d5d9ebc",
-          "text": "0 failures, 23 screen/size cases above baseline.json: schedule heatmap cells about 39x17pt, 9 to 9.5px eyebrow text, home hour-chart targets 18px wide.",
+          "ref": "visual-qa on main d5d9ebc",
+          "text": "smallTarget count 105 vs baseline 58; the 105 cells are about 41x25pt.",
           "basis": "verified"
+        },
+        {
+          "kind": "screenshot",
+          "ref": "F3-small-targets-schedule.png",
+          "text": "105 cells outlined in red on the Schedule screen.",
+          "basis": "verified",
+          "url": "/localcheck/shots/f3-small-targets-schedule.png"
         }
       ],
-      "cause": "Stale baseline or recent UI work added small text and small targets.",
+      "screenshots": [
+        {
+          "url": "/localcheck/shots/f3-small-targets-schedule.png",
+          "caption": "105 heatmap cells (red) are about 41x25pt; Apple: 44x44 default, 28x28 minimum",
+          "viewport": "393x852",
+          "annotated": true
+        }
+      ],
+      "docs": [
+        {
+          "label": "Apple HIG: Accessibility",
+          "url": "https://developer.apple.com/design/human-interface-guidelines/accessibility",
+          "quote": "iOS default control size 44x44 pt; minimum 28x28 pt."
+        }
+      ],
+      "cause": "Dense by design (7 columns x 15 rows on one screen). Height 25pt is below even the 28pt minimum.",
       "fix": {
-        "summary": "Needs your call: raise text and heatmap cell size, or accept and reset the baseline.",
+        "summary": "Needs your call on cell height or a row count change. hitSlop would make neighbouring cells overlap, so it is not proposed.",
         "diff": null
       },
-      "risk": "A visible design change if sizes go up.",
-      "verify": "Re-run node scripts/visual-qa/run.mjs; expect 0 cases above baseline after the decision.",
-      "previews": [],
-      "screenshots": [],
-      "docs": []
+      "risk": "Visible layout change on the Schedule screen.",
+      "verify": "Re-run visual-qa after the decision; smallTarget should return to baseline.",
+      "previews": []
     },
     {
-      "id": "F5",
-      "title": "139 font sizes under 11px",
+      "id": "F4",
+      "title": "Text under Apple's 11pt minimum",
       "area": "Typography",
-      "severity": "low",
+      "severity": "medium",
       "status": "proposed",
       "updated": "2026-10-22",
       "evidence": [
         {
           "kind": "grep",
-          "ref": "font sizes under 11 in app and components",
-          "text": "139 sites.",
+          "ref": "fontSize under 11 in app/ and components/",
+          "text": "139 values.",
           "basis": "verified"
+        },
+        {
+          "kind": "screenshot",
+          "ref": "F4-small-text-court.png",
+          "text": "16 text runs at 7.5 to 10.5px on the court screen.",
+          "basis": "verified",
+          "url": "/localcheck/shots/f4-small-text-court.png"
+        },
+        {
+          "kind": "screenshot",
+          "ref": "F4-small-text-schedule.png",
+          "text": "18 text runs on the Schedule screen.",
+          "basis": "verified",
+          "url": "/localcheck/shots/f4-small-text-schedule.png"
         }
       ],
-      "cause": "Small eyebrow and caption sizes accumulated.",
+      "screenshots": [
+        {
+          "url": "/localcheck/shots/f4-small-text-court.png",
+          "caption": "Court screen: 16 runs, 7.5 to 10.5px",
+          "viewport": "393x852",
+          "annotated": true
+        },
+        {
+          "url": "/localcheck/shots/f4-small-text-schedule.png",
+          "caption": "Schedule screen: 18 runs",
+          "viewport": "393x852",
+          "annotated": true
+        }
+      ],
+      "docs": [
+        {
+          "label": "Apple HIG: Typography",
+          "url": "https://developer.apple.com/design/human-interface-guidelines/typography",
+          "quote": "iOS default text size 17 pt; minimum 11 pt."
+        }
+      ],
+      "cause": "Small eyebrow and caption sizes accumulated across screens.",
       "fix": {
-        "summary": "A parked local change raises all to 11. It cut off the court name at 375px until the On court label spacing was tightened (qa:visual 8 failures, then 0). Not yet a PR.",
+        "summary": "Raise to 11. A parked local change did: it cut off the court name at 375px until the On court label spacing was tightened (qa:visual 8 failures, then 0). Not yet a PR.",
         "diff": null
       },
       "risk": "Visible design change across screens; needs your sign-off.",
-      "verify": "qa:visual at 3 phone sizes, plus before/after screenshots in the PR.",
-      "previews": [],
-      "screenshots": [],
-      "docs": []
+      "verify": "qa:visual at 3 phone sizes plus before/after mobile screenshots in the PR.",
+      "previews": []
     },
     {
-      "id": "F6",
-      "title": "Audit counts that are not defects",
-      "area": "Performance",
-      "severity": "info",
-      "status": "proposed",
-      "updated": "2026-10-22",
-      "evidence": [
-        {
-          "kind": "grep",
-          "ref": "Platform.OS",
-          "text": "43 uses on main.",
-          "basis": "verified"
-        },
-        {
-          "kind": "grep",
-          "ref": "shadow*",
-          "text": "33 lines, about 9 style blocks.",
-          "basis": "verified"
-        },
-        {
-          "kind": "grep",
-          "ref": "core Animated",
-          "text": "71 uses in 15 files.",
-          "basis": "verified"
-        },
-        {
-          "kind": "grep",
-          "ref": "expo-image",
-          "text": "0 uses; 6 React Native Image sites.",
-          "basis": "verified"
-        },
-        {
-          "kind": "grep",
-          "ref": "Gesture.Pan / Dimensions.get",
-          "text": "1 (Toast) and 2.",
-          "basis": "verified"
-        }
-      ],
-      "cause": "None found. These are counts, not bugs. The earlier numbers (53 / 38 / 21 / 5 / 8) were wrong or stale.",
-      "fix": {
-        "summary": "No change. Moving to expo-image adds a native dependency and needs a new TestFlight binary. A boxShadow conversion cannot be checked on iOS in this environment.",
-        "diff": null
-      },
-      "risk": "None for no change.",
-      "verify": "Re-run the greps on main to reproduce the counts.",
-      "previews": [],
-      "screenshots": [],
-      "docs": []
-    },
-    {
-      "id": "F7",
+      "id": "F5",
       "title": "Website says foreground-only location; the app uses Always",
       "area": "App Store",
       "severity": "high",
@@ -300,7 +310,7 @@
       "evidence": [
         {
           "kind": "screenshot",
-          "ref": "Live privacy policy",
+          "ref": "Live privacy policy (desktop screenshot, not a mobile viewport)",
           "text": "Foreground-only location line, highlighted.",
           "basis": "verified",
           "url": "/localcheck/shots/privacy-location.png"
@@ -329,32 +339,6 @@
           "url": "/localcheck/shots/privacy-location.png"
         }
       ],
-      "screenshots": [],
-      "docs": []
-    },
-    {
-      "id": "F8",
-      "title": "Not checked yet: nested horizontal scrollers and Toast pan",
-      "area": "Gestures",
-      "severity": "info",
-      "status": "proposed",
-      "updated": "2026-10-22",
-      "evidence": [
-        {
-          "kind": "grep",
-          "ref": "Gesture.Pan",
-          "text": "Only one site, in Toast. Not yet tested against scrolling.",
-          "basis": "belief"
-        }
-      ],
-      "cause": "Unknown. Listed so nobody assumes these were audited.",
-      "fix": {
-        "summary": "Audit and test; add a finding for anything real.",
-        "diff": null
-      },
-      "risk": "Unknown.",
-      "verify": "To be written with the audit.",
-      "previews": [],
       "screenshots": [],
       "docs": []
     }
