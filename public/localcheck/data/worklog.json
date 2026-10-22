@@ -1,0 +1,472 @@
+{
+  "note": "Newest entries are added by the docs thread on every update. Times are UTC.",
+  "entries": [
+    {
+      "id": "docs-status-v1",
+      "time": "2026-10-22T16:56:39Z",
+      "thread": "Docs",
+      "state": "replaced",
+      "title": "Status page added to JAW",
+      "basis": "Verified: commit d239fee on the PR #7 branch.",
+      "summary": "First status page and data file under /localcheck/, hand-written HTML in the style of the existing working file.",
+      "why": "You asked for tracking and docs in JAW (no repo named JAWS exists; JAW already hosts /localcheck/). Replaced two commits later because hand-written components break your new rule.",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      },
+      "previews": [
+        {
+          "label": "Vercel preview",
+          "url": "https://jaw-git-claude-localcheck-status-docs-jgpt-automated.vercel.app/localcheck/status.html"
+        }
+      ],
+      "files": [
+        {
+          "path": "public/localcheck/status.html",
+          "adds": 14,
+          "dels": 0,
+          "note": "later replaced by the built React page"
+        },
+        {
+          "path": "public/localcheck/data/status.json",
+          "adds": 0,
+          "dels": 0,
+          "note": "single data source, still used"
+        }
+      ]
+    },
+    {
+      "id": "appstore-pr79",
+      "time": "2026-10-22T16:57:26Z",
+      "thread": "App Store",
+      "state": "ci-green",
+      "title": "PR #79: App Store readiness config, privacy manifest, runbook",
+      "basis": "Verified: file list and line counts read from GitHub; preview links from the PR comments. CI green is as reported by the thread. Web preview opened in a browser by the thread; sign-in renders. Privacy manifest and permission prompts cannot show in a web preview and need a device build (belief until then).",
+      "summary": "Removes an invalid app.json key, declares the data the app collects in the privacy manifest, and adds a submission runbook with listing text and review notes.",
+      "why": "expo-doctor failed 17/18 on a key nothing reads, and the privacy manifest listed only location and diagnostics while the app also collects email, name, user id, purchase history, device id and gameplay content. App Review compares the manifest and your App Store Connect answers with the binary.",
+      "pr": {
+        "label": "LocalCheck_Expo PR #79",
+        "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/79"
+      },
+      "previews": [
+        {
+          "label": "Vercel preview",
+          "url": "https://localcheck-app-preview-git-claude-project-583ca9-jgpt-automated.vercel.app"
+        },
+        {
+          "label": "Expo Go preview",
+          "url": "https://expo.dev/projects/9c906173-0258-45a9-a3fe-786cda373c66/updates/ff55a3a4-39e1-4a2e-af0f-2300c77681f3"
+        },
+        {
+          "label": "Screenshot: web preview sign-in",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/dbd348853a93afe47ddfbdf22fe674e4a0648e9a/docs/runbooks/app-store-evidence/pr79-web-preview-sign-in.png"
+        },
+        {
+          "label": "Screenshot: live privacy policy, foreground-only line",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/dbd348853a93afe47ddfbdf22fe674e4a0648e9a/docs/runbooks/app-store-evidence/privacy-location.png"
+        }
+      ],
+      "files": [
+        {
+          "path": "app.json",
+          "adds": 48,
+          "dels": 3,
+          "note": "privacy manifest entries added; ios.buildProperties removed (expo-doctor 18/18)"
+        },
+        {
+          "path": "docs/runbooks/APP_STORE_SUBMISSION.md",
+          "adds": 152,
+          "dels": 0,
+          "note": "listing text, privacy answers, age rating, review notes; each claim marked verified or belief"
+        },
+        {
+          "path": "docs/CURRENT_STATE.md",
+          "adds": 9,
+          "dels": 0,
+          "note": "records findings and the newest EAS iOS build 1.0.4 (45)"
+        },
+        {
+          "path": "docs/RELEASE.md",
+          "adds": 4,
+          "dels": 0,
+          "note": "points to the runbook"
+        }
+      ],
+      "excerpt": {
+        "file": "app.json",
+        "lines": [
+          {
+            "id": "e1",
+            "type": "context",
+            "content": "          {"
+          },
+          {
+            "id": "e2",
+            "type": "added",
+            "content": "            \"NSPrivacyCollectedDataType\": \"NSPrivacyCollectedDataTypeEmailAddress\","
+          },
+          {
+            "id": "e3",
+            "type": "added",
+            "content": "            \"NSPrivacyCollectedDataTypeLinked\": true,"
+          },
+          {
+            "id": "e4",
+            "type": "added",
+            "content": "            \"NSPrivacyCollectedDataTypeTracking\": false,"
+          },
+          {
+            "id": "e5",
+            "type": "context",
+            "content": "          ... five more entries added the same way"
+          },
+          {
+            "id": "e6",
+            "type": "removed",
+            "content": "      \"buildProperties\": {"
+          },
+          {
+            "id": "e7",
+            "type": "removed",
+            "content": "        \"privacyManifestAggregationEnabled\": true"
+          },
+          {
+            "id": "e8",
+            "type": "removed",
+            "content": "      }"
+          }
+        ]
+      }
+    },
+    {
+      "id": "appstore-blocker",
+      "time": "2026-10-22T16:57:31Z",
+      "thread": "App Store",
+      "state": "blocked",
+      "title": "Blocker found: website location wording",
+      "basis": "Verified by the thread against the live pages and app.json.",
+      "summary": "The live privacy policy and support page say location is foreground-only, but the app asks for Always location and background mode for auto check-in.",
+      "why": "App Review compares the policy with the binary. The website is not in the Expo repo, so only you can change it. Replacement wording is in the runbook.",
+      "links": [
+        {
+          "label": "Runbook (PR #79)",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/79/files"
+        }
+      ]
+    },
+    {
+      "id": "docs-status-v2",
+      "time": "2026-10-22T17:02:13Z",
+      "thread": "Docs",
+      "state": "info",
+      "title": "Status updated: PR #79 green",
+      "basis": "Verified: commit a099ab9. CI result as reported by the App Store thread.",
+      "summary": "Status page and artifact now show PR #79 as green and ready for your review, not merged.",
+      "why": "You need one place to see what is ready for review without reading each thread.",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      }
+    },
+    {
+      "id": "expo-audit",
+      "time": "2026-10-22T17:09:31Z",
+      "thread": "Expo UI",
+      "state": "info",
+      "title": "Audit numbers re-checked; old numbers retired",
+      "basis": "Reported by the Expo UI thread (grep on main). I have not re-run the greps.",
+      "summary": "Platform.OS 43 uses; shadow* 33 lines (about 9 style blocks); core Animated 71 uses in 15 files; expo-image 0 uses with 6 React Native Image sites; Gesture.Pan 1; Dimensions.get 2. qa:visual on main: 0 failures, 23 cases above baseline, mostly dense heatmap cells and 9 to 9.5px text.",
+      "why": "The earlier audit counts (53 / 38 / 21 / 5 / 8) were wrong or stale. Repo has no Expo skills committed; .claude/skills/ holds only ui-done.",
+      "links": []
+    },
+    {
+      "id": "docs-ui",
+      "time": "2026-10-22T17:22:25Z",
+      "thread": "Docs",
+      "state": "open",
+      "title": "JAW PR #7: docs UI rebuilt with beUI and shadcn",
+      "basis": "Verified: diff stat from git; builds and browser render checked here; Vercel preview deployed.",
+      "summary": "New localcheck-ui app (status page, shared nav). The nav replaces the hand-written header on five existing /localcheck pages. Page data is read at runtime from data/*.json.",
+      "why": "Your rule: only beui.dev and shadcn components. Hand-written HTML had overspilled text and no interactivity.",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      },
+      "previews": [
+        {
+          "label": "Vercel preview",
+          "url": "https://jaw-git-claude-localcheck-status-docs-jgpt-automated.vercel.app/localcheck/status.html"
+        },
+        {
+          "label": "Screenshot: Work log, desktop",
+          "url": "/localcheck/shots/status-worklog-desktop.png"
+        },
+        {
+          "label": "Screenshot: Work log, phone dark",
+          "url": "/localcheck/shots/status-worklog-phone-dark.png"
+        },
+        {
+          "label": "Screenshot: Files and diffs",
+          "url": "/localcheck/shots/status-files.png"
+        }
+      ],
+      "files": [
+        {
+          "path": "localcheck-ui/src",
+          "adds": 8695,
+          "dels": 0,
+          "note": "app source plus beUI and shadcn components installed by their CLIs"
+        },
+        {
+          "path": "public/localcheck/ui",
+          "adds": 17603,
+          "dels": 0,
+          "note": "built output so Vercel serves static files"
+        },
+        {
+          "path": "public/localcheck/data + agent",
+          "adds": 408,
+          "dels": 0,
+          "note": "status.json, files.json, two new prompt files"
+        },
+        {
+          "path": "public/localcheck/{index,challenge,roadmap,screens,audit}.html",
+          "adds": 5,
+          "dels": 5,
+          "note": "header swapped for the shared nav"
+        },
+        {
+          "path": "eslint.config.js",
+          "adds": 1,
+          "dels": 1,
+          "note": "root lint ignores localcheck-ui"
+        }
+      ],
+      "excerpt": {
+        "file": "eslint.config.js",
+        "lines": [
+          {
+            "id": "j1",
+            "type": "removed",
+            "content": "  { ignores: [\"dist\"] },"
+          },
+          {
+            "id": "j2",
+            "type": "added",
+            "content": "  { ignores: [\"dist\", \"localcheck-ui\"] },"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expo-tinytext",
+      "time": "2026-10-22T17:20:13Z",
+      "thread": "Expo UI",
+      "state": "in-progress",
+      "title": "Tiny-text fix on a branch (no PR yet)",
+      "basis": "Reported by the Expo UI thread; not independently checked.",
+      "summary": "Raised all 139 font sizes under 11 to 11 and was fixing 8 cut-off failures at 375x667 (court header).",
+      "why": "qa:visual flagged 9 to 9.5px eyebrow text. Heatmap cell sizes and hitSlop stay unchanged unless screenshots show a need.",
+      "links": []
+    },
+    {
+      "id": "expo-gestures",
+      "time": "2026-10-22T17:23:33Z",
+      "thread": "Expo UI",
+      "state": "replaced",
+      "title": "Priority change: gesture and navigation audit (superseded by PR #80 findings)",
+      "basis": "Reported by the Expo UI thread from the coordinator's relay; no findings yet.",
+      "summary": "Reading the code for gesture and navigation bugs: the one Gesture.Pan site, PanResponders, sheets and drawers, Expo Router modal and sheet options, and nested scroll views. Each finding will get file:line, cause, standard fix, and verified or belief.",
+      "why": "You said the audit missed the real problems: swipes that dismiss the screen while scrolling, drawers that should not swipe, and bounce-back behavior. Screenshots and grep cannot find those.",
+      "links": []
+    },
+    {
+      "id": "appstore-pr79-preview",
+      "time": "2026-10-22T17:32:00Z",
+      "thread": "App Store",
+      "state": "info",
+      "title": "PR #79 web preview opened and screenshotted",
+      "summary": "The App Store thread opened the PR #79 web preview in a browser: the sign-in screen renders with the config change. Screenshots are on the PR, including the live privacy policy with the foreground-only location line.",
+      "why": "Shows the config change broke nothing visible, and records the blocker with evidence.",
+      "basis": "Verified by the thread with screenshots. The preview cannot show the privacy manifest or permission prompts; those need a device build.",
+      "pr": {
+        "label": "LocalCheck_Expo PR #79",
+        "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/79"
+      },
+      "previews": [
+        {
+          "label": "Screenshot: web preview sign-in",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/dbd348853a93afe47ddfbdf22fe674e4a0648e9a/docs/runbooks/app-store-evidence/pr79-web-preview-sign-in.png"
+        },
+        {
+          "label": "Screenshot: live privacy policy",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/dbd348853a93afe47ddfbdf22fe674e4a0648e9a/docs/runbooks/app-store-evidence/privacy-location.png"
+        }
+      ]
+    },
+    {
+      "id": "expo-pr80",
+      "time": "2026-10-22T17:35:13Z",
+      "thread": "Expo UI",
+      "state": "open",
+      "title": "PR #80: back is the edge swipe only; form drawers drag by the grabber only",
+      "summary": "Turns off fullScreenGestureEnabled on detail screens so only the left-edge swipe goes back, and adds a contentPanning prop so form drawers (Log game, I'll be there, Pick a court) are dragged by the grabber only.",
+      "why": "You reported swipes that pop the screen while scrolling and drawers that move when they should not. Cause 1: fullScreenGestureEnabled: true on every detail screen made a sideways swipe anywhere pop the screen and cancel scrolls; PR #72 has had the same fix open since Oct 15 and was never merged, so main still has the bug. Cause 2: gorhom content panning was on for every drawer, so touching anywhere in a form dragged it down, then it snapped back.",
+      "basis": "Verified on the web build with a mouse drag in the Log game form (a mouse stands in for touch, not a phone test): on main the drawer moved 183px and snapped back; with the fix it stays put and the grabber still moves it. Typecheck and docs check pass. Belief: edge-swipe back is native iOS only and needs a check on your phone in the preview build. PR #80 checks (quality, docs, Vercel build) are green. The Vercel preview loads but stops at sign-in, so the drawer proof is the earlier before/after test on a build of the same code. The Expo Go preview publish was still running at 17:37 UTC; check edge-swipe back through it.",
+      "pr": {
+        "label": "LocalCheck_Expo PR #80",
+        "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/80"
+      },
+      "previews": [
+        {
+          "label": "Vercel preview",
+          "url": "https://localcheck-app-preview-git-claude-project-ecd1c5-jgpt-automated.vercel.app"
+        },
+        {
+          "label": "Screenshot: before (drawer dragged)",
+          "url": "/localcheck/shots/content-drag-before.png"
+        },
+        {
+          "label": "Screenshot: after (drawer stays)",
+          "url": "/localcheck/shots/content-drag-after.png"
+        },
+        {
+          "label": "Screenshot: Vercel preview sign-in",
+          "url": "/localcheck/shots/pr80-vercel-preview.png"
+        }
+      ],
+      "files": [
+        {
+          "path": "app/_layout.tsx",
+          "adds": 4,
+          "dels": 1,
+          "note": "fullScreenGestureEnabled: false"
+        },
+        {
+          "path": "components/sheet/AppBottomSheetModal.tsx",
+          "adds": 5,
+          "dels": 0,
+          "note": "new contentPanning prop, wired to enableContentPanningGesture"
+        },
+        {
+          "path": "components/sheet/RunFlowSheet.tsx",
+          "adds": 1,
+          "dels": 0,
+          "note": "contentPanning={scroll || dynamic}"
+        },
+        {
+          "path": "docs/CURRENT_STATE.md, DESIGN.md, FEEDBACK_TRACKER.md",
+          "adds": 25,
+          "dels": 1,
+          "note": "records the gesture rules and the test"
+        }
+      ],
+      "excerpt": {
+        "file": "app/_layout.tsx",
+        "lines": [
+          {
+            "id": "g1",
+            "type": "context",
+            "content": "  gestureEnabled: true,"
+          },
+          {
+            "id": "g2",
+            "type": "removed",
+            "content": "  fullScreenGestureEnabled: true,"
+          },
+          {
+            "id": "g3",
+            "type": "added",
+            "content": "  fullScreenGestureEnabled: false,"
+          }
+        ]
+      }
+    },
+    {
+      "id": "docs-findings",
+      "time": "2026-10-22T17:45:00Z",
+      "thread": "Docs",
+      "state": "open",
+      "title": "Findings page added to the working dashboard",
+      "summary": "New page /localcheck/findings.html where agents document each finding with evidence (verified or belief), root cause, a short diff, risk, device verification and PR and preview links. Every finding requires an annotated mobile-viewport screenshot (about 393x852) from the Vercel preview and an official-docs link with the supporting line quoted; without both it shows Incomplete and cannot be approved. F1 to F4 (back swipe, form drawers, small touch targets, small text) now carry both, from the Expo UI thread. F5 (website location wording) was completed by the App Store thread: two annotated 393x852 screenshots of the live privacy and support pages, app.json lines 145-147, quoted Apple App Review Guidelines 5.1.1 and Expo Location docs, and proposed website wording. All five findings are now complete. Copyable prompt and ADD-FINDING-PROMPT.md included.",
+      "why": "You want findings audited externally before any work is green-lit, instead of agents wandering the repo. Status starts at proposed; only you move it to approved or rejected.",
+      "basis": "Verified: page opened on the Vercel preview with screenshots. Finding contents come from the threads' own checks; each evidence row carries its own verified or belief mark.",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      },
+      "previews": [
+        {
+          "label": "Findings page",
+          "url": "/localcheck/findings.html"
+        },
+        {
+          "label": "Add-a-finding prompt",
+          "url": "/localcheck/agent/ADD-FINDING-PROMPT.md"
+        },
+        {
+          "label": "Screenshot: Findings, phone",
+          "url": "/localcheck/shots/findings-v3-phone-f1.png"
+        },
+        {
+          "label": "Screenshot: F5 on phone, text wrapped",
+          "url": "/localcheck/shots/findings-f5-phone-after.png"
+        }
+      ]
+    },
+    {
+      "id": "f5-complete",
+      "time": "2026-10-22T17:58:00Z",
+      "thread": "App Store readiness",
+      "state": "done",
+      "title": "F5 completed: annotated mobile screenshots, Apple and Expo docs",
+      "basis": "Verified: pages loaded at 393x852 on 2026-10-22; doc quotes scraped from developer.apple.com and docs.expo.dev.",
+      "summary": "Added annotated privacy and support screenshots, the app.json lines for Always location and background mode, and quoted App Review Guidelines 5.1.1 and Expo Location docs.",
+      "why": "The page showed F5 as Incomplete without annotated mobile screenshots and quoted official docs.",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      },
+      "previews": [
+        {
+          "label": "Findings preview",
+          "url": "https://jaw-git-claude-localcheck-status-docs-jgpt-automated.vercel.app/localcheck/findings.html"
+        }
+      ],
+      "files": [
+        {
+          "path": "public/localcheck/data/findings.json",
+          "adds": 0,
+          "dels": 0,
+          "note": "F5 evidence, screenshots, docs"
+        },
+        {
+          "path": "public/localcheck/shots/f5-privacy-mobile.png",
+          "adds": 0,
+          "dels": 0,
+          "note": "new"
+        },
+        {
+          "path": "public/localcheck/shots/f5-support-mobile.png",
+          "adds": 0,
+          "dels": 0,
+          "note": "new"
+        }
+      ]
+    },
+    {
+      "id": "docs-crash-fix",
+      "time": "2026-10-22T18:15:00Z",
+      "thread": "Docs",
+      "state": "done",
+      "title": "Status page crash fixed; phone nav menu; render check added",
+      "summary": "The status page rendered a blank body because a worklog entry used state done, which the badge map did not know. Badge lookups now fall back for unknown values and done is a known state. On phone the nav is a visible menu instead of a hidden scrolling tab bar. New npm run check opens every /localcheck page at 393x852 and desktop, fails on page errors, console errors, empty bodies or horizontal overflow, and clicks through from index.html. It also caught 5px and 12px phone overflow on roadmap and audit, now fixed.",
+      "why": "An independent tester hit the crash clicking from index.html to status.html. My earlier checks did not cover the status page after the App Store thread added the done entry.",
+      "basis": "Verified: render check passes locally; it reproduced the crash on the deployed preview before the fix (see the commit and screenshots in the thread).",
+      "pr": {
+        "label": "JAW PR #7",
+        "url": "https://github.com/jGPT-Automated/JAW/pull/7"
+      }
+    }
+  ]
+}

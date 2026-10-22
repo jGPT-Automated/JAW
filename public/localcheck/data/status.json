@@ -1,0 +1,256 @@
+{
+  "updated": "2026-10-22",
+  "summary": "Expo UI has PR #80 open for the swipe and drawer bugs (web-tested, phone check still needed). App Store readiness PR #79 is green and ready for your review; the website location wording is the one submission blocker.",
+  "legend": {
+    "verified": "Checked directly (command output, test run, screenshot, or merged PR).",
+    "belief": "Reported by a thread or inferred; not independently checked.",
+    "open": "Not started or in progress.",
+    "needs-you": "Requires a decision or action from Jesse."
+  },
+  "tracks": [
+    {
+      "id": "expo-ui",
+      "name": "Expo UI improvements",
+      "repo": "jGPT-Automated/LocalCheck_Expo",
+      "state": "PR #80 open: gesture fix",
+      "steps": [
+        {
+          "text": "Read AGENTS.md, skills, open branches and PRs",
+          "status": "verified",
+          "note": ".claude/skills/ in the repo holds only ui-done; the Expo skills are not committed there."
+        },
+        {
+          "text": "Audit counts re-checked by grep on main",
+          "status": "verified",
+          "note": "Platform.OS 43 uses; shadow* 33 lines (about 9 style blocks); core Animated 71 uses in 15 files; expo-image 0 uses with 6 React Native Image sites; Gesture.Pan 1; Dimensions.get 2. The earlier audit numbers (53 / 38 / 21 / 5 / 8) were wrong or stale."
+        },
+        {
+          "text": "Visual QA on main (qa:visual, 3 phone sizes)",
+          "status": "verified",
+          "note": "0 failures, 23 cases above baseline, mostly dense schedule heatmap cells (about 39x17pt) and 9 to 9.5px eyebrow text."
+        },
+        {
+          "text": "Gesture and navigation audit (priority): swipe, dismiss, drawer and sheet behavior",
+          "status": "open",
+          "note": "Reported by the thread: reading code, no findings yet."
+        },
+        {
+          "text": "Tiny-text fix (139 sizes raised to 11) on a branch, no PR yet",
+          "status": "belief",
+          "note": "Reported by the thread; no longer the priority."
+        },
+        {
+          "text": "boxShadow change",
+          "status": "open",
+          "note": "Only a PR if iOS rendering can be checked."
+        },
+        {
+          "text": "PR #80: back is the edge swipe only; form drawers drag by the grabber only",
+          "status": "verified",
+          "note": "Web mouse-drag test: on main the Log game drawer moved 183px then snapped back; with the fix it stays put. Not a phone test. Edge-swipe back is native iOS and needs your phone in the preview build (belief). PR #72 carries the same layout fix and was never merged."
+        }
+      ],
+      "prs": []
+    },
+    {
+      "id": "app-store",
+      "name": "App Store readiness",
+      "repo": "jGPT-Automated/LocalCheck_Expo",
+      "state": "PR #79 ready for review",
+      "steps": [
+        {
+          "text": "Read repo config (app.json, eas.json, AGENTS.md, skills)",
+          "status": "verified"
+        },
+        {
+          "text": "Removed invalid ios.buildProperties key; expo-doctor now 18/18",
+          "status": "verified",
+          "note": "In PR #79."
+        },
+        {
+          "text": "Expanded privacy manifest",
+          "status": "verified",
+          "note": "In PR #79."
+        },
+        {
+          "text": "Added docs/runbooks/APP_STORE_SUBMISSION.md",
+          "status": "verified",
+          "note": "In PR #79."
+        },
+        {
+          "text": "Xcode 26 image meets Apple's requirement",
+          "status": "verified"
+        },
+        {
+          "text": "Sign in with Apple, account deletion and report/block exist in code",
+          "status": "verified"
+        },
+        {
+          "text": "Privacy, terms and support URLs return 200",
+          "status": "verified"
+        },
+        {
+          "text": "Newest EAS iOS build is 1.0.4 (45); docs/RELEASE.md is stale",
+          "status": "verified"
+        },
+        {
+          "text": "Age-rating answers and screenshot sizes",
+          "status": "belief"
+        },
+        {
+          "text": "Build 45 lacks auto check-in",
+          "status": "belief"
+        },
+        {
+          "text": "Terms mention only a monthly plan while the app sells Monthly and Yearly",
+          "status": "belief"
+        }
+      ],
+      "prs": [
+        {
+          "title": "App Store readiness (#79)",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/79",
+          "state": "Open, CI green, ready for review (not merged)",
+          "evidence": "expo-doctor 18/18; quality, docs-updated and Expo Go preview checks pass"
+        }
+      ]
+    },
+    {
+      "id": "docs",
+      "name": "Tracking and docs (this page)",
+      "repo": "jGPT-Automated/JAW",
+      "state": "Live",
+      "steps": [
+        {
+          "text": "Status page and data file added under /localcheck/",
+          "status": "verified",
+          "note": "status.html and data/status.json in this PR."
+        },
+        {
+          "text": "Project artifact published",
+          "status": "open"
+        }
+      ],
+      "prs": []
+    }
+  ],
+  "needs_you": [
+    {
+      "text": "BLOCKER: the live privacy policy and support page say location is foreground-only, but the app asks for Always location and background mode. Change the website text; the site is not in the Expo repo.",
+      "status": "needs-you",
+      "note": "Verified."
+    },
+    {
+      "text": "Check PR #80 on your phone in the preview build: left-edge swipe goes back, and scrolling never pops the screen.",
+      "status": "needs-you",
+      "note": "Edge-swipe is native iOS; the web test cannot cover it."
+    },
+    {
+      "text": "Create the App Review reviewer account and screenshots.",
+      "status": "needs-you"
+    },
+    {
+      "text": "Enter answers in App Store Connect and start the build.",
+      "status": "needs-you"
+    },
+    {
+      "text": "Confirm the docs repo is JAW (no repo named JAWS exists).",
+      "status": "needs-you"
+    },
+    {
+      "text": "Still pending from the working file: Google service-account setup and an installable Android test build.",
+      "status": "belief",
+      "note": "From public/localcheck/agent/README.md, not re-checked."
+    }
+  ],
+  "log": [
+    {
+      "date": "2026-10-22",
+      "text": "Status page created. Expo UI and App Store threads started; no results reported yet."
+    },
+    {
+      "date": "2026-10-22",
+      "text": "App Store readiness: PR #79 opened; location-text blocker recorded."
+    },
+    {
+      "date": "2026-10-22",
+      "text": "PR #79 CI all green; ready for review, not merged."
+    },
+    {
+      "date": "2026-10-22",
+      "text": "Expo UI: audit counts re-verified by grep; old counts retired. Tiny-text PR planned."
+    },
+    {
+      "date": "2026-10-22",
+      "text": "Work log added; Expo UI priority moved to gesture and navigation bugs."
+    }
+  ],
+  "priorities": [
+    {
+      "id": "gestures",
+      "title": "Review PR #80 and check back swipe on your phone",
+      "detail": "Fixes the swipe-to-pop while scrolling and the drag-anywhere form drawers. Close #72 if it merges.",
+      "track": "Expo UI"
+    },
+    {
+      "id": "loc-text",
+      "title": "Fix website location wording",
+      "detail": "Privacy policy and support page say foreground-only; the app asks for Always. Blocks submission.",
+      "track": "App Store"
+    },
+    {
+      "id": "reviewer",
+      "title": "Create reviewer account and screenshots",
+      "detail": "Needed for App Review. Entered in App Store Connect by you.",
+      "track": "App Store"
+    },
+    {
+      "id": "merge79",
+      "title": "Review and merge PR #79",
+      "detail": "CI green. Config, privacy manifest and submission runbook.",
+      "track": "App Store"
+    },
+    {
+      "id": "tiny-text",
+      "title": "Tiny-text fix (nothing under 11px)",
+      "detail": "PR with before and after screenshots, for your review.",
+      "track": "Expo UI"
+    },
+    {
+      "id": "build",
+      "title": "Start a build with auto check-in",
+      "detail": "Build 45 predates it (belief). Run native checks from docs/TESTING.md.",
+      "track": "App Store"
+    }
+  ],
+  "pr_files": {
+    "repo": "jGPT-Automated/LocalCheck_Expo",
+    "pr": 79
+  },
+  "prompts": [
+    {
+      "id": "update",
+      "title": "Update the status page",
+      "file": "UPDATE-STATUS-PROMPT.md",
+      "summary": "Paste into any agent to update status.json and the PR evidence when work changes."
+    },
+    {
+      "id": "rule",
+      "title": "Components rule",
+      "file": "COMPONENTS-RULE.md",
+      "summary": "The beui.dev and shadcn only rule, portable for any thread or repo."
+    },
+    {
+      "id": "pr78",
+      "title": "Next Home / Schedule PR (#78)",
+      "file": "PR78-PROMPT.md",
+      "summary": "Developer handoff for the Home Overview, Activity and Schedule redesign."
+    },
+    {
+      "id": "finding",
+      "title": "Add a finding",
+      "file": "ADD-FINDING-PROMPT.md",
+      "summary": "Document a finding and proposed fix on the Findings page, in the same format."
+    }
+  ]
+}

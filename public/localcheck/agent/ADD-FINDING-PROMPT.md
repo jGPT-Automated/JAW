@@ -1,0 +1,57 @@
+# Add a finding to the LocalCheck Findings page
+
+Use this when you find a bug, risk or proposed change in LocalCheck_Expo (or the website) that the owner should review before any work is approved. The owner has findings reviewed externally, then green-lights the work. Findings are documented here first.
+
+## Where things live
+- Data: `public/localcheck/data/findings.json` in jGPT-Automated/JAW. The page https://www.modernweb.store/localcheck/findings.html reads it at runtime, so a JSON-only change updates the page.
+- Also add one line to `public/localcheck/data/worklog.json` saying a finding was added or changed.
+
+## One finding = one object in `findings[]`
+```json
+{
+  "id": "F9",
+  "title": "Short plain title",
+  "area": "Gestures | Drawers | Typography | App Store | Website | Performance | ...",
+  "severity": "high | medium | low | info",
+  "status": "proposed | under-review | approved | rejected | shipped",
+  "updated": "2026-10-22",
+  "evidence": [
+    { "kind": "file | command | screenshot | grep", "ref": "app/_layout.tsx:75", "text": "what this shows", "basis": "verified | belief", "url": "optional link or /localcheck/shots/x.png" }
+  ],
+  "screenshots": [
+    { "url": "/localcheck/shots/f9-mobile.png", "caption": "Arrow on the drawer that moves", "viewport": "393x852", "annotated": true }
+  ],
+  "docs": [
+    { "label": "react-native-screens: gestureEnabled", "url": "https://docs.swmansion.com/react-native-screens/...", "quote": "the exact line of the official doc that supports the finding" }
+  ],
+  "cause": "Root cause in one or two sentences.",
+  "fix": {
+    "summary": "What the fix does.",
+    "diff": { "file": "app/_layout.tsx", "lines": [ { "id": "a1", "type": "context | added | removed", "content": "code line" } ] }
+  },
+  "risk": "What could break, and how likely.",
+  "verify": "Exact steps to check it on a device or in a run.",
+  "pr": { "label": "LocalCheck_Expo PR #80", "url": "https://github.com/..." },
+  "previews": [ { "label": "Vercel preview", "url": "https://..." } ]
+}
+```
+
+## Required on every finding (the page shows "Incomplete" and blocks approval without them)
+- `screenshots`: at least one **annotated** screenshot in a **mobile viewport (about 393x852)** taken from the Vercel preview of the repo branch or main. Annotated means arrows, boxes or labels pointing at the problem, not a bare screenshot. Set `viewport` to the real size and `annotated` to true only if it is.
+- `docs`: at least one link to **official documentation** (Apple, Expo, React Native, react-native-screens, gorhom, etc.) with the relevant line **quoted** in `quote`. A blog post or issue thread alone does not count; cite it as extra evidence only.
+- If the Vercel preview cannot reach the screen (for example it stops at sign-in), say so in `evidence` and use another route to the screen before saying the screenshot is impossible. Try the tools first.
+
+## Rules
+1. `basis` is `verified` only if you ran or read it yourself (command output, test run, screenshot, code you opened). Anything reported or inferred is `belief`. Say what is missing for a belief.
+2. Start every finding at `proposed`. Only the owner moves it to `approved` or `rejected`. Set `shipped` only after the PR is merged.
+3. Give file:line for code evidence, the exact command for runs, and a screenshot link when something is visible. Put screenshots in `public/localcheck/shots/`.
+4. The proposed diff is short (about 10 lines). Link the PR for the rest.
+5. Verify steps must be doable by one person on a phone or in one command.
+6. Components: the page uses only beui.dev and shadcn components. Do not add hand-coded UI. You only edit JSON and markdown.
+7. Open or update one PR in JAW. Do not merge it. Reply with a screenshot of the Vercel preview of the page.
+
+## Steps
+1. Read `data/findings.json` and check the id is new.
+2. Append the finding, validate with `python3 -c "import json;json.load(open('public/localcheck/data/findings.json'))"`.
+3. Run the render check (`cd localcheck-ui && npm run check`); it must pass. Use only worklog states the page knows: open, ci-green, blocked, info, in-progress, replaced, done.
+4. Add a worklog line, commit, push, update the PR, open the preview, screenshot desktop and phone, attach them.
