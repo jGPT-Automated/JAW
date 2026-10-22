@@ -41,7 +41,7 @@
       "thread": "App Store",
       "state": "ci-green",
       "title": "PR #79: App Store readiness config, privacy manifest, runbook",
-      "basis": "Verified: file list and line counts read from GitHub; preview links from the PR comments. CI green is as reported by the thread.",
+      "basis": "Verified: file list and line counts read from GitHub; preview links from the PR comments. CI green is as reported by the thread. Web preview opened in a browser by the thread; sign-in renders. Privacy manifest and permission prompts cannot show in a web preview and need a device build (belief until then).",
       "summary": "Removes an invalid app.json key, declares the data the app collects in the privacy manifest, and adds a submission runbook with listing text and review notes.",
       "why": "expo-doctor failed 17/18 on a key nothing reads, and the privacy manifest listed only location and diagnostics while the app also collects email, name, user id, purchase history, device id and gameplay content. App Review compares the manifest and your App Store Connect answers with the binary.",
       "pr": {
@@ -56,6 +56,14 @@
         {
           "label": "Expo Go preview",
           "url": "https://expo.dev/projects/9c906173-0258-45a9-a3fe-786cda373c66/updates/ff55a3a4-39e1-4a2e-af0f-2300c77681f3"
+        },
+        {
+          "label": "Screenshot: web preview sign-in",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/pr79-web-preview-sign-in.png"
+        },
+        {
+          "label": "Screenshot: live privacy policy, foreground-only line",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/live-privacy-policy-foreground-location.png"
         }
       ],
       "files": [
@@ -188,6 +196,18 @@
         {
           "label": "Vercel preview",
           "url": "https://jaw-git-claude-localcheck-status-docs-jgpt-automated.vercel.app/localcheck/status.html"
+        },
+        {
+          "label": "Screenshot: Work log, desktop",
+          "url": "/localcheck/shots/status-worklog-desktop.png"
+        },
+        {
+          "label": "Screenshot: Work log, phone dark",
+          "url": "/localcheck/shots/status-worklog-phone-dark.png"
+        },
+        {
+          "label": "Screenshot: Files and diffs",
+          "url": "/localcheck/shots/status-files.png"
         }
       ],
       "files": [
@@ -259,6 +279,30 @@
       "summary": "Reading the code for gesture and navigation bugs: the one Gesture.Pan site, PanResponders, sheets and drawers, Expo Router modal and sheet options, and nested scroll views. Each finding will get file:line, cause, standard fix, and verified or belief.",
       "why": "You said the audit missed the real problems: swipes that dismiss the screen while scrolling, drawers that should not swipe, and bounce-back behavior. Screenshots and grep cannot find those.",
       "links": []
+    },
+    {
+      "id": "appstore-pr79-preview",
+      "time": "2026-10-22T17:32:00Z",
+      "thread": "App Store",
+      "state": "info",
+      "title": "PR #79 web preview opened and screenshotted",
+      "summary": "The App Store thread opened the PR #79 web preview in a browser: the sign-in screen renders with the config change. Screenshots are on the PR, including the live privacy policy with the foreground-only location line.",
+      "why": "Shows the config change broke nothing visible, and records the blocker with evidence.",
+      "basis": "Verified by the thread with screenshots. The preview cannot show the privacy manifest or permission prompts; those need a device build.",
+      "pr": {
+        "label": "LocalCheck_Expo PR #79",
+        "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/79"
+      },
+      "previews": [
+        {
+          "label": "Screenshot: web preview sign-in",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/pr79-web-preview-sign-in.png"
+        },
+        {
+          "label": "Screenshot: live privacy policy",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/live-privacy-policy-foreground-location.png"
+        }
+      ]
     }
   ]
 }

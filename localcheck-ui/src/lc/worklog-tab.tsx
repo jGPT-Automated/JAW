@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { WorkEntry, Worklog } from "@/lc/data"
+import { siteUrl, type WorkEntry, type Worklog } from "@/lc/data"
 
 const STATE: Record<
   WorkEntry["state"],
@@ -39,8 +39,8 @@ function when(iso: string) {
 
 function LinkButton({ href, children }: { href: string; children: string }) {
   return (
-    <Button variant="outline" size="sm" asChild>
-      <a href={href} target="_blank" rel="noreferrer">
+    <Button variant="outline" size="sm" className="h-auto max-w-full py-1.5 whitespace-normal" asChild>
+      <a href={href.startsWith("/") ? siteUrl(href) : href} target="_blank" rel="noreferrer">
         {children}
         <ExternalLink />
       </a>
@@ -156,6 +156,7 @@ export function WorklogTab({ worklog }: { worklog: Worklog }) {
         key={filter}
         items={items}
         collapsible
+        classNames={{ title: "overflow-visible text-clip whitespace-normal" }}
         defaultValue={items[0]?.id ?? null}
       />
     </div>
