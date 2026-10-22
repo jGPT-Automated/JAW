@@ -273,8 +273,8 @@
       "id": "expo-gestures",
       "time": "2026-10-22T17:23:33Z",
       "thread": "Expo UI",
-      "state": "in-progress",
-      "title": "Priority change: gesture and navigation audit",
+      "state": "replaced",
+      "title": "Priority change: gesture and navigation audit (superseded by PR #80 findings)",
       "basis": "Reported by the Expo UI thread from the coordinator's relay; no findings yet.",
       "summary": "Reading the code for gesture and navigation bugs: the one Gesture.Pan site, PanResponders, sheets and drawers, Expo Router modal and sheet options, and nested scroll views. Each finding will get file:line, cause, standard fix, and verified or belief.",
       "why": "You said the audit missed the real problems: swipes that dismiss the screen while scrolling, drawers that should not swipe, and bounce-back behavior. Screenshots and grep cannot find those.",
@@ -303,6 +303,80 @@
           "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/blob/claude/project-thread-pfm5ou/docs/runbooks/app-store-evidence/live-privacy-policy-foreground-location.png"
         }
       ]
+    },
+    {
+      "id": "expo-pr80",
+      "time": "2026-10-22T17:35:13Z",
+      "thread": "Expo UI",
+      "state": "open",
+      "title": "PR #80: back is the edge swipe only; form drawers drag by the grabber only",
+      "summary": "Turns off fullScreenGestureEnabled on detail screens so only the left-edge swipe goes back, and adds a contentPanning prop so form drawers (Log game, I'll be there, Pick a court) are dragged by the grabber only.",
+      "why": "You reported swipes that pop the screen while scrolling and drawers that move when they should not. Cause 1: fullScreenGestureEnabled: true on every detail screen made a sideways swipe anywhere pop the screen and cancel scrolls; PR #72 has had the same fix open since Oct 15 and was never merged, so main still has the bug. Cause 2: gorhom content panning was on for every drawer, so touching anywhere in a form dragged it down, then it snapped back.",
+      "basis": "Verified on the web build with a mouse drag in the Log game form (a mouse stands in for touch, not a phone test): on main the drawer moved 183px and snapped back; with the fix it stays put and the grabber still moves it. Typecheck and docs check pass. Belief: edge-swipe back is native iOS only and needs a check on your phone in the preview build.",
+      "pr": {
+        "label": "LocalCheck_Expo PR #80",
+        "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/80"
+      },
+      "previews": [
+        {
+          "label": "Vercel preview",
+          "url": "https://localcheck-app-preview-git-claude-project-ecd1c5-jgpt-automated.vercel.app"
+        },
+        {
+          "label": "Screenshot: before (drawer dragged)",
+          "url": "/localcheck/shots/content-drag-before.png"
+        },
+        {
+          "label": "Screenshot: after (drawer stays)",
+          "url": "/localcheck/shots/content-drag-after.png"
+        }
+      ],
+      "files": [
+        {
+          "path": "app/_layout.tsx",
+          "adds": 4,
+          "dels": 1,
+          "note": "fullScreenGestureEnabled: false"
+        },
+        {
+          "path": "components/sheet/AppBottomSheetModal.tsx",
+          "adds": 5,
+          "dels": 0,
+          "note": "new contentPanning prop, wired to enableContentPanningGesture"
+        },
+        {
+          "path": "components/sheet/RunFlowSheet.tsx",
+          "adds": 1,
+          "dels": 0,
+          "note": "contentPanning={scroll || dynamic}"
+        },
+        {
+          "path": "docs/CURRENT_STATE.md, DESIGN.md, FEEDBACK_TRACKER.md",
+          "adds": 25,
+          "dels": 1,
+          "note": "records the gesture rules and the test"
+        }
+      ],
+      "excerpt": {
+        "file": "app/_layout.tsx",
+        "lines": [
+          {
+            "id": "g1",
+            "type": "context",
+            "content": "  gestureEnabled: true,"
+          },
+          {
+            "id": "g2",
+            "type": "removed",
+            "content": "  fullScreenGestureEnabled: true,"
+          },
+          {
+            "id": "g3",
+            "type": "added",
+            "content": "  fullScreenGestureEnabled: false,"
+          }
+        ]
+      }
     }
   ]
 }

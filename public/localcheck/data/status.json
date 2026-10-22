@@ -1,6 +1,6 @@
 {
   "updated": "2026-10-22",
-  "summary": "Expo UI is now on a gesture and navigation audit. App Store readiness PR #79 is green and ready for your review; the website location wording is the one submission blocker.",
+  "summary": "Expo UI has PR #80 open for the swipe and drawer bugs (web-tested, phone check still needed). App Store readiness PR #79 is green and ready for your review; the website location wording is the one submission blocker.",
   "legend": {
     "verified": "Checked directly (command output, test run, screenshot, or merged PR).",
     "belief": "Reported by a thread or inferred; not independently checked.",
@@ -12,7 +12,7 @@
       "id": "expo-ui",
       "name": "Expo UI improvements",
       "repo": "jGPT-Automated/LocalCheck_Expo",
-      "state": "Gesture and navigation audit in progress",
+      "state": "PR #80 open: gesture fix",
       "steps": [
         {
           "text": "Read AGENTS.md, skills, open branches and PRs",
@@ -43,6 +43,11 @@
           "text": "boxShadow change",
           "status": "open",
           "note": "Only a PR if iOS rendering can be checked."
+        },
+        {
+          "text": "PR #80: back is the edge swipe only; form drawers drag by the grabber only",
+          "status": "verified",
+          "note": "Web mouse-drag test: on main the Log game drawer moved 183px then snapped back; with the fix it stays put. Not a phone test. Edge-swipe back is native iOS and needs your phone in the preview build (belief). PR #72 carries the same layout fix and was never merged."
         }
       ],
       "prs": []
@@ -136,6 +141,11 @@
       "note": "Verified."
     },
     {
+      "text": "Check PR #80 on your phone in the preview build: left-edge swipe goes back, and scrolling never pops the screen.",
+      "status": "needs-you",
+      "note": "Edge-swipe is native iOS; the web test cannot cover it."
+    },
+    {
       "text": "Create the App Review reviewer account and screenshots.",
       "status": "needs-you"
     },
@@ -178,8 +188,8 @@
   "priorities": [
     {
       "id": "gestures",
-      "title": "Gesture and navigation bugs",
-      "detail": "Swipes that dismiss on scroll, swipeable drawers, bounce-back. New top priority.",
+      "title": "Review PR #80 and check back swipe on your phone",
+      "detail": "Fixes the swipe-to-pop while scrolling and the drag-anywhere form drawers. Close #72 if it merges.",
       "track": "Expo UI"
     },
     {
