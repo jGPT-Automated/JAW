@@ -15,6 +15,31 @@ export interface Evidence {
   basis: "verified" | "belief"
   url?: string
 }
+export interface Screenshot {
+  url: string
+  caption: string
+  /** Mobile viewport of the Vercel preview, e.g. "393x852". */
+  viewport: string
+  /** true when the image has arrows, boxes or labels pointing at the problem. */
+  annotated: boolean
+}
+export interface DocRef {
+  label: string
+  url: string
+  /** The line of the official doc that supports the finding. */
+  quote: string
+}
+
+export function missing(f: Finding): string[] {
+  const out: string[] = []
+  const shots = f.screenshots ?? []
+  if (!shots.some((s) => s.annotated && /^\d+x\d+$/.test(s.viewport) && Number(s.viewport.split("x")[0]) <= 430))
+    out.push("an annotated mobile-viewport screenshot (about 393x852) from the Vercel preview")
+  if (!(f.docs ?? []).some((d) => d.url && d.quote.trim()))
+    out.push("a link to official documentation with the supporting line quoted")
+  return out
+}
+
 export interface Finding {
   id: string
   title: string
@@ -23,6 +48,8 @@ export interface Finding {
   status: FindingStatus
   updated: string
   evidence: Evidence[]
+  screenshots?: Screenshot[]
+  docs?: DocRef[]
   cause: string
   fix: {
     summary: string

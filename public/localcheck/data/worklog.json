@@ -388,7 +388,7 @@
       "thread": "Docs",
       "state": "open",
       "title": "Findings page added to the working dashboard",
-      "summary": "New page /localcheck/findings.html where agents document each finding with evidence (verified or belief), root cause, a short diff, risk, device verification and PR and preview links. Backfilled F1 to F8 from the Expo UI and App Store threads, with a copyable prompt and ADD-FINDING-PROMPT.md.",
+      "summary": "New page /localcheck/findings.html where agents document each finding with evidence (verified or belief), root cause, a short diff, risk, device verification and PR and preview links. Backfilled F1 to F8 from the Expo UI and App Store threads, with a copyable prompt and ADD-FINDING-PROMPT.md. Every finding now requires an annotated mobile-viewport screenshot (about 393x852) from the Vercel preview and an official-docs link with the supporting line quoted; without both it shows Incomplete and cannot be approved. F1 to F8 are marked incomplete until the Expo UI thread sends the new evidence.",
       "why": "You want findings audited externally before any work is green-lit, instead of agents wandering the repo. Status starts at proposed; only you move it to approved or rejected.",
       "basis": "Verified: page opened on the Vercel preview with screenshots. Finding contents come from the threads' own checks; each evidence row carries its own verified or belief mark.",
       "pr": {

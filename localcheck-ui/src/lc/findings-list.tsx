@@ -14,7 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { Finding, FindingStatus, Severity } from "@/lc/findings-data"
+import { missing, type Finding, type FindingStatus, type Severity } from "@/lc/findings-data"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Card, CardContent, CardDescription } from "@/components/ui/card"
 
 type Variant = "default" | "secondary" | "outline" | "destructive"
 
@@ -38,6 +40,7 @@ const FILTERS = [
   "approved",
   "rejected",
   "shipped",
+  "incomplete",
 ] as const
 
 function LinkButton({ href, children }: { href: string; children: string }) {
@@ -69,8 +72,67 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Detail({ f }: { f: Finding }) {
   const links = [...(f.pr ? [f.pr] : []), ...f.previews]
+  const gaps = missing(f)
   return (
     <span className="flex flex-col gap-4 py-2 text-sm">
+      {gaps.length > 0 && (
+        <Alert variant="destructive">
+          <AlertTitle>Incomplete: not eligible for approval</AlertTitle>
+          <AlertDescription>
+            Missing {gaps.join(" and ")}.
+          </AlertDescription>
+        </Alert>
+      )}
+      {(f.screenshots ?? []).length > 0 && (
+        <span className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {(f.screenshots ?? []).map((s) => (
+            <Card key={s.url} size="sm" className="min-w-0">
+              <CardContent className="flex flex-col gap-2">
+                <a href={s.url} target="_blank" rel="noreferrer">
+                  <img
+                    src={s.url}
+                    alt={s.caption}
+                    loading="lazy"
+                    className="mx-auto max-h-96 w-auto max-w-full rounded-md border"
+                  />
+                </a>
+                <CardDescription>
+                  {s.caption} · {s.viewport} ·{" "}
+                  {s.annotated ? "annotated" : "not annotated"}
+                </CardDescription>
+              </CardContent>
+            </Card>
+          ))}
+        </span>
+      )}
+      {(f.docs ?? []).length > 0 && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Official documentation</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {(f.docs ?? []).map((d) => (
+              <TableRow key={d.url}>
+                <TableCell className="whitespace-normal">
+                  <a
+                    className="font-medium underline underline-offset-2"
+                    href={d.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {d.label}
+                  </a>
+                  <span className="block text-muted-foreground">
+                    “{d.quote}”
+                  </span>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
       <Table>
         <TableHeader>
           <TableRow>
@@ -146,11 +208,20 @@ function Detail({ f }: { f: Finding }) {
 export function FindingsList({ findings }: { findings: Finding[] }) {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all")
   const shown = useMemo(
-    () => findings.filter((f) => filter === "all" || f.status === filter),
+    () =>
+      findings.filter(
+        (f) =>
+          filter === "all" ||
+          (filter === "incomplete" ? missing(f).length > 0 : f.status === filter)
+      ),
     [findings, filter]
   )
   const count = (s: (typeof FILTERS)[number]) =>
-    s === "all" ? findings.length : findings.filter((f) => f.status === s).length
+    s === "all"
+      ? findings.length
+      : s === "incomplete"
+        ? findings.filter((f) => missing(f).length > 0).length
+        : findings.filter((f) => f.status === s).length
 
   const items = shown.map((f) => ({
     id: f.id,
@@ -165,6 +236,9 @@ export function FindingsList({ findings }: { findings: Finding[] }) {
           <Badge variant={STATUS[f.status].variant}>
             {STATUS[f.status].label}
           </Badge>
+          {missing(f).length > 0 && (
+            <Badge variant="destructive">Incomplete</Badge>
+          )}
         </span>
         <span className="font-medium break-words">{f.title}</span>
       </span>
@@ -183,7 +257,8 @@ export function FindingsList({ findings }: { findings: Finding[] }) {
         <TabsList aria-label="Filter by status" wrapperClassName="max-w-full">
           {FILTERS.map((s) => (
             <TabsTrigger key={s} value={s}>
-              {s === "all" ? "All" : STATUS[s].label} {count(s)}
+              {s === "all" ? "All" : s === "incomplete" ? "Incomplete" : STATUS[s].label}{" "}
+              {count(s)}
             </TabsTrigger>
           ))}
         </TabsList>

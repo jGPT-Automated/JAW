@@ -18,6 +18,12 @@ Use this when you find a bug, risk or proposed change in LocalCheck_Expo (or the
   "evidence": [
     { "kind": "file | command | screenshot | grep", "ref": "app/_layout.tsx:75", "text": "what this shows", "basis": "verified | belief", "url": "optional link or /localcheck/shots/x.png" }
   ],
+  "screenshots": [
+    { "url": "/localcheck/shots/f9-mobile.png", "caption": "Arrow on the drawer that moves", "viewport": "393x852", "annotated": true }
+  ],
+  "docs": [
+    { "label": "react-native-screens: gestureEnabled", "url": "https://docs.swmansion.com/react-native-screens/...", "quote": "the exact line of the official doc that supports the finding" }
+  ],
   "cause": "Root cause in one or two sentences.",
   "fix": {
     "summary": "What the fix does.",
@@ -29,6 +35,11 @@ Use this when you find a bug, risk or proposed change in LocalCheck_Expo (or the
   "previews": [ { "label": "Vercel preview", "url": "https://..." } ]
 }
 ```
+
+## Required on every finding (the page shows "Incomplete" and blocks approval without them)
+- `screenshots`: at least one **annotated** screenshot in a **mobile viewport (about 393x852)** taken from the Vercel preview of the repo branch or main. Annotated means arrows, boxes or labels pointing at the problem, not a bare screenshot. Set `viewport` to the real size and `annotated` to true only if it is.
+- `docs`: at least one link to **official documentation** (Apple, Expo, React Native, react-native-screens, gorhom, etc.) with the relevant line **quoted** in `quote`. A blog post or issue thread alone does not count; cite it as extra evidence only.
+- If the Vercel preview cannot reach the screen (for example it stops at sign-in), say so in `evidence` and use another route to the screen before saying the screenshot is impossible. Try the tools first.
 
 ## Rules
 1. `basis` is `verified` only if you ran or read it yourself (command output, test run, screenshot, code you opened). Anything reported or inferred is `belief`. Say what is missing for a belief.

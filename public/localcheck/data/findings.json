@@ -1,5 +1,5 @@
 {
-  "note": "Agents add findings here in proposed state. The owner has them reviewed externally, then moves them to approved or rejected. Basis marks what was checked directly (verified) versus reported or inferred (belief).",
+  "note": "Agents add findings here in proposed state. Every finding needs an annotated mobile-viewport screenshot (about 393x852) from the Vercel preview and a link to official documentation with the supporting line quoted. Without both, it shows Incomplete and is not eligible for approval. The owner has findings reviewed externally, then moves them to approved or rejected. Basis marks what was checked directly (verified) versus reported (belief).",
   "updated": "2026-10-22",
   "findings": [
     {
@@ -65,7 +65,9 @@
           "label": "Vercel preview",
           "url": "https://localcheck-app-preview-git-claude-project-ecd1c5-jgpt-automated.vercel.app"
         }
-      ]
+      ],
+      "screenshots": [],
+      "docs": []
     },
     {
       "id": "F2",
@@ -151,7 +153,9 @@
           "label": "Screenshot: after",
           "url": "/localcheck/shots/content-drag-after.png"
         }
-      ]
+      ],
+      "screenshots": [],
+      "docs": []
     },
     {
       "id": "F3",
@@ -180,7 +184,9 @@
         "label": "LocalCheck_Expo PR #72",
         "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/72"
       },
-      "previews": []
+      "previews": [],
+      "screenshots": [],
+      "docs": []
     },
     {
       "id": "F4",
@@ -204,7 +210,9 @@
       },
       "risk": "A visible design change if sizes go up.",
       "verify": "Re-run node scripts/visual-qa/run.mjs; expect 0 cases above baseline after the decision.",
-      "previews": []
+      "previews": [],
+      "screenshots": [],
+      "docs": []
     },
     {
       "id": "F5",
@@ -228,7 +236,9 @@
       },
       "risk": "Visible design change across screens; needs your sign-off.",
       "verify": "qa:visual at 3 phone sizes, plus before/after screenshots in the PR.",
-      "previews": []
+      "previews": [],
+      "screenshots": [],
+      "docs": []
     },
     {
       "id": "F6",
@@ -276,7 +286,9 @@
       },
       "risk": "None for no change.",
       "verify": "Re-run the greps on main to reproduce the counts.",
-      "previews": []
+      "previews": [],
+      "screenshots": [],
+      "docs": []
     },
     {
       "id": "F7",
@@ -316,7 +328,9 @@
           "label": "Screenshot: live privacy policy",
           "url": "/localcheck/shots/privacy-location.png"
         }
-      ]
+      ],
+      "screenshots": [],
+      "docs": []
     },
     {
       "id": "F8",
@@ -340,7 +354,9 @@
       },
       "risk": "Unknown.",
       "verify": "To be written with the audit.",
-      "previews": []
+      "previews": [],
+      "screenshots": [],
+      "docs": []
     }
   ]
 }
