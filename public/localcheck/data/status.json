@@ -165,5 +165,61 @@
       "date": "2026-10-22",
       "text": "Expo UI: audit counts re-verified by grep; old counts retired. Tiny-text PR planned."
     }
+  ],
+  "priorities": [
+    {
+      "id": "loc-text",
+      "title": "Fix website location wording",
+      "detail": "Privacy policy and support page say foreground-only; the app asks for Always. Blocks submission.",
+      "track": "App Store"
+    },
+    {
+      "id": "reviewer",
+      "title": "Create reviewer account and screenshots",
+      "detail": "Needed for App Review. Entered in App Store Connect by you.",
+      "track": "App Store"
+    },
+    {
+      "id": "merge79",
+      "title": "Review and merge PR #79",
+      "detail": "CI green. Config, privacy manifest and submission runbook.",
+      "track": "App Store"
+    },
+    {
+      "id": "tiny-text",
+      "title": "Tiny-text fix (nothing under 11px)",
+      "detail": "PR with before and after screenshots, for your review.",
+      "track": "Expo UI"
+    },
+    {
+      "id": "build",
+      "title": "Start a build with auto check-in",
+      "detail": "Build 45 predates it (belief). Run native checks from docs/TESTING.md.",
+      "track": "App Store"
+    }
+  ],
+  "pr_files": {
+    "repo": "jGPT-Automated/LocalCheck_Expo",
+    "pr": 79
+  },
+  "prompts": [
+    {
+      "id": "update",
+      "title": "Update the status page",
+      "file": "UPDATE-STATUS-PROMPT.md",
+      "summary": "Paste into any agent to update status.json and the PR evidence when work changes."
+    },
+    {
+      "id": "rule",
+      "title": "Components rule",
+      "file": "COMPONENTS-RULE.md",
+      "summary": "The beui.dev and shadcn only rule, portable for any thread or repo."
+    },
+    {
+      "id": "pr78",
+      "title": "Next Home / Schedule PR (#78)",
+      "file": "PR78-PROMPT.md",
+      "summary": "Developer handoff for the Home Overview, Activity and Schedule redesign."
+    }
   ]
 }

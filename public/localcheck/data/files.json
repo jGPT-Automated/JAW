@@ -1,0 +1,150 @@
+{
+  "repo": "jGPT-Automated/LocalCheck_Expo",
+  "pr": 79,
+  "source": "Excerpts from the PR #79 patch as returned by GitHub on 2026-10-22; long hunks are shortened where marked.",
+  "files": [
+    {
+      "path": "app.json",
+      "status": "modified",
+      "adds": 48,
+      "dels": 3,
+      "role": "Removes invalid ios.buildProperties; privacy manifest now declares email, name, user id, purchase history, device id, gameplay content.",
+      "verified": true,
+      "lines": [
+        {
+          "id": "a1",
+          "type": "context",
+          "content": "            \"NSPrivacyCollectedDataTypePurposes\": ["
+        },
+        {
+          "id": "a2",
+          "type": "context",
+          "content": "              \"NSPrivacyCollectedDataTypePurposeAppFunctionality\""
+        },
+        {
+          "id": "a3",
+          "type": "context",
+          "content": "            ]"
+        },
+        {
+          "id": "a4",
+          "type": "added",
+          "content": "          },"
+        },
+        {
+          "id": "a5",
+          "type": "added",
+          "content": "          {"
+        },
+        {
+          "id": "a6",
+          "type": "added",
+          "content": "            \"NSPrivacyCollectedDataType\": \"NSPrivacyCollectedDataTypeEmailAddress\","
+        },
+        {
+          "id": "a7",
+          "type": "added",
+          "content": "            \"NSPrivacyCollectedDataTypeLinked\": true,"
+        },
+        {
+          "id": "a8",
+          "type": "added",
+          "content": "            \"NSPrivacyCollectedDataTypeTracking\": false,"
+        },
+        {
+          "id": "a9",
+          "type": "context",
+          "content": "          ... five more entries added the same way (Name, UserID, PurchaseHistory, DeviceID, OtherUserContent)"
+        },
+        {
+          "id": "a10",
+          "type": "context",
+          "content": "        ]"
+        },
+        {
+          "id": "a11",
+          "type": "removed",
+          "content": "      },"
+        },
+        {
+          "id": "a12",
+          "type": "removed",
+          "content": "      \"buildProperties\": {"
+        },
+        {
+          "id": "a13",
+          "type": "removed",
+          "content": "        \"privacyManifestAggregationEnabled\": true"
+        },
+        {
+          "id": "a14",
+          "type": "context",
+          "content": "      }"
+        }
+      ]
+    },
+    {
+      "path": "docs/runbooks/APP_STORE_SUBMISSION.md",
+      "status": "added",
+      "adds": 152,
+      "dels": 0,
+      "role": "Listing text, privacy answers, age rating, review notes and checks run. Each claim marked verified or belief.",
+      "verified": true,
+      "lines": null
+    },
+    {
+      "path": "docs/CURRENT_STATE.md",
+      "status": "modified",
+      "adds": 9,
+      "dels": 0,
+      "role": "Records the App Store readiness findings and the newest EAS iOS build 1.0.4 (45).",
+      "verified": true,
+      "lines": null
+    },
+    {
+      "path": "docs/RELEASE.md",
+      "status": "modified",
+      "adds": 4,
+      "dels": 0,
+      "role": "Points to the submission runbook; notes ios.buildProperties is gone.",
+      "verified": true,
+      "lines": [
+        {
+          "id": "r1",
+          "type": "context",
+          "content": "Apply additive database changes before the client that depends on them. Edge"
+        },
+        {
+          "id": "r2",
+          "type": "context",
+          "content": "Functions and migrations are separate production actions: merging their"
+        },
+        {
+          "id": "r3",
+          "type": "context",
+          "content": "source deploys nothing."
+        },
+        {
+          "id": "r4",
+          "type": "added",
+          "content": ""
+        },
+        {
+          "id": "r5",
+          "type": "added",
+          "content": "## App Store Connect content"
+        },
+        {
+          "id": "r6",
+          "type": "added",
+          "content": ""
+        },
+        {
+          "id": "r7",
+          "type": "added",
+          "content": "Listing text, privacy answers, age rating and review notes live in `docs/runbooks/APP_STORE_SUBMISSION.md`."
+        }
+      ]
+    }
+  ]
+}
