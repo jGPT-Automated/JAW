@@ -1,6 +1,6 @@
 {
   "updated": "2026-10-22",
-  "summary": "Expo UI work is still in discovery. App Store readiness PR #79 is green and ready for your review. The one submission blocker is the website location wording.",
+  "summary": "Expo UI audit numbers are re-verified and a tiny-text fix PR is next. App Store readiness PR #79 is green and ready for your review. The one submission blocker is the website location wording.",
   "legend": {
     "verified": "Checked directly (command output, test run, screenshot, or merged PR).",
     "belief": "Reported by a thread or inferred; not independently checked.",
@@ -12,28 +12,32 @@
       "id": "expo-ui",
       "name": "Expo UI improvements",
       "repo": "jGPT-Automated/LocalCheck_Expo",
-      "state": "In progress",
+      "state": "Audit verified; tiny-text fix next",
       "steps": [
         {
           "text": "Read AGENTS.md, skills, open branches and PRs",
+          "status": "verified",
+          "note": ".claude/skills/ in the repo holds only ui-done; the Expo skills are not committed there."
+        },
+        {
+          "text": "Audit counts re-checked by grep on main",
+          "status": "verified",
+          "note": "Platform.OS 43 uses; shadow* 33 lines (about 9 style blocks); core Animated 71 uses in 15 files; expo-image 0 uses with 6 React Native Image sites; Gesture.Pan 1; Dimensions.get 2. The earlier audit numbers (53 / 38 / 21 / 5 / 8) were wrong or stale."
+        },
+        {
+          "text": "Visual QA on main (qa:visual, 3 phone sizes)",
+          "status": "verified",
+          "note": "0 failures, 23 cases above baseline, mostly dense schedule heatmap cells (about 39x17pt) and 9 to 9.5px eyebrow text."
+        },
+        {
+          "text": "Tiny-text fix (nothing under 11px) with before and after screenshots",
           "status": "open",
-          "note": "Thread reported this as in progress at 16:52 UTC."
+          "note": "Decided; will open a PR for your review, not merged."
         },
         {
-          "text": "Verify audit numbers with grep",
-          "status": "open"
-        },
-        {
-          "text": "Implement top UI fixes in small PRs",
-          "status": "open"
-        },
-        {
-          "text": "Lint, typecheck, tests, screenshots",
-          "status": "open"
-        },
-        {
-          "text": "Report PR links",
-          "status": "open"
+          "text": "boxShadow change",
+          "status": "open",
+          "note": "Only becomes a PR if iOS rendering can be checked."
         }
       ],
       "prs": []
@@ -156,6 +160,10 @@
     {
       "date": "2026-10-22",
       "text": "PR #79 CI all green; ready for review, not merged."
+    },
+    {
+      "date": "2026-10-22",
+      "text": "Expo UI: audit counts re-verified by grep; old counts retired. Tiny-text PR planned."
     }
   ]
 }
