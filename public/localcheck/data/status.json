@@ -1,6 +1,6 @@
 {
   "updated": "2026-10-22",
-  "summary": "Two workstreams opened October 22: Expo UI improvements and App Store readiness. Both are in discovery. Nothing below is built, merged or verified yet.",
+  "summary": "Expo UI work is still in discovery. App Store readiness has PR #79 open with verified config fixes and one verified blocker: the live privacy policy and support page contradict the app's location use.",
   "legend": {
     "verified": "Checked directly (command output, test run, screenshot, or merged PR).",
     "belief": "Reported by a thread or inferred; not independently checked.",
@@ -14,11 +14,27 @@
       "repo": "jGPT-Automated/LocalCheck_Expo",
       "state": "In progress",
       "steps": [
-        {"text": "Read AGENTS.md, skills, open branches and PRs", "status": "open", "note": "Thread reported this as in progress at 16:52 UTC."},
-        {"text": "Verify audit numbers with grep", "status": "open"},
-        {"text": "Implement top UI fixes in small PRs", "status": "open"},
-        {"text": "Lint, typecheck, tests, screenshots", "status": "open"},
-        {"text": "Report PR links", "status": "open"}
+        {
+          "text": "Read AGENTS.md, skills, open branches and PRs",
+          "status": "open",
+          "note": "Thread reported this as in progress at 16:52 UTC."
+        },
+        {
+          "text": "Verify audit numbers with grep",
+          "status": "open"
+        },
+        {
+          "text": "Implement top UI fixes in small PRs",
+          "status": "open"
+        },
+        {
+          "text": "Lint, typecheck, tests, screenshots",
+          "status": "open"
+        },
+        {
+          "text": "Report PR links",
+          "status": "open"
+        }
       ],
       "prs": []
     },
@@ -28,13 +44,62 @@
       "repo": "jGPT-Automated/LocalCheck_Expo",
       "state": "In progress",
       "steps": [
-        {"text": "Read repo config (app.json, eas.json, AGENTS.md, skills)", "status": "open", "note": "Thread reported this as in progress at 16:53 UTC."},
-        {"text": "Research current Apple and Expo requirements", "status": "open"},
-        {"text": "Fix config gaps, privacy, EAS profiles", "status": "open"},
-        {"text": "Draft store listing text", "status": "open"},
-        {"text": "Open PR and report", "status": "open"}
+        {
+          "text": "Read repo config (app.json, eas.json, AGENTS.md, skills)",
+          "status": "verified"
+        },
+        {
+          "text": "Removed invalid ios.buildProperties key; expo-doctor now 18/18",
+          "status": "verified",
+          "note": "In PR #79."
+        },
+        {
+          "text": "Expanded privacy manifest",
+          "status": "verified",
+          "note": "In PR #79."
+        },
+        {
+          "text": "Added docs/runbooks/APP_STORE_SUBMISSION.md",
+          "status": "verified",
+          "note": "In PR #79."
+        },
+        {
+          "text": "Xcode 26 image meets Apple's requirement",
+          "status": "verified"
+        },
+        {
+          "text": "Sign in with Apple, account deletion and report/block exist in code",
+          "status": "verified"
+        },
+        {
+          "text": "Privacy, terms and support URLs return 200",
+          "status": "verified"
+        },
+        {
+          "text": "Newest EAS iOS build is 1.0.4 (45); docs/RELEASE.md is stale",
+          "status": "verified"
+        },
+        {
+          "text": "Age-rating answers and screenshot sizes",
+          "status": "belief"
+        },
+        {
+          "text": "Build 45 lacks auto check-in",
+          "status": "belief"
+        },
+        {
+          "text": "Terms mention only a monthly plan while the app sells Monthly and Yearly",
+          "status": "belief"
+        }
       ],
-      "prs": []
+      "prs": [
+        {
+          "title": "App Store readiness (#79)",
+          "url": "https://github.com/jGPT-Automated/LocalCheck_Expo/pull/79",
+          "state": "Open",
+          "evidence": "expo-doctor 18/18"
+        }
+      ]
     },
     {
       "id": "docs",
@@ -42,17 +107,51 @@
       "repo": "jGPT-Automated/JAW",
       "state": "Live",
       "steps": [
-        {"text": "Status page and data file added under /localcheck/", "status": "verified", "note": "status.html and data/status.json in this PR."},
-        {"text": "Project artifact published", "status": "open"}
+        {
+          "text": "Status page and data file added under /localcheck/",
+          "status": "verified",
+          "note": "status.html and data/status.json in this PR."
+        },
+        {
+          "text": "Project artifact published",
+          "status": "open"
+        }
       ],
       "prs": []
     }
   ],
   "needs_you": [
-    {"text": "Confirm the docs repo is JAW. No repo named JAWS exists on your account; JAW already hosts the LocalCheck working file at /localcheck/, so this page was added there.", "status": "needs-you"},
-    {"text": "Existing pending items from the working file: Google service-account setup and an installable Android test build.", "status": "belief", "note": "Taken from public/localcheck/agent/README.md, not re-checked."}
+    {
+      "text": "BLOCKER: the live privacy policy and support page say location is foreground-only, but the app asks for Always location and background mode. Change the website text; the site is not in the Expo repo.",
+      "status": "needs-you",
+      "note": "Verified."
+    },
+    {
+      "text": "Create the App Review reviewer account and screenshots.",
+      "status": "needs-you"
+    },
+    {
+      "text": "Enter answers in App Store Connect and start the build.",
+      "status": "needs-you"
+    },
+    {
+      "text": "Confirm the docs repo is JAW (no repo named JAWS exists).",
+      "status": "needs-you"
+    },
+    {
+      "text": "Still pending from the working file: Google service-account setup and an installable Android test build.",
+      "status": "belief",
+      "note": "From public/localcheck/agent/README.md, not re-checked."
+    }
   ],
   "log": [
-    {"date": "2026-10-22", "text": "Status page created. Expo UI and App Store threads started; no results reported yet."}
+    {
+      "date": "2026-10-22",
+      "text": "Status page created. Expo UI and App Store threads started; no results reported yet."
+    },
+    {
+      "date": "2026-10-22",
+      "text": "App Store readiness: PR #79 opened; location-text blocker recorded."
+    }
   ]
 }
