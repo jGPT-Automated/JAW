@@ -10,16 +10,13 @@ The dashboard is mobile-friendly and gated behind sign-in. A small read-only sur
 
 | Route | What it does |
 |---|---|
-| `/` **Overview** | Agents online, deliveries today, queue backlog, tasks in progress, 24-hour delivery health, 12-week activity, latest events |
-| `/voice` **Talk** | Voice conversation with JAW (beUI voice orb + LiveKit). JAW recalls memory at the start of each call, saves what you tell it, and can delegate to your other agents. The transcript lands in the Inbox |
-| `/agents` | Register Hyperagent, Letta or any HTTPS webhook agent; each agent's stats, transcript, settings and inbound token |
-| `/inbox` | Every conversation across voice, the hub, webhooks and agent-to-agent delegation |
-| `/activity` | Event stream and the delivery queue |
-| `/memory` | Shared memory: search, add, forget. Same store the voice agent and other agents use |
-| `/roadmap` | Tasks by stage |
-| `/integrations` | Setup per platform, the outbound payload, the inbound endpoint |
-| `/skills` | Skills directory for agents (also served as `/api/public/llms.txt`) |
+| `/` **Talk** | Voice conversation with JAW (beUI voice orb + LiveKit). The orb breathes until the agent's audio arrives |
+| `/conversations` | Every call, read summary first: main points, decisions, follow-ups, then the full transcript (Kokonut synced transcript) |
+| `/roadmap` | LocalCheck's locked requests on a cult-ui kanban board, from `public/localcheck/data/decisions.json` |
+| `/resources` | Skills (plain text agents fetch), the owner's taste references, the component libraries |
 | `/protocol`, `/manifesto` | Reference writing |
+
+Agents can fetch without signing in: `/skills/index.json`, `/skills/<name>.md`, `/taste.json`.
 
 `⌘K` / `Ctrl K` opens the command palette anywhere.
 
@@ -111,23 +108,20 @@ The voice worker lives in `agent/` with its own README (local dev and `lk agent 
 
 ---
 
-## UI rule: shadcn/ui + beUI only
+## UI rule: allowlisted libraries only
 
-| Library | Where | Used for |
-|---|---|---|
-| [shadcn/ui](https://ui.shadcn.com) | `src/components/ui` | Shell, cards, forms, dialogs, sheets, tables, menus, badges, empty states, toasts |
-| [beUI](https://beui.dev) | `src/components/{motion,agents,charts}`, helpers in `src/lib` | Voice orb, animated tabs and badges, ⌘K palette, chat transcript and prompt input, charts |
+Every screen is composed from [shadcn/ui](https://ui.shadcn.com), [beUI](https://beui.dev), [cult-ui](https://www.cult-ui.com) and [Kokonut UI](https://kokonutui.com), used the way their demos use them. `DESIGN.md` records which component each screen uses.
 
 ```bash
 npx shadcn@latest add <component>
-npx shadcn@latest add @beui/<component>   # registry configured in components.json
+npx shadcn@latest add @beui/<item>      # also @cult-ui/<item>, @kokonutui/<item> (registries in components.json)
 ```
 
-Brand tokens (linen canvas, graphite ink, lime pulse, Switzer, pill buttons, 12px cards) live in `src/index.css`.
+Brand tokens (linen, graphite, lime pulse, Switzer) live in `src/index.css`. Dark is the default.
 
 ## Skills
 
-Agent skills used to build this repo are installed in `.claude/skills` and pinned in `skills-lock.json` (design, shadcn, Neon, Neon Auth, LiveKit, Inngest, Better Auth, handoff). `npm run skills:seed` syncs them into the hub's skills directory so every agent can find them.
+Agent skills used to build this repo are installed in `.claude/skills` and pinned in `skills-lock.json` (design, shadcn, Neon, Neon Auth, LiveKit, Inngest, Better Auth, handoff). `npm run resources` (also run before every build) publishes them to `public/skills` as plain markdown plus `index.json`.
 
 ```bash
 npx skills add <owner/repo> -s <skill>   # find more at https://skills.sh

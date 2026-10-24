@@ -1,0 +1,137 @@
+{
+  "skills": [
+    {
+      "name": "better-auth-best-practices",
+      "description": "Configure Better Auth server and client, set up database adapters, manage sessions, add plugins, and handle environment variables. Use when users mention Better Auth, betterauth, auth.ts, or need to set up TypeScript authentication with email/password, OAuth, or plugin configuration.",
+      "url": "/skills/better-auth-best-practices.md",
+      "source": "https://github.com/better-auth/skills",
+      "bytes": 8231
+    },
+    {
+      "name": "building-livekit-agents",
+      "description": "Builds voice and chat AI agents with LiveKit Agents and LiveKit Cloud. Use when the user asks to \"build a voice agent\", \"create a LiveKit agent\", \"add voice AI to my app\", \"implement handoffs\", \"structure an agent workflow\", \"my agent is slow / too chatty\", \"it says it booked but nothing was saved\", \"make it confirm before committing\", \"it keeps re-asking things the caller already said\", or is writing code against the LiveKit Agents SDK. Covers architecture: designing for latency, keeping context small, splitting a monolithic agent into handoffs and tasks, and designing for voice. Also covers keeping the model in charge of meaning while code owns state, approvals, and effects. For API specifics use reading-livekit-docs. To check behavior use debugging-livekit-agents and testing-livekit-agents.",
+      "url": "/skills/building-livekit-agents.md",
+      "source": "https://github.com/livekit/agent-skills",
+      "bytes": 11016
+    },
+    {
+      "name": "design-taste-frontend",
+      "description": "tasteskill v2, the anti-slop frontend skill. Art direction for websites, distilled from a study of 247 curated gallery sites (One Page Love, Awwwards Sites of the Day). Deals researched directions (idea, composition, type, palette, photographs, section blueprints) from a library, enforces a strict no-slop house style with a real-browser inspector, and runs a look-and-fix loop on screenshots. Use this whenever you build, design, redesign, restyle, polish or review a landing page, marketing site, portfolio, product page, one-pager, hero or any public-facing web page, in any stack (HTML/CSS, React, Next.js, Vue, Svelte, Astro, Tailwind) — also when the user says a page looks generic, templated, \"AI-made\", sloppy, or asks to make it look designed, premium, award-level or less like every other site. Also for app screens: dashboards, admin and analytics views, settings, inboxes and other screens people work in, with their own run and rules.",
+      "url": "/skills/design-taste-frontend.md",
+      "source": "https://github.com/leonxlnx/taste-skill",
+      "bytes": 38458
+    },
+    {
+      "name": "docs",
+      "description": "Find the right Deepgram documentation for any task. Use whenever someone needs help locating docs, understanding which API to use, or wants to ask questions about Deepgram. Covers all product areas: speech-to-text (Nova, Flux STT), text-to-speech (Aura, Flux TTS), voice agents, audio intelligence, and self-hosted deployments.",
+      "url": "/skills/docs.md",
+      "source": "https://github.com/deepgram/skills",
+      "bytes": 5249
+    },
+    {
+      "name": "find-skills",
+      "description": "Helps users discover and install agent skills when they ask questions like \"how do I do X\", \"find a skill for X\", \"is there a skill that can...\", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill.",
+      "url": "/skills/find-skills.md",
+      "source": "https://github.com/vercel-labs/skills",
+      "bytes": 5472
+    },
+    {
+      "name": "frontend-design",
+      "description": "Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one. Helps with aesthetic direction, typography, and making choices that don't read as templated defaults.",
+      "url": "/skills/frontend-design.md",
+      "source": "https://github.com/anthropics/skills",
+      "bytes": 9390
+    },
+    {
+      "name": "handoff",
+      "description": "Compact the current conversation into a handoff document for another agent to pick up.",
+      "url": "/skills/handoff.md",
+      "source": "https://github.com/mattpocock/skills",
+      "bytes": 940
+    },
+    {
+      "name": "impeccable",
+      "description": "Use when the user wants to design, redesign, shape, critique, audit, polish, simplify, harden, animate, or otherwise improve a frontend interface: websites, landing pages, dashboards, product UI, components, forms, settings, onboarding, empty states, and native iOS or Android screens. Handles UX review, hierarchy, layout, typography, color, motion, UX copy, accessibility, responsive behavior, edge cases, and capturing or documenting design systems (DESIGN.md, tokens). Also for making bland UI bolder, loud UI quieter, or ambitious visual effects. Not for backend-only or non-UI tasks.",
+      "url": "/skills/impeccable.md",
+      "source": "https://github.com/pbakaus/impeccable",
+      "bytes": 11762
+    },
+    {
+      "name": "inngest-durable-functions",
+      "description": "Use when building functions that must survive process crashes, retry automatically on failure, run on a schedule, react to events, or maintain state across infrastructure failures — e.g., webhook handlers that drop events, flaky cron jobs, background jobs that fail mid-execution, or workflows that need to resume where they left off. Covers Inngest function configuration, triggers (events, cron, invoke), step execution and memoization, idempotency, cancellation, error handling, retries, logging, and observability.",
+      "url": "/skills/inngest-durable-functions.md",
+      "source": "https://github.com/inngest/inngest-skills",
+      "bytes": 14695
+    },
+    {
+      "name": "inngest-setup",
+      "description": "Use when adding durable execution to a TypeScript project — building retry-safe webhook handlers, background jobs that survive crashes, scheduled tasks, or long-running workflows that outlive a single request. Covers Inngest SDK installation, client config, environment variables, serve endpoints (Next.js, Express, Hono, Fastify), connect-as-worker mode, and the local dev server.",
+      "url": "/skills/inngest-setup.md",
+      "source": "https://github.com/inngest/inngest-skills",
+      "bytes": 12038
+    },
+    {
+      "name": "inngest-steps",
+      "description": "Use when implementing delays that must survive process restarts (e.g., 24-hour cart abandonment, scheduled follow-ups), waiting for human approval or external events with timeouts (review gates, webhook callbacks, async API completion), polling external services without losing state on crashes, calling other functions and awaiting their results, memoizing expensive operations so they don't re-run on retry, or running async work in parallel inside a workflow. Covers Inngest step methods: step.run, step.sleep, step.waitForEvent, step.waitForSignal, step.sendEvent, step.invoke, step.ai, plus patterns for loops and parallel execution.",
+      "url": "/skills/inngest-steps.md",
+      "source": "https://github.com/inngest/inngest-skills",
+      "bytes": 11515
+    },
+    {
+      "name": "neon-auth",
+      "description": "Add authentication to a new app. Use for \"add auth\", \"add login\", Neon Auth (Managed Better Auth), identity routing, sign-up, sign-in, password reset, email OTP, magic links, organizations, phone OTP, OAuth, passkeys, MFA, trusted domains, invalid domain, and @neondatabase/auth. No existing identity: default to Managed Better Auth. Keep working Better Auth, Clerk, Supabase Auth, or another IdP. User asked to migrate from Supabase Auth: Managed Better Auth. A required plugin outside Managed support: self-managed Better Auth on a Neon Function or the existing app host. Also use for auth APIs in @neondatabase/neon-js.",
+      "url": "/skills/neon-auth.md",
+      "source": "https://github.com/neondatabase/agent-skills",
+      "bytes": 12404
+    },
+    {
+      "name": "neon-postgres",
+      "description": "Guides and best practices for working with Lakebase Postgres on Neon: connections, pooled vs direct, schema migrations, branching, autoscaling, scale-to-zero, instant restore, read replicas, IP allow lists, logical replication, and Lakebase Search. Use when the work is an existing DATABASE_URL, SQL, schema, inspect, or search. New backends, Auth, files, Functions, and LLM calls go to the parent `neon` skill. Live queries, reactive UIs, and realtime data go to `neon-realtime`. Also use for \"@neondatabase/serverless\", \"@neondatabase/neon-js\", \"neon inspect db\", \"semantic search\", \"vector search\", \"full-text search\", \"BM25\", or \"hybrid search\".",
+      "url": "/skills/neon-postgres.md",
+      "source": "https://github.com/neondatabase/agent-skills",
+      "bytes": 16823
+    },
+    {
+      "name": "operating-livekit-agents",
+      "description": "Deploys and operates a LiveKit agent in production: shipping a version to LiveKit Cloud and rolling it back, secrets and configuration, the worker process model and prewarming, safe async inside worker processes, provider timeouts and degradation, graceful shutdown, SDK upgrades, and observability. Use when the user says \"deploy my agent\", \"roll back the deployment\", \"tail the agent logs\", \"the first call after a restart is slow\", \"attached to a different loop / event loop is closed\", \"prewarm the VAD\", \"shut down without dropping calls\", \"upgrade livekit-agents safely\", \"correlate logs by session\", or is changing an agent codebase that is already live. Not for designing the agent (building-livekit-agents) or reproducing one bad conversation locally (debugging-livekit-agents).",
+      "url": "/skills/operating-livekit-agents.md",
+      "source": "https://github.com/livekit/agent-skills",
+      "bytes": 9736
+    },
+    {
+      "name": "reading-livekit-docs",
+      "description": "Looks up current LiveKit facts (API signatures, CLI flags, config options, model and provider support, SDK changelogs, pricing) from the docs instead of answering from memory. Use whenever a question touches LiveKit specifics: \"does LiveKit support X\", \"what changed in agents 1.8\", \"what are the arguments to Y\", \"how much does LiveKit cost\", \"find an example of Z in the LiveKit repos\", or before writing any LiveKit code. Other LiveKit skills load this one first. Covers the LiveKit Docs MCP server and the `lk docs` CLI.",
+      "url": "/skills/reading-livekit-docs.md",
+      "source": "https://github.com/livekit/agent-skills",
+      "bytes": 4199
+    },
+    {
+      "name": "shadcn",
+      "description": "Manages shadcn components and projects — adding, searching, fixing, debugging, styling, and composing UI, including chat interfaces. Provides project context, component docs, and usage examples. Applies when working with shadcn/ui, component registries, presets, --preset codes, or any project with a components.json file. Also triggers for \"shadcn init\", \"create an app with --preset\", \"switch to --preset\", and for building a design system or applying a DESIGN.md or brand spec to shadcn/ui.",
+      "url": "/skills/shadcn.md",
+      "source": "https://github.com/shadcn-ui/ui",
+      "bytes": 21606
+    },
+    {
+      "name": "ui-ux-pro-max",
+      "description": "UI/UX design intelligence for web, mobile, and desktop. This skill should be used when designing, building, reviewing, or fixing interfaces, including pages, components, design systems, accessibility, interaction, responsive layout, typography, color, charts, and stack-specific UI implementation. Searchable local data: 79 searchable styles (50 active), 192 product palettes and reasoning profiles, 74 font pairings, 119 UX guidelines, 105 icons, 17 GSAP presets, 25 chart types, and 22 stacks.",
+      "url": "/skills/ui-ux-pro-max.md",
+      "source": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+      "bytes": 15969
+    },
+    {
+      "name": "vercel-react-best-practices",
+      "description": "React and Next.js performance optimization guidelines from Vercel Engineering. This skill should be used when writing, reviewing, or refactoring React/Next.js code to ensure optimal performance patterns. Triggers on tasks involving React components, Next.js pages, data fetching, bundle optimization, or performance improvements.",
+      "url": "/skills/vercel-react-best-practices.md",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "bytes": 7251
+    },
+    {
+      "name": "web-design-guidelines",
+      "description": "Review UI code for Web Interface Guidelines compliance. Use when asked to \"review my UI\", \"check accessibility\", \"audit design\", \"review UX\", or \"check my site against best practices\".",
+      "url": "/skills/web-design-guidelines.md",
+      "source": "https://github.com/vercel-labs/agent-skills",
+      "bytes": 1231
+    }
+  ]
+}

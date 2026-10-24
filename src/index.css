@@ -82,7 +82,7 @@
   --glass-thin-bg: rgb(255 255 255 / 0.55);
 }
 
-/* Graphite night variant of the same palette. */
+/* Default theme. Lime is the one bright accent: primary actions (the mic, CTAs) only. */
 .dark {
   --background: var(--color-graphite-ink);
   --foreground: var(--color-linen-canvas);
@@ -90,7 +90,7 @@
   --card-foreground: #e2e2dc;
   --popover: #1c1c1b;
   --popover-foreground: var(--color-linen-canvas);
-  --primary: var(--color-linen-canvas);
+  --primary: var(--color-lime-pulse);
   --primary-foreground: var(--color-graphite-ink);
   --secondary: #262625;
   --secondary-foreground: var(--color-linen-canvas);

@@ -130,3 +130,27 @@ agentApi.post("/transcript", async (c) => {
   await q(`UPDATE agents SET last_heartbeat = now(), status = 'active' WHERE id = $1`, [agent.id]);
   return c.json({ ok: true });
 });
+
+/** End-of-call summary, so a long conversation can be read main points first. */
+agentApi.post("/summary", async (c) => {
+  const b = await c.req.json<{
+    conversation_id?: string;
+    title?: string;
+    summary?: string;
+    key_points?: string[];
+    decisions?: string[];
+    action_items?: string[];
+  }>();
+  if (!b.conversation_id || !UUID_RE.test(b.conversation_id) || !b.summary?.trim()) {
+    throw new HTTPException(400, { message: "conversation_id and summary are required" });
+  }
+  const list = (v?: string[]) => JSON.stringify((v ?? []).map((x) => String(x).trim()).filter(Boolean).slice(0, 30));
+  const row = await one(
+    `UPDATE voice_sessions SET title = $2, summary = $3, key_points = $4, decisions = $5, action_items = $6,
+            ended_at = coalesce(ended_at, now())
+     WHERE conversation_id = $1 RETURNING conversation_id`,
+    [b.conversation_id, b.title?.trim().slice(0, 140) || null, b.summary.trim().slice(0, 4000), list(b.key_points), list(b.decisions), list(b.action_items)],
+  );
+  if (!row) throw new HTTPException(404, { message: "Conversation not found" });
+  return c.json({ ok: true });
+});

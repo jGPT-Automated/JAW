@@ -190,6 +190,41 @@ owner.put("/docs/:slug", async (c) => {
   return c.json(row);
 });
 
+// Conversations: voice calls, summary first, transcript from agent_messages -------------
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+owner.get("/conversations", async (c) => {
+  const rows = await q(
+    `SELECT s.conversation_id AS id, s.title, s.summary, s.started_at, s.ended_at,
+            jsonb_array_length(s.key_points) AS point_count,
+            count(m.id)::int AS turns, max(m.created_at) AS last_message_at
+     FROM voice_sessions s
+     LEFT JOIN agent_messages m ON m.conversation_id = s.conversation_id
+     GROUP BY s.id
+     HAVING count(m.id) > 0 OR s.summary IS NOT NULL
+     ORDER BY s.started_at DESC
+     LIMIT 200`,
+  );
+  return c.json(rows);
+});
+
+owner.get("/conversations/:id", async (c) => {
+  const id = c.req.param("id");
+  if (!UUID_RE.test(id)) throw new HTTPException(400, { message: "Not a conversation id" });
+  const session = await one(
+    `SELECT conversation_id AS id, title, summary, key_points, decisions, action_items, started_at, ended_at
+     FROM voice_sessions WHERE conversation_id = $1`,
+    [id],
+  );
+  if (!session) throw new HTTPException(404, { message: "Conversation not found" });
+  const messages = await q(
+    `SELECT id, from_kind, from_label, content, created_at FROM agent_messages
+     WHERE conversation_id = $1 ORDER BY created_at`,
+    [id],
+  );
+  return c.json({ ...session, messages });
+});
+
 // Voice: a LiveKit room with the JAW voice agent dispatched into it ---------------------
 owner.post("/voice/token", async (c) => {
   const { LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET } = process.env;

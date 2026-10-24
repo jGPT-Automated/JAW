@@ -1,6 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/hub/lib/api";
-import type { ActivityLog, Agent, AgentMessage, Doc, Memory, Provider, QueueItem, RoadmapTask, Skill } from "@/hub/lib/types";
+import type {
+  ActivityLog,
+  Agent,
+  AgentMessage,
+  Conversation,
+  ConversationListItem,
+  Doc,
+  Memory,
+  Provider,
+  QueueItem,
+  RoadmapTask,
+  Skill,
+} from "@/hub/lib/types";
 
 export const keys = {
   agents: ["agents"] as const,
@@ -12,10 +24,24 @@ export const keys = {
   memories: (q: string) => ["memories", q] as const,
   docs: ["docs"] as const,
   skills: ["skills"] as const,
+  conversations: ["conversations"] as const,
+  conversation: (id: string) => ["conversations", id] as const,
 };
 
 // Live-ish: lists refresh every few seconds while the tab is visible.
 const LIVE = { refetchInterval: 5_000, refetchIntervalInBackground: false } as const;
+
+export function useConversations() {
+  return useQuery({ queryKey: keys.conversations, queryFn: () => api<ConversationListItem[]>("/conversations") });
+}
+
+export function useConversation(id: string | undefined) {
+  return useQuery({
+    queryKey: keys.conversation(id ?? ""),
+    queryFn: () => api<Conversation>(`/conversations/${id}`),
+    enabled: !!id,
+  });
+}
 
 export function useAgents() {
   return useQuery({ queryKey: keys.agents, queryFn: () => api<Agent[]>("/agents"), ...LIVE });

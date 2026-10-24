@@ -115,3 +115,26 @@ export interface Skill {
   tags: string[];
   installed_in_repo: boolean;
 }
+
+export interface ConversationListItem {
+  id: string;
+  title: string | null;
+  summary: string | null;
+  started_at: string;
+  ended_at: string | null;
+  point_count: number;
+  turns: number;
+  last_message_at: string | null;
+}
+
+export interface Conversation {
+  id: string;
+  title: string | null;
+  summary: string | null;
+  key_points: string[];
+  decisions: string[];
+  action_items: string[];
+  started_at: string;
+  ended_at: string | null;
+  messages: { id: string; from_kind: string; from_label: string | null; content: string; created_at: string }[];
+}
