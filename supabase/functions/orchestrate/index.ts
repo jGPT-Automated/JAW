@@ -172,17 +172,24 @@ Deno.serve(async (req) => {
                   const { data: cred } = await supabase
                     .from("agent_credentials").select("webhook_secret").eq("agent_id", agent.id).maybeSingle();
                   const headers: Record<string, string> = { "Content-Type": "application/json" };
-                  if (cred?.webhook_secret) headers["X-Hyperagent-Webhook-Secret"] = cred.webhook_secret;
+                  if (cred?.webhook_secret) {
+                    if (agent.provider === "letta") headers.Authorization = `Basic ${btoa(`webhook:${cred.webhook_secret}`)}`;
+                    else if (agent.provider === "webhook") headers.Authorization = `Bearer ${cred.webhook_secret}`;
+                    else headers["X-Hyperagent-Webhook-Secret"] = cred.webhook_secret;
+                  }
                   const r = await fetch(agent.webhook_url, {
                     method: "POST", headers,
                     body: JSON.stringify({
                       prompt: a.subtask, agent_id: agent.id, agent_name: agent.name,
                       conversation_id: conversationId, source: "orchestrator",
+                      reply_url: `${Deno.env.get("SUPABASE_URL")}/functions/v1/agent-inbound`,
                     }),
                   });
                   const text = await r.text();
                   if (!r.ok) throw new Error(`webhook ${r.status}`);
-                  try {
+                  if (agent.provider === "letta" || r.status === 202) {
+                    content = "[delivered — reply will arrive via agent-inbound]";
+                  } else try {
                     const j = JSON.parse(text);
                     content = j.reply || j.message || j.text || j.content || j.output || text;
                   } catch { content = text; }

@@ -1,6 +1,8 @@
 // Drains pending messages from message_queue, respecting per-agent rate limits.
-// Calls the agent's webhook (Hyperagent), captures the reply, mirrors both legs to
-// agent_messages, and (if reply_channel = telegram) sends the reply back over Telegram.
+// Calls the agent's webhook (auth depends on agents.provider), captures the reply, mirrors
+// both legs to agent_messages, and (if reply_channel = telegram) sends the reply back over
+// Telegram. Async providers (Letta answers 202 {"ok":true}) are marked delivered; their
+// reply arrives later through agent-inbound.
 // Designed to be called frequently (every ~30s) by a cron OR triggered manually.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -11,6 +13,31 @@ const corsHeaders = {
 };
 
 const MAX_PER_INVOCATION = 10;
+
+function authHeaders(provider: string, secret: string | null | undefined): Record<string, string> {
+  if (!secret) return {};
+  switch (provider) {
+    case "letta":
+      return { Authorization: `Basic ${btoa(`webhook:${secret}`)}` };
+    case "webhook":
+      return { Authorization: `Bearer ${secret}` };
+    default:
+      return { "X-Hyperagent-Webhook-Secret": secret };
+  }
+}
+
+// A bare acknowledgement is not a reply.
+function isAck(status: number, text: string) {
+  if (status === 202 || !text.trim()) return true;
+  try {
+    const j = JSON.parse(text);
+    if (!j || typeof j !== "object" || Array.isArray(j)) return false;
+    const keys = Object.keys(j).filter((k) => !["ok", "status", "success", "id", "request_id", "run_id"].includes(k));
+    return keys.length === 0;
+  } catch {
+    return false;
+  }
+}
 
 async function callTelegram(token: string, method: string, body: unknown) {
   const r = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
@@ -56,14 +83,17 @@ async function processOne(supabase: ReturnType<typeof createClient>, item: any) 
   }).select("id").single();
 
   let replyText = "";
+  let delivered = false; // accepted by an async provider; reply comes via agent-inbound
   let failure: string | null = null;
 
   try {
     if (!agent.webhook_url) {
       throw new Error("agent has no webhook_url configured");
     }
-    const headers: Record<string, string> = { "Content-Type": "application/json" };
-    if (cred?.webhook_secret) headers["X-Hyperagent-Webhook-Secret"] = cred.webhook_secret;
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...authHeaders(agent.provider || "hyperagent", cred?.webhook_secret),
+    };
 
     const resp = await fetch(agent.webhook_url, {
       method: "POST",
@@ -74,15 +104,21 @@ async function processOne(supabase: ReturnType<typeof createClient>, item: any) 
         agent_name: agent.name,
         conversation_id: conversationId,
         source: item.source,
+        // Where the agent can POST its answer (needs its inbound token as a Bearer token).
+        reply_url: `${Deno.env.get("SUPABASE_URL")}/functions/v1/agent-inbound`,
       }),
     });
     const text = await resp.text();
     if (!resp.ok) throw new Error(`webhook ${resp.status}: ${text.slice(0, 200)}`);
-    // Try to extract a reply field; fall back to raw body
-    try {
-      const j = JSON.parse(text);
-      replyText = j.reply || j.message || j.text || j.content || j.output || text;
-    } catch { replyText = text; }
+    if (agent.provider === "letta" || isAck(resp.status, text)) {
+      delivered = true;
+    } else {
+      // Try to extract a reply field; fall back to raw body
+      try {
+        const j = JSON.parse(text);
+        replyText = j.reply || j.message || j.text || j.content || j.output || text;
+      } catch { replyText = text; }
+    }
   } catch (e) {
     failure = (e as Error).message;
   }
@@ -96,6 +132,17 @@ async function processOne(supabase: ReturnType<typeof createClient>, item: any) 
     await supabase.from("activity_logs").insert({
       agent_id: agent.id, agent_name: agent.name, event_type: "error",
       message: `Webhook failed: ${failure.slice(0, 160)}`,
+    });
+    return;
+  }
+
+  if (delivered) {
+    await supabase.from("agents").update({ last_heartbeat: new Date().toISOString() }).eq("id", agent.id);
+    await supabase.from("message_queue").update({ status: "sent", last_error: null }).eq("id", item.id);
+    await supabase.from("activity_logs").insert({
+      agent_id: agent.id, agent_name: agent.name, event_type: "task_routed",
+      message: `Delivered to ${agent.provider} webhook — awaiting reply`,
+      metadata: { conversation_id: conversationId },
     });
     return;
   }
