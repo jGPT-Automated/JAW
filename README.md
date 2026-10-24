@@ -6,6 +6,22 @@ JAW Hub is the command center for an agent fleet. It registers agents that live 
 
 ---
 
+## Status and next
+
+**Done (this release):** the dashboard on shadcn/ui + beUI, agent registry, rate-limited delivery to Hyperagent / Letta / custom webhooks, inbound replies, live activity, roadmap. The backend is still the Lovable-managed Supabase project in `.env` (separate from LocalCheck's).
+
+**Next: voice + memory MVP, moving the backend to Neon.** Plumbing first, features later:
+
+1. **Neon Postgres** becomes the source of truth (scale-to-zero, never pauses). The current tables move over, plus `memories` (pgvector) and `handoffs`.
+2. **Neon Auth** (managed Better Auth) gates the admin dashboard; a small public, read-only `/context` surface stays fetchable by any agent.
+3. **Vercel functions** (`/api/*`) replace the Supabase edge functions. Secrets stay server-side.
+4. **Voice on mobile web:** beUI voice orb → LiveKit room → voice agent (Deepgram speech-to-text, Gemini reasoning). The agent can **save memory**, **recall memory** in the next conversation, and **delegate** to Letta / Hyperagent through the existing queue.
+5. **Inngest** runs the durable loop: break work into small units → do one → verify → write a handoff note → sleep → resume from the handoff on the next wake-up.
+
+Later: Photon (phone number for voice, plus Telegram / WhatsApp / SMS / email as channels), Pinecone if pgvector stops being enough, cross-platform flows.
+
+---
+
 ## UI rule: shadcn/ui + beUI only
 
 Every screen is composed from two libraries and nothing else:
