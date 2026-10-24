@@ -1,5 +1,7 @@
 // Registers a new agent (or updates an existing one) and stores its credentials
 // in the service-role-only agent_credentials table.
+// New agents get an inbound token (returned once) for posting back via agent-inbound;
+// pass rotate_inbound_token to issue a fresh one.
 // Public-facing: gated by the same access pattern as the rest of the dashboard.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
@@ -11,9 +13,19 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+const PROVIDERS = ["hyperagent", "letta", "webhook"] as const;
+type Provider = (typeof PROVIDERS)[number];
+
+function newInboundToken() {
+  const bytes = crypto.getRandomValues(new Uint8Array(24));
+  return "jaw_" + Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 interface Body {
   id?: string;
   name: string;
+  provider?: Provider;
+  rotate_inbound_token?: boolean;
   type?: string;
   description?: string;
   model?: string;
@@ -40,12 +52,19 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (body.provider !== undefined && !PROVIDERS.includes(body.provider)) {
+      return new Response(JSON.stringify({ error: `provider must be one of ${PROVIDERS.join(", ")}` }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const webhookEnabled = !!(body.webhook_url && body.webhook_url.trim());
     const telegramEnabled = !!(body.telegram_bot_token && body.telegram_bot_token.trim());
 
     const agentRow: Record<string, unknown> = {
       name: body.name,
       type: body.type || "executor",
+      provider: body.provider || "hyperagent",
       description: body.description ?? null,
       model: body.model ?? null,
       system_instructions: body.system_instructions ?? "",
@@ -60,8 +79,27 @@ Deno.serve(async (req) => {
     };
 
     let agentId = body.id;
+    const isNew = !agentId;
     if (agentId) {
-      const { error } = await supabase.from("agents").update(agentRow).eq("id", agentId);
+      // Partial update: only touch fields the caller sent, so e.g. rotating the
+      // inbound token does not wipe the webhook URL.
+      const patch: Record<string, unknown> = { name: body.name };
+      if (body.type !== undefined) patch.type = agentRow.type;
+      if (body.provider !== undefined) patch.provider = agentRow.provider;
+      if (body.description !== undefined) patch.description = agentRow.description;
+      if (body.model !== undefined) patch.model = agentRow.model;
+      if (body.system_instructions !== undefined) patch.system_instructions = agentRow.system_instructions;
+      if (body.webhook_url !== undefined) {
+        patch.webhook_url = agentRow.webhook_url;
+        patch.webhook_enabled = webhookEnabled;
+      }
+      if (body.telegram_bot_token !== undefined) patch.telegram_enabled = telegramEnabled;
+      if (body.telegram_chat_id !== undefined) patch.telegram_chat_id = agentRow.telegram_chat_id;
+      if (body.daily_message_limit !== undefined) patch.daily_message_limit = agentRow.daily_message_limit;
+      if (body.min_seconds_between_messages !== undefined) {
+        patch.min_seconds_between_messages = agentRow.min_seconds_between_messages;
+      }
+      const { error } = await supabase.from("agents").update(patch).eq("id", agentId);
       if (error) throw error;
     } else {
       const { data, error } = await supabase.from("agents").insert(agentRow).select("id").single();
@@ -73,6 +111,11 @@ Deno.serve(async (req) => {
     const credPatch: Record<string, unknown> = { agent_id: agentId };
     if (body.webhook_secret !== undefined) credPatch.webhook_secret = body.webhook_secret || null;
     if (body.telegram_bot_token !== undefined) credPatch.telegram_bot_token = body.telegram_bot_token || null;
+    let inboundToken: string | null = null;
+    if (isNew || body.rotate_inbound_token) {
+      inboundToken = newInboundToken();
+      credPatch.inbound_token = inboundToken;
+    }
 
     if (Object.keys(credPatch).length > 1) {
       const { error: cErr } = await supabase
@@ -90,10 +133,12 @@ Deno.serve(async (req) => {
       agent_id: agentId,
       agent_name: body.name,
       event_type: "agent_registered",
-      message: `Agent ${body.name} registered (webhook:${webhookEnabled}, telegram:${telegramEnabled})`,
+      message: isNew
+        ? `Agent ${body.name} registered (${body.provider || "hyperagent"}, webhook:${webhookEnabled}, telegram:${telegramEnabled})`
+        : `Agent ${body.name} updated`,
     });
 
-    return new Response(JSON.stringify({ id: agentId }), {
+    return new Response(JSON.stringify({ id: agentId, inbound_token: inboundToken }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {

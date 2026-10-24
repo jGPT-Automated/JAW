@@ -55,18 +55,21 @@ export type Database = {
       agent_credentials: {
         Row: {
           agent_id: string
+          inbound_token: string | null
           telegram_bot_token: string | null
           updated_at: string
           webhook_secret: string | null
         }
         Insert: {
           agent_id: string
+          inbound_token?: string | null
           telegram_bot_token?: string | null
           updated_at?: string
           webhook_secret?: string | null
         }
         Update: {
           agent_id?: string
+          inbound_token?: string | null
           telegram_bot_token?: string | null
           updated_at?: string
           webhook_secret?: string | null
@@ -165,6 +168,7 @@ export type Database = {
           min_seconds_between_messages: number
           model: string | null
           name: string
+          provider: string
           reports_to: string | null
           status: string
           success_rate: number | null
@@ -190,6 +194,7 @@ export type Database = {
           min_seconds_between_messages?: number
           model?: string | null
           name: string
+          provider?: string
           reports_to?: string | null
           status?: string
           success_rate?: number | null
@@ -215,6 +220,7 @@ export type Database = {
           min_seconds_between_messages?: number
           model?: string | null
           name?: string
+          provider?: string
           reports_to?: string | null
           status?: string
           success_rate?: number | null
