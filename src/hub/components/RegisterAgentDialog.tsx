@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger } from "@/components/motion/tabs";
 import { useRegisterAgent } from "@/hub/data/queries";
 import { AGENT_TYPES, PROVIDERS } from "@/hub/lib/meta";
-import type { Provider } from "@/hub/lib/types";
+import type { ExternalProvider as Provider } from "@/hub/lib/meta";
 import { InboundTokenDialog } from "./InboundTokenDialog";
 
 const EMPTY = {

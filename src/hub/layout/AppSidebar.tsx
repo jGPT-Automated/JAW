@@ -91,7 +91,7 @@ export function AppSidebar() {
             contentKey={live}
             className="group-data-[collapsible=icon]:hidden"
           >
-            {live === "live" ? "Realtime on" : live === "offline" ? "Realtime off" : "Connecting"}
+            {live === "live" ? "Connected" : live === "offline" ? "Offline" : "Connecting"}
           </AnimatedBadge>
         </div>
       </SidebarFooter>

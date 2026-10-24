@@ -23,8 +23,8 @@ import {
 
 function Kicker({ num, children }: { num: string; children: string }) {
   return (
-    <p className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
-      <span className="text-primary">{num}</span> · {children}
+    <p className="text-caption text-muted-foreground">
+      Part {num}: {children}
     </p>
   );
 }
@@ -39,13 +39,13 @@ export default function Manifesto() {
   return (
     <div className="mx-auto w-full max-w-4xl space-y-24 py-6 md:py-12">
       <section className="space-y-6">
-        <Badge variant="outline" className="font-mono tracking-widest uppercase">
+        <Badge variant="outline">
           {hero.archetype}
         </Badge>
         <TextReveal
           as="h2"
           text={hero.title}
-          className="font-serif text-5xl leading-none tracking-tight md:text-7xl"
+          className="text-heading font-semibold md:text-display"
         />
         <ScrollReveal delay={0.4}>
           <p className="max-w-xl text-lg text-muted-foreground">{hero.lede}</p>
@@ -71,7 +71,7 @@ export default function Manifesto() {
               as="p"
               text={p}
               whileInView
-              className="font-serif text-3xl tracking-tight md:text-5xl"
+              className="text-subheading font-medium md:text-heading"
             />
           ))}
         </div>
@@ -91,12 +91,12 @@ export default function Manifesto() {
 
       <section className="space-y-6">
         <Kicker num="III">The Stack</Kicker>
-        <h3 className="font-serif text-3xl tracking-tight">Orchestration → Execution → Persistence → Verification</h3>
+        <h3 className="text-subheading font-medium">Orchestration → Execution → Persistence → Verification</h3>
         <BouncyAccordion
           defaultValue={layers[0].id}
           items={layers.map((l) => ({
             id: l.id,
-            icon: <span className="font-mono text-xs text-primary">{l.num}</span>,
+            icon: <span className="text-xs text-muted-foreground tabular-nums">{l.num}</span>,
             title: (
               <span>
                 {l.name} <span className="text-muted-foreground">— {l.subtitle}</span>
@@ -125,14 +125,14 @@ export default function Manifesto() {
             <ScrollReveal key={f.id} delay={(i % 2) * 0.08}>
               <Card className="h-full">
                 <CardHeader>
-                  <CardDescription className="font-mono text-[11px] tracking-widest uppercase">{f.tagline}</CardDescription>
-                  <CardTitle className="font-serif text-xl">{f.name}</CardTitle>
+                  <CardDescription>{f.tagline}</CardDescription>
+                  <CardTitle className="text-lg">{f.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm leading-relaxed text-muted-foreground">{f.description}</CardContent>
                 <CardFooter className="flex-wrap gap-1.5">
                   {f.flow.map((step, j) => (
                     <span key={step} className="flex items-center gap-1.5">
-                      <Badge variant="outline" className="font-mono text-[10px]">
+                      <Badge variant="outline">
                         {step}
                       </Badge>
                       {j < f.flow.length - 1 ? <ArrowRight className="size-3 text-muted-foreground" /> : null}
@@ -158,7 +158,7 @@ export default function Manifesto() {
                 <CardFooter className="mt-auto flex-wrap gap-1.5">
                   <Badge variant={STATUS_VARIANT[p.status] ?? "outline"}>{p.status}</Badge>
                   {p.stack.map((s) => (
-                    <Badge key={s} variant="outline" className="font-mono text-[10px]">
+                    <Badge key={s} variant="outline">
                       {s}
                     </Badge>
                   ))}
@@ -180,7 +180,7 @@ export default function Manifesto() {
               <div key={d.subject} className="space-y-1.5">
                 <div className="flex justify-between text-sm">
                   <span>{d.subject}</span>
-                  <span className="font-mono text-muted-foreground tabular-nums">{d.value}</span>
+                  <span className="text-muted-foreground tabular-nums">{d.value}</span>
                 </div>
                 <Progress value={d.value} aria-label={d.subject} />
               </div>
@@ -204,7 +204,7 @@ export default function Manifesto() {
       <section className="space-y-6">
         <Separator />
         <Kicker num="VII">{close.kicker}</Kicker>
-        <TextReveal as="h3" text={close.headline} whileInView className="font-serif text-4xl tracking-tight md:text-6xl" />
+        <TextReveal as="h3" text={close.headline} whileInView className="text-heading-sm font-semibold md:text-heading-lg" />
         <div className="max-w-xl space-y-4 text-muted-foreground">
           {close.body.map((p) => (
             <p key={p}>{p}</p>

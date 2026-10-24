@@ -1,6 +1,0 @@
-project_id = "lxzwjmgoobufxdgfwldq"
-
-# Called by external agents (Hyperagent, Letta, ...) with their own inbound token,
-# so the Supabase gateway must not demand a project JWT.
-[functions.agent-inbound]
-verify_jwt = false

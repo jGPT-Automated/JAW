@@ -59,7 +59,6 @@ export function Transcript({
                 <MessageHeader>
                   <ChannelIcon className="size-3" aria-label={m.channel} />
                   <span>{sender}</span>
-                  <span aria-hidden>·</span>
                   <time dateTime={m.created_at}>{clock(m.created_at)}</time>
                 </MessageHeader>
                 <MessageBubble variant={fromAgent ? "soft" : "solid"}>

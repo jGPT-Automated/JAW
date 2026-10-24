@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Bot, Inbox, ListTodo, Send } from "lucide-react";
+import { ArrowRight, Bot, Inbox, ListTodo, Mic, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@/components/ui/item";
@@ -71,8 +71,8 @@ export default function Overview() {
               <Link to="/integrations">Connect an agent</Link>
             </Button>
             <Button asChild>
-              <Link to="/inbox">
-                <Send /> Message the fleet
+              <Link to="/voice">
+                <Mic data-icon="inline-start" /> Talk to JAW
               </Link>
             </Button>
           </>
@@ -162,7 +162,7 @@ export default function Overview() {
                             <ItemTitle className="truncate">{agent.name}</ItemTitle>
                             <ItemDescription className="truncate">
                               {agentType(agent.type).label}
-                              {agent.webhook_enabled ? ` · ${providerMeta(agent.provider).label}` : ""} ·{" "}
+                              {agent.webhook_enabled ? ` on ${providerMeta(agent.provider).label}` : ""}, seen{" "}
                               {ago(agent.last_heartbeat)}
                             </ItemDescription>
                           </ItemContent>
@@ -193,7 +193,7 @@ export default function Overview() {
             {days.isLoading ? (
               <Skeleton className="h-40 w-full" />
             ) : (
-              <HeatCalendar weeks={WEEKS} values={grid.values} maxCount={grid.max} unit="events" color="var(--primary)" />
+              <HeatCalendar weeks={WEEKS} values={grid.values} maxCount={grid.max} unit="events" color="var(--color-lime-pulse)" />
             )}
           </CardContent>
         </Card>

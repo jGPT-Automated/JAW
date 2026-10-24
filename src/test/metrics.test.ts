@@ -50,6 +50,6 @@ describe("deliveryHistory", () => {
     expect(rows[22].status).toBe("degraded");
     expect(rows[21].status).toBe("operational");
     expect(rows[20].status).toBe("unknown"); // a fresh pending item is not a delay
-    expect(rows[23].description).toBe("1 delivered · 0 delayed · 1 failed");
+    expect(rows[23].description).toBe("1 delivered, 0 delayed, 1 failed");
   });
 });

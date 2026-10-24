@@ -1,0 +1,132 @@
+// Agent API. Agents authenticate with their own inbound token (Authorization: Bearer jaw_…).
+// This is how Hyperagent/Letta replies come back, and how the JAW voice agent saves and
+// recalls memory and hands work to other agents.
+import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
+import { requireAgent, type Env } from "../auth.js";
+import { one, q } from "../db.js";
+import { saveMemory, searchMemories } from "../lib/memory.js";
+import { enqueue, processQueue } from "../lib/queue.js";
+import { inboundUrl } from "../lib/urls.js";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const EVENT_RE = /^[a-z_]{1,40}$/;
+
+function pickText(body: Record<string, unknown>) {
+  for (const key of ["content", "message", "text", "reply", "output"]) {
+    const v = body[key];
+    if (typeof v === "string" && v.trim()) return v.slice(0, 20_000);
+  }
+  return "";
+}
+
+export const agentApi = new Hono<Env>();
+agentApi.use("*", requireAgent);
+
+/** Who am I, and which agents can I delegate to. */
+agentApi.get("/me", async (c) => {
+  const agent = c.get("agent");
+  const peers = await q(
+    `SELECT id, name, type, provider, description, status FROM agents WHERE id <> $1 AND webhook_enabled ORDER BY name`,
+    [agent.id],
+  );
+  return c.json({ agent, peers });
+});
+
+/** Replies and events from an agent. */
+agentApi.post("/inbound", async (c) => {
+  const agent = c.get("agent");
+  const body = await c.req.json<Record<string, unknown>>().catch(() => ({}) as Record<string, unknown>);
+  const content = pickText(body);
+  if (!content) throw new HTTPException(400, { message: "content required" });
+  const conversationId =
+    typeof body.conversation_id === "string" && UUID_RE.test(body.conversation_id) ? body.conversation_id : crypto.randomUUID();
+  const eventType = typeof body.event_type === "string" && EVENT_RE.test(body.event_type) ? body.event_type : "agent_report";
+  const metadata = body.metadata && typeof body.metadata === "object" ? body.metadata : {};
+
+  const msg = await one<{ id: string }>(
+    `INSERT INTO agent_messages (conversation_id, from_kind, from_agent_id, from_label, to_kind, to_label, channel, content, metadata)
+     VALUES ($1, 'agent', $2, $3, 'user', 'Hub', $4, $5, $6) RETURNING id`,
+    [conversationId, agent.id, agent.name, body.channel === "voice" ? "voice" : "webhook", content, JSON.stringify({ ...metadata, via: "inbound" })],
+  );
+  await q(`INSERT INTO activity_logs (agent_id, agent_name, event_type, message, metadata) VALUES ($1, $2, $3, $4, $5)`, [
+    agent.id,
+    agent.name,
+    eventType,
+    content.length > 160 ? `${content.slice(0, 157)}…` : content,
+    JSON.stringify({ conversation_id: conversationId, message_id: msg!.id }),
+  ]);
+  await q(`UPDATE agents SET last_heartbeat = now(), status = 'active' WHERE id = $1`, [agent.id]);
+  return c.json({ ok: true, conversation_id: conversationId, message_id: msg!.id });
+});
+
+agentApi.post("/memory", async (c) => {
+  const b = await c.req.json<{ content?: string; kind?: string; tags?: string[]; conversation_id?: string }>();
+  if (!b.content?.trim()) throw new HTTPException(400, { message: "content required" });
+  const memory = await saveMemory({
+    content: b.content,
+    kind: b.kind,
+    tags: b.tags,
+    source: "agent",
+    agent_id: c.get("agent").id,
+    conversation_id: b.conversation_id && UUID_RE.test(b.conversation_id) ? b.conversation_id : null,
+  });
+  return c.json(memory, 201);
+});
+
+agentApi.get("/memory", async (c) => {
+  const limit = Math.min(20, Math.max(1, Number(c.req.query("limit")) || 6));
+  return c.json(await searchMemories(c.req.query("q"), limit));
+});
+
+/** Hand a task to another agent through the rate-limited queue. */
+agentApi.post("/delegate", async (c) => {
+  const from = c.get("agent");
+  const b = await c.req.json<{ to?: string; task?: string; conversation_id?: string }>();
+  if (!b.to?.trim() || !b.task?.trim()) throw new HTTPException(400, { message: "to and task are required" });
+  const target = await one<{ id: string; name: string }>(
+    `SELECT id, name FROM agents WHERE id <> $2 AND webhook_enabled AND (id::text = $1 OR lower(name) = lower($1)) LIMIT 1`,
+    [b.to.trim(), from.id],
+  );
+  if (!target) throw new HTTPException(404, { message: `No connected agent called ${b.to}` });
+  const queued = await enqueue({
+    agent_id: target.id,
+    payload: b.task.trim(),
+    source: "agent",
+    from_agent_id: from.id,
+    conversation_id: b.conversation_id && UUID_RE.test(b.conversation_id) ? b.conversation_id : null,
+  });
+  await q(`INSERT INTO activity_logs (agent_id, agent_name, event_type, message) VALUES ($1, $2, 'task_routed', $3)`, [
+    from.id,
+    from.name,
+    `Delegated to ${target.name}: ${b.task.trim().slice(0, 120)}`,
+  ]);
+  if (queued.status === "pending") await processQueue(inboundUrl(c.req.url), 5);
+  return c.json({ to: target.name, ...queued }, 201);
+});
+
+/** Voice transcript lines, so a call shows up in the Inbox. */
+agentApi.post("/transcript", async (c) => {
+  const agent = c.get("agent");
+  const b = await c.req.json<{ conversation_id?: string; role?: string; text?: string }>();
+  if (!b.conversation_id || !UUID_RE.test(b.conversation_id) || !b.text?.trim()) {
+    throw new HTTPException(400, { message: "conversation_id and text are required" });
+  }
+  const fromUser = b.role === "user";
+  await q(
+    `INSERT INTO agent_messages (conversation_id, from_kind, from_agent_id, from_label, to_kind, to_agent_id, to_label, channel, content)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, 'voice', $8)`,
+    [
+      b.conversation_id,
+      fromUser ? "voice" : "agent",
+      fromUser ? null : agent.id,
+      fromUser ? "You" : agent.name,
+      fromUser ? "agent" : "user",
+      fromUser ? agent.id : null,
+      fromUser ? agent.name : "You",
+      b.text.trim().slice(0, 8000),
+    ],
+  );
+  await q(`UPDATE agents SET last_heartbeat = now(), status = 'active' WHERE id = $1`, [agent.id]);
+  return c.json({ ok: true });
+});

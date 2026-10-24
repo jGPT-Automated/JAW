@@ -140,7 +140,7 @@ function AgentCard({ agent, onOpen }: { agent: Agent; onOpen: () => void }) {
           </CardTitle>
           <CardDescription className="truncate">
             {agentType(agent.type).label}
-            {agent.model ? ` · ${agent.model}` : ""}
+            {agent.model ? `, ${agent.model}` : ""}
           </CardDescription>
         </div>
         <AnimatedBadge size="sm" status={status.badge} pulse={agent.status === "active"} contentKey={agent.status}>
@@ -157,7 +157,7 @@ function AgentCard({ agent, onOpen }: { agent: Agent; onOpen: () => void }) {
         {agent.telegram_enabled ? <Badge variant="secondary">Telegram</Badge> : null}
         {!agent.webhook_enabled && !agent.telegram_enabled ? <Badge variant="outline">Not connected</Badge> : null}
         <span className="ml-auto tabular-nums">
-          {agent.tasks_completed ?? 0} tasks · {ago(agent.last_heartbeat)}
+          {agent.tasks_completed ?? 0} tasks, seen {ago(agent.last_heartbeat)}
         </span>
       </CardFooter>
     </Card>

@@ -10,15 +10,24 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:migrate": "node scripts/migrate.mjs",
+    "skills:seed": "node scripts/seed-skills.mjs"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0",
-    "@supabase/supabase-js": "^2.97.0",
+    "@hono/node-server": "^2.1.5",
+    "@livekit/protocol": "^1.51.0",
+    "@neondatabase/auth": "^0.6.0-beta",
+    "@neondatabase/serverless": "^1.2.0",
     "@tanstack/react-query": "^5.83.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
+    "hono": "^4.13.13",
+    "jose": "^6.2.13",
+    "livekit-client": "^2.23.0",
+    "livekit-server-sdk": "^2.19.2",
     "lucide-react": "^1.61.0",
     "motion": "^12.43.0",
     "next-themes": "^0.4.6",
@@ -50,5 +59,8 @@
     "typescript-eslint": "^8.38.0",
     "vite": "^5.4.19",
     "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

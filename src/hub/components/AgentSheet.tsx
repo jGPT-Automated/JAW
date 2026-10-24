@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AnimatedBadge } from "@/components/motion/animated-badge";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/motion/tabs";
-import { useAgents, useDeleteAgent, useMessages, useRegisterAgent, useUpdateAgent } from "@/hub/data/queries";
+import { useAgents, useDeleteAgent, useMessages, useRotateToken, useUpdateAgent } from "@/hub/data/queries";
 import { agentStatus, agentType, providerMeta } from "@/hub/lib/meta";
 import { ago } from "@/hub/lib/time";
 import type { Agent } from "@/hub/lib/types";
@@ -58,7 +58,7 @@ function AgentDetail({ agent, onDeleted }: { agent: Agent; onDeleted: () => void
             <SheetTitle className="truncate text-lg">{agent.name}</SheetTitle>
             <SheetDescription className="truncate">
               {type.label}
-              {agent.model ? ` · ${agent.model}` : ""}
+              {agent.model ? `, ${agent.model}` : ""}
             </SheetDescription>
           </div>
           <AnimatedBadge status={status.badge} pulse={agent.status === "active"} contentKey={agent.status}>
@@ -90,14 +90,14 @@ function AgentDetail({ agent, onDeleted }: { agent: Agent; onDeleted: () => void
 }
 
 function Overview({ agent }: { agent: Agent }) {
-  const success = agent.success_rate ?? 0;
+  const success = Number(agent.success_rate ?? 0);
   return (
     <div className="space-y-6">
       {agent.description ? <p className="text-sm text-muted-foreground">{agent.description}</p> : null}
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Uptime", value: agent.uptime_hours ?? 0, suffix: "h" },
+          { label: "Uptime", value: Number(agent.uptime_hours ?? 0), suffix: "h" },
           { label: "Tasks done", value: agent.tasks_completed ?? 0 },
           { label: "Success", value: success, suffix: "%" },
         ].map((s) => (
@@ -152,7 +152,7 @@ function Messages({ agent }: { agent: Agent }) {
 
 function Settings({ agent, onDeleted }: { agent: Agent; onDeleted: () => void }) {
   const update = useUpdateAgent();
-  const register = useRegisterAgent();
+  const register = useRotateToken();
   const remove = useDeleteAgent();
   const [token, setToken] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -177,7 +177,7 @@ function Settings({ agent, onDeleted }: { agent: Agent; onDeleted: () => void })
 
   const rotate = () =>
     register.mutate(
-      { id: agent.id, name: agent.name, rotate_inbound_token: true },
+      agent.id,
       {
         onSuccess: (res) => setToken(res.inbound_token),
         onError: (e) => toast.error(e.message),

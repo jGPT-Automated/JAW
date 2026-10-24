@@ -28,7 +28,7 @@ export function ActivityFeed({ logs, compact = false }: { logs: ActivityLog[]; c
                 <Badge variant="outline" className="font-normal text-muted-foreground">
                   {meta.label}
                 </Badge>
-                <time className="ml-auto shrink-0 font-mono text-[11px] font-normal text-muted-foreground" dateTime={log.created_at}>
+                <time className="ml-auto shrink-0 text-xs font-normal text-muted-foreground tabular-nums" dateTime={log.created_at}>
                   {clock(log.created_at)}
                 </time>
               </ItemTitle>

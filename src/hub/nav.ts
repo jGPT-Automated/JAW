@@ -1,12 +1,15 @@
 import {
   Activity,
   Bot,
+  Brain,
   ExternalLink,
   Feather,
   LayoutDashboard,
   ListTodo,
   type LucideIcon,
   MessagesSquare,
+  Mic,
+  Puzzle,
   ScrollText,
   Webhook,
 } from "lucide-react";
@@ -25,9 +28,11 @@ export const NAV: { label: string; items: NavItem[] }[] = [
     label: "Hub",
     items: [
       { title: "Overview", url: "/", icon: LayoutDashboard, description: "Fleet health, traffic and recent events" },
+      { title: "Talk", url: "/voice", icon: Mic, description: "Voice conversation with JAW" },
       { title: "Agents", url: "/agents", icon: Bot, description: "Register, configure and message agents" },
       { title: "Inbox", url: "/inbox", icon: MessagesSquare, description: "Every conversation across channels" },
       { title: "Activity", url: "/activity", icon: Activity, description: "Live event stream and delivery queue" },
+      { title: "Memory", url: "/memory", icon: Brain, description: "What JAW and your agents remember" },
       { title: "Roadmap", url: "/roadmap", icon: ListTodo, description: "What the fleet is building" },
     ],
   },
@@ -40,6 +45,7 @@ export const NAV: { label: string; items: NavItem[] }[] = [
   {
     label: "Library",
     items: [
+      { title: "Skills", url: "/skills", icon: Puzzle, description: "Skills and context every agent can use" },
       { title: "Protocol", url: "/protocol", icon: ScrollText, description: "Omni-Protocol Sentinel v2.0" },
       { title: "Manifesto", url: "/manifesto", icon: Feather, description: "The Sovereign Architecture" },
       {

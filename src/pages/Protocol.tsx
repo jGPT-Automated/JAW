@@ -15,9 +15,8 @@ export default function Protocol() {
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-[220px_1fr] lg:gap-16">
       <aside className="lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:self-start lg:overflow-y-auto">
-        <p className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">Doctrine</p>
-        <h3 className="mt-2 font-serif text-xl">Sentinel v2.0</h3>
-        <p className="mt-1 font-mono text-[11px] text-muted-foreground">ref · 2026.04.30</p>
+        <h3 className="text-lg font-semibold">Sentinel v2.0</h3>
+        <p className="mt-1 text-caption text-muted-foreground">Reference, 30 April 2026</p>
         <nav aria-label="Protocol sections" className="mt-5 space-y-0.5 border-l">
           {protocolSections.map((s) => (
             <button
@@ -32,7 +31,7 @@ export default function Protocol() {
                   : "border-transparent text-muted-foreground hover:text-foreground",
               )}
             >
-              <span className="block font-mono text-[10px] tracking-widest">{s.num}</span>
+              <span className="block text-xs tabular-nums">{s.num}</span>
               <span className="block text-xs">{s.title}</span>
             </button>
           ))}
@@ -44,9 +43,9 @@ export default function Protocol() {
           <div className="mb-6 flex flex-wrap items-center gap-2">
             <Badge>Omni-Protocol</Badge>
             <Badge variant="outline">Sentinel v2.0</Badge>
-            <Badge variant="secondary">Draft · Active doctrine</Badge>
+            <Badge variant="secondary">Draft, active doctrine</Badge>
           </div>
-          <h2 className="font-serif text-4xl leading-tight tracking-tight md:text-5xl">
+          <h2 className="text-heading-sm font-semibold md:text-heading">
             Agentic AI Platform
             <br />
             Architecture
@@ -56,8 +55,8 @@ export default function Protocol() {
         <div className="space-y-20">
           {protocolSections.map((s) => (
             <section key={s.id} id={`protocol-${s.id}`} className="scroll-mt-20">
-              <div className="mb-3 flex items-baseline gap-4 font-mono text-[11px] tracking-widest uppercase">
-                <span className="text-primary">§ {s.num}</span>
+              <div className="mb-3 flex items-baseline gap-4 text-caption">
+                <span className="text-foreground tabular-nums">§ {s.num}</span>
                 {s.kicker ? <span className="text-muted-foreground">{s.kicker}</span> : null}
               </div>
               <h3 className="mb-6 text-2xl font-semibold tracking-tight">{s.title}</h3>

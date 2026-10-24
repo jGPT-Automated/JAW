@@ -1,6 +1,6 @@
 import { Suspense, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Moon, Search, Sun } from "lucide-react";
+import { LogOut, Moon, Search, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
@@ -10,6 +10,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "./AppSidebar";
 import { HubCommand } from "./HubCommand";
 import { navFor } from "@/hub/nav";
+import { authClient } from "@/hub/lib/auth";
 
 export function HubLayout() {
   const { pathname } = useLocation();
@@ -46,6 +47,11 @@ export function HubLayout() {
           >
             {resolvedTheme === "dark" ? <Sun /> : <Moon />}
           </Button>
+          {authClient ? (
+            <Button variant="ghost" size="icon" aria-label="Sign out" onClick={() => authClient?.signOut()}>
+              <LogOut />
+            </Button>
+          ) : null}
         </header>
         <div className="flex min-w-0 flex-1 flex-col gap-6 p-4 md:p-6">
           <Suspense

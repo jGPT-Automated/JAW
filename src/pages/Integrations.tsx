@@ -10,7 +10,7 @@ import { PageHeader } from "@/hub/components/PageHeader";
 import { useAgents } from "@/hub/data/queries";
 import { INBOUND_URL, inboundCurl } from "@/hub/lib/endpoints";
 import { PROVIDERS } from "@/hub/lib/meta";
-import type { Provider } from "@/hub/lib/types";
+import type { ExternalProvider as Provider } from "@/hub/lib/meta";
 
 const OUTBOUND_PAYLOAD = `{
   "prompt": "Draft the launch post",
