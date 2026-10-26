@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Voice from "./pages/Voice";
 
 const Conversations = lazy(() => import("./pages/Conversations"));
+const GitHubAccount = lazy(() => import("./pages/GitHubAccount"));
 const Manifesto = lazy(() => import("./pages/Manifesto"));
 const Protocol = lazy(() => import("./pages/Protocol"));
 const Resources = lazy(() => import("./pages/Resources"));
@@ -35,6 +36,8 @@ const App = () => (
               <Route path="/" element={<Voice />} />
               <Route path="/conversations/:id?" element={<Conversations />} />
               <Route path="/roadmap" element={<Roadmap />} />
+              <Route path="/github" element={<Navigate to="/github/GenJess" replace />} />
+              <Route path="/github/:login" element={<GitHubAccount />} />
               <Route path="/resources" element={<Resources />} />
               <Route path="/protocol" element={<Protocol />} />
               <Route path="/manifesto" element={<Manifesto />} />

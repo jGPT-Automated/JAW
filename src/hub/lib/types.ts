@@ -138,3 +138,13 @@ export interface Conversation {
   ended_at: string | null;
   messages: { id: string; from_kind: string; from_label: string | null; content: string; created_at: string }[];
 }
+
+export type { GitHubSnapshot, RepoSummary, EventSummary, PullSummary, FileChange } from "../../../server/lib/github";
+
+export interface Cached<T> {
+  data: T;
+  fetched_at: string;
+  /** True when GitHub failed and this is the last good copy. */
+  stale: boolean;
+  error: string | null;
+}

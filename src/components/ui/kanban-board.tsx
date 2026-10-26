@@ -6,13 +6,14 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react"
    DESIGN TOKENS
    ═══════════════════════════════════════════════════════════════════════ */
 
+// JAW: tags read from the theme, so they stay crisp in light and dark. One accent (lime) for what matters most.
 const TAG_VARIANTS = {
-  feature: { bg: "rgba(59,130,246,0.10)", color: "#2563eb" },
-  bug: { bg: "rgba(239,68,68,0.10)", color: "#dc2626" },
-  design: { bg: "rgba(168,85,247,0.10)", color: "#9333ea" },
-  done: { bg: "rgba(16,185,129,0.10)", color: "#059669" },
-  improvement: { bg: "rgba(245,158,11,0.10)", color: "#d97706" },
-  docs: { bg: "rgba(6,182,212,0.10)", color: "#0891b2" },
+  feature: { bg: "var(--tag-neutral-bg)", color: "var(--foreground)" },
+  bug: { bg: "var(--tag-accent-bg)", color: "var(--tag-accent)" },
+  design: { bg: "var(--tag-neutral-bg)", color: "var(--foreground)" },
+  done: { bg: "var(--tag-accent-bg)", color: "var(--tag-accent)" },
+  improvement: { bg: "var(--tag-neutral-bg)", color: "var(--foreground)" },
+  docs: { bg: "transparent", color: "var(--muted-foreground)" },
 }
 
 const COLUMN_META = {
@@ -22,7 +23,7 @@ const COLUMN_META = {
         aria-hidden="true"
         fill="none"
         height="13"
-        stroke="#b0b0b0"
+        stroke="var(--muted-foreground)"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2.2"
@@ -39,7 +40,7 @@ const COLUMN_META = {
         aria-hidden="true"
         fill="none"
         height="13"
-        stroke="#f59e0b"
+        stroke="var(--foreground)"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2.2"
@@ -57,7 +58,7 @@ const COLUMN_META = {
         aria-hidden="true"
         fill="none"
         height="13"
-        stroke="#10b981"
+        stroke="var(--tag-accent)"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2.2"
@@ -248,12 +249,12 @@ function Card({
       tabIndex={onOpen ? 0 : undefined}
       style={{
         borderRadius: 14,
-        background: "var(--muted)",
-        padding: "8px 10px",
+        background: "var(--card)",
+        padding: "10px 12px",
         boxShadow: isDragging
           ? "0 0 0 1px var(--border), 0 12px 32px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.10)"
           : "0 0 0 1px var(--border), 0 1px 2px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.03)",
-        opacity: isDone && !isDragging ? 0.5 : 1,
+        opacity: isDone && !isDragging ? 0.72 : 1,
         position: "relative",
         zIndex: isDragging ? 50 : 1,
       }}
@@ -289,9 +290,7 @@ function Card({
         className="font-semibold text-[11.5px] leading-snug"
         style={{
           color: "var(--foreground)",
-          textDecoration: isDone ? "line-through" : "none",
-          textDecorationColor: isDone ? "var(--muted-foreground)" : undefined,
-          textWrap: "pretty",
+                    textWrap: "pretty",
         }}
       >
         {card.title}
@@ -337,7 +336,7 @@ function DropIndicator({ isActive }: DropIndicatorProps) {
         width: "60%",
         borderRadius: 99,
         background:
-          "linear-gradient(90deg, transparent, rgba(59,130,246,0.4), transparent)",
+          "linear-gradient(90deg, transparent, var(--tag-accent), transparent)",
         marginTop: 2,
         marginBottom: 2,
       }}
@@ -418,7 +417,7 @@ export function Column({
       <motion.div
         animate={{
           backgroundColor: dragOver
-            ? "rgba(59,130,246,0.045)"
+            ? "var(--tag-accent-bg)"
             : "rgba(0,0,0,0)",
           scale: dragOver ? 1.012 : 1,
         }}

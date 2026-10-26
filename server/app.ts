@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { requireOwner, type Env } from "./auth.js";
 import { agentApi } from "./routes/agent.js";
+import { github } from "./routes/github.js";
 import { owner } from "./routes/owner.js";
 import { publicApi } from "./routes/public.js";
 
@@ -15,6 +16,7 @@ app.use("*", async (c, next) => (OPEN.some((p) => c.req.path === p || c.req.path
 app.get("/health", (c) => c.json({ ok: true }));
 app.route("/public", publicApi);
 app.route("/agent", agentApi);
+app.route("/github", github);
 app.route("/", owner);
 
 app.onError((err, c) => {

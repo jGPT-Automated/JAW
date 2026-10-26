@@ -80,6 +80,10 @@
   --glass-border: rgb(20 20 20 / 0.08);
   --glass-strong-bg: rgb(255 255 255 / 0.8);
   --glass-thin-bg: rgb(255 255 255 / 0.55);
+
+  --tag-accent: #2f7d18;
+  --tag-accent-bg: rgb(76 192 43 / 0.14);
+  --tag-neutral-bg: rgb(20 20 20 / 0.06);
 }
 
 /* Default theme. Lime is the one bright accent: primary actions (the mic, CTAs) only. */
@@ -120,6 +124,10 @@
   --glass-border: rgb(255 255 255 / 0.08);
   --glass-strong-bg: rgb(28 28 27 / 0.75);
   --glass-thin-bg: rgb(20 20 20 / 0.5);
+
+  --tag-accent: #7ddb5c;
+  --tag-accent-bg: rgb(76 192 43 / 0.14);
+  --tag-neutral-bg: rgb(237 237 232 / 0.07);
 }
 
 @theme inline {

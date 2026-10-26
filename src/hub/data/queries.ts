@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/hub/lib/api";
 import type {
   ActivityLog,
+  Cached,
+  FileChange,
+  GitHubSnapshot,
   Agent,
   AgentMessage,
   Conversation,
@@ -40,6 +43,37 @@ export function useConversation(id: string | undefined) {
     queryKey: keys.conversation(id ?? ""),
     queryFn: () => api<Conversation>(`/conversations/${id}`),
     enabled: !!id,
+  });
+}
+
+export function useGitHubAccount(login: string) {
+  return useQuery({
+    queryKey: ["github", login.toLowerCase()],
+    queryFn: () => api<Cached<GitHubSnapshot>>(`/github/accounts/${login}`),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useRefreshGitHubAccount(login: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => api<Cached<GitHubSnapshot>>(`/github/accounts/${login}?refresh=1`),
+    onSuccess: (data) => qc.setQueryData(["github", login.toLowerCase()], data),
+  });
+}
+
+export function usePullFiles(repo: string | null, number: number | null) {
+  return useQuery({
+    queryKey: ["github", "pull", repo, number],
+    queryFn: () => api<Cached<FileChange[]> & { decisions: Record<string, string> }>(`/github/pulls/${repo}/${number}`),
+    enabled: !!repo && !!number,
+  });
+}
+
+export function useReviewDecision() {
+  return useMutation({
+    mutationFn: (b: { repo: string; pr_number: number; path: string; decision: string }) =>
+      api<{ ok: true }>("/github/reviews", { method: "PUT", json: b }),
   });
 }
 

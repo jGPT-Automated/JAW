@@ -154,3 +154,15 @@ agentApi.post("/summary", async (c) => {
   if (!row) throw new HTTPException(404, { message: "Conversation not found" });
   return c.json({ ok: true });
 });
+
+/** The owner's accept / reject calls on pull request files, newest first. */
+agentApi.get("/reviews", async (c) => {
+  const repo = c.req.query("repo");
+  return c.json(
+    await q(
+      `SELECT repo, pr_number, path, decision, decided_at FROM review_decisions
+       WHERE ($1::text IS NULL OR lower(repo) = lower($1)) ORDER BY decided_at DESC LIMIT 200`,
+      [repo ?? null],
+    ),
+  );
+});
