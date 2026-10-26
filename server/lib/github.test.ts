@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+// @vitest-environment node
+import { describe, expect, it, vi } from "vitest";
 import { parseCalendar, parsePatch, summarizeEvent } from "./github";
 
 describe("parseCalendar", () => {
@@ -43,5 +44,24 @@ describe("summarizeEvent", () => {
     });
     expect(e.text).toBe("Merged PR #7: Ship it");
     expect(e.url).toBe("https://github.com/o/r/pull/7");
+  });
+});
+
+describe("githubFetch", () => {
+  it("falls back to Firecrawl when GitHub refuses", async () => {
+    const { githubFetch } = await import("./github");
+    const calls: string[] = [];
+    vi.stubEnv("FIRECRAWL_API_KEY", "fc-test");
+    vi.stubGlobal("fetch", async (url: string) => {
+      calls.push(String(url));
+      if (String(url).startsWith("https://api.github.com")) {
+        return new Response(JSON.stringify({ message: "API rate limit exceeded" }), { status: 403 });
+      }
+      return new Response(JSON.stringify({ data: { rawHtml: '{"login":"x"}', metadata: { statusCode: 200 } } }), { status: 200 });
+    });
+    await expect(githubFetch("https://api.github.com/users/x")).resolves.toBe('{"login":"x"}');
+    expect(calls).toEqual(["https://api.github.com/users/x", "https://api.firecrawl.dev/v2/scrape"]);
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
   });
 });

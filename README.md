@@ -88,6 +88,7 @@ Server-side only (Vercel → Project → Settings → Environment Variables). Ne
 | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | Voice rooms and agent dispatch |
 | `JAW_PUBLIC_URL` | Optional: canonical origin for the inbound URL sent to agents |
 | `GITHUB_TOKEN` | Optional: raises GitHub's rate limit for the account pages (public data only; no scopes needed) |
+| `FIRECRAWL_API_KEY` | Optional: when GitHub refuses a request (rate limit, block, outage), the same public URL is fetched through Firecrawl |
 
 Browser (public by design): `VITE_NEON_AUTH_URL`, the Neon Auth base URL.
 

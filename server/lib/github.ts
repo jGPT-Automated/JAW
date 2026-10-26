@@ -59,11 +59,11 @@ export type FetchText = (url: string) => Promise<string>;
 
 const API = "https://api.github.com";
 
-/** Server fetch with GitHub's headers; throws with GitHub's message on failure. */
-export const githubFetch: FetchText = async (url) => {
+/** Direct fetch with GitHub's headers; throws with GitHub's message on failure. */
+async function directFetch(url: string) {
   const headers: Record<string, string> = { "User-Agent": "jaw-hub", Accept: "application/vnd.github+json" };
   if (process.env.GITHUB_TOKEN && url.startsWith(API)) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  const res = await fetch(url, { headers });
+  const res = await fetch(url, { headers, signal: AbortSignal.timeout(10_000) });
   const text = await res.text();
   if (!res.ok) {
     let message = `${res.status}`;
@@ -75,6 +75,44 @@ export const githubFetch: FetchText = async (url) => {
     throw new Error(`GitHub ${new URL(url).pathname}: ${message}`);
   }
   return text;
+}
+
+/** The same public URL fetched through Firecrawl, raw. Retries once when Firecrawl is busy. */
+export async function firecrawlFetch(url: string, key: string, attempt = 0): Promise<string> {
+  const res = await fetch("https://api.firecrawl.dev/v2/scrape", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ url, formats: ["rawHtml"], onlyMainContent: false, maxAge: 0 }),
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (res.status === 429 && attempt === 0) {
+    await new Promise((r) => setTimeout(r, 2500));
+    return firecrawlFetch(url, key, 1);
+  }
+  const body = (await res.json().catch(() => ({}))) as { data?: { rawHtml?: string; metadata?: { statusCode?: number } }; error?: string };
+  const status = body.data?.metadata?.statusCode;
+  if (!res.ok || !body.data?.rawHtml || (status && status >= 400)) {
+    throw new Error(`Firecrawl ${new URL(url).pathname}: ${body.error ?? status ?? res.status}`);
+  }
+  return body.data.rawHtml;
+}
+
+/**
+ * GitHub first; if GitHub refuses (rate limit, block, outage) and FIRECRAWL_API_KEY is set,
+ * the same public URL through Firecrawl.
+ */
+export const githubFetch: FetchText = async (url) => {
+  try {
+    return await directFetch(url);
+  } catch (e) {
+    const key = process.env.FIRECRAWL_API_KEY;
+    if (!key) throw e;
+    try {
+      return await firecrawlFetch(url, key);
+    } catch (fallback) {
+      throw new Error(`${(e as Error).message}; ${(fallback as Error).message}`);
+    }
+  }
 };
 
 const MONTH_DAY = /(\d+|No) contributions? on/;
