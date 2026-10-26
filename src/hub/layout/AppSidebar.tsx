@@ -1,34 +1,25 @@
 import { Link, useLocation } from "react-router-dom";
-import { Radio } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { AnimatedBadge } from "@/components/motion/animated-badge";
-import { useAgents, useQueue } from "@/hub/data/queries";
-import { useLiveState } from "@/hub/data/realtime";
 import { NAV } from "@/hub/nav";
 
 export function AppSidebar() {
   const { pathname } = useLocation();
-  const live = useLiveState();
-  const { data: agents } = useAgents();
-  const { data: queue } = useQueue();
-
-  const counts: Record<string, number | undefined> = {
-    "/agents": agents?.length,
-    "/activity": queue?.filter((q) => q.status === "pending" || q.status === "processing").length || undefined,
-  };
 
   return (
     <Sidebar collapsible="icon" variant="inset">
@@ -40,7 +31,7 @@ export function AppSidebar() {
                 <img src="/jaw-icon.svg" alt="" className="size-8 rounded-md" />
                 <div className="grid flex-1 text-left leading-tight">
                   <span className="truncate font-semibold">JAW Hub</span>
-                  <span className="truncate text-xs text-muted-foreground">Agent command center</span>
+                  <span className="truncate text-xs text-muted-foreground">Voice, calls, roadmap</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -56,6 +47,35 @@ export function AppSidebar() {
               <SidebarMenu>
                 {group.items.map((item) => {
                   const active = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url);
+                  if (item.children) {
+                    return (
+                      <Collapsible key={item.url} asChild defaultOpen className="group/collapsible">
+                        <SidebarMenuItem>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton tooltip={item.title} isActive={active}>
+                              <item.icon />
+                              <span>{item.title}</span>
+                              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.children.map((child) => (
+                                <SidebarMenuSubItem key={child.url}>
+                                  <SidebarMenuSubButton asChild isActive={pathname === child.url}>
+                                    <Link to={child.url}>
+                                      {child.image ? <img src={child.image} alt="" className="size-4 rounded-full" /> : null}
+                                      <span>{child.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </SidebarMenuItem>
+                      </Collapsible>
+                    );
+                  }
                   return (
                     <SidebarMenuItem key={item.url}>
                       <SidebarMenuButton asChild isActive={!item.external && active} tooltip={item.title}>
@@ -71,7 +91,6 @@ export function AppSidebar() {
                           </Link>
                         )}
                       </SidebarMenuButton>
-                      {counts[item.url] ? <SidebarMenuBadge>{counts[item.url]}</SidebarMenuBadge> : null}
                     </SidebarMenuItem>
                   );
                 })}
@@ -81,20 +100,6 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
 
-      <SidebarFooter>
-        <div className="flex items-center gap-2 px-2 py-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-          <Radio className="size-4 shrink-0 text-muted-foreground" />
-          <AnimatedBadge
-            size="sm"
-            status={live === "live" ? "success" : live === "offline" ? "danger" : "loading"}
-            pulse={live === "live"}
-            contentKey={live}
-            className="group-data-[collapsible=icon]:hidden"
-          >
-            {live === "live" ? "Realtime on" : live === "offline" ? "Realtime off" : "Connecting"}
-          </AnimatedBadge>
-        </div>
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

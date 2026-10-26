@@ -1,7 +1,10 @@
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+const ORIGIN = typeof window === "undefined" ? "" : window.location.origin;
 
-/** Where agents POST replies and events back into the hub (see supabase/functions/agent-inbound). */
-export const INBOUND_URL = `${SUPABASE_URL}/functions/v1/agent-inbound`;
+/** Where agents POST replies and events back into the hub (server/routes/agent.ts). */
+export const INBOUND_URL = `${ORIGIN}/api/agent/inbound`;
+
+/** Read-only index of public docs and skills for any agent with fetch. */
+export const LLMS_URL = `${ORIGIN}/api/public/llms.txt`;
 
 export function inboundCurl(token = "<inbound token>") {
   return [

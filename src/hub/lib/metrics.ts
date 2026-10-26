@@ -26,7 +26,7 @@ export function deliveryHistory(
       id: String(start),
       label: new Date(start).toLocaleTimeString([], { hour: "numeric" }),
       status,
-      description: items.length ? `${sent} delivered · ${delayed} delayed · ${failed} failed` : undefined,
+      description: items.length ? `${sent} delivered, ${delayed} delayed, ${failed} failed` : undefined,
     };
   });
 }

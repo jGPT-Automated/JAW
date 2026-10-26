@@ -4,49 +4,55 @@ import { ThemeProvider } from "next-themes";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { RealtimeProvider } from "@/hub/data/realtime";
+import { AuthGate } from "@/hub/layout/AuthGate";
 import { HubLayout } from "@/hub/layout/HubLayout";
 import NotFound from "./pages/NotFound";
-import Overview from "./pages/Overview";
+import Voice from "./pages/Voice";
 
-const Activity = lazy(() => import("./pages/Activity"));
-const Agents = lazy(() => import("./pages/Agents"));
-const Inbox = lazy(() => import("./pages/Inbox"));
-const Integrations = lazy(() => import("./pages/Integrations"));
+const Conversations = lazy(() => import("./pages/Conversations"));
+const GitHubAccount = lazy(() => import("./pages/GitHubAccount"));
 const Manifesto = lazy(() => import("./pages/Manifesto"));
 const Protocol = lazy(() => import("./pages/Protocol"));
+const Resources = lazy(() => import("./pages/Resources"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 15_000, refetchOnWindowFocus: false } },
+  defaultOptions: { queries: { staleTime: 15_000, refetchOnWindowFocus: false, retry: 1 } },
 });
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
     <QueryClientProvider client={queryClient}>
-      <RealtimeProvider>
-        <TooltipProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<HubLayout />}>
-                <Route path="/" element={<Overview />} />
-                <Route path="/agents" element={<Agents />} />
-                <Route path="/inbox" element={<Inbox />} />
-                <Route path="/activity" element={<Activity />} />
-                <Route path="/roadmap" element={<Roadmap />} />
-                <Route path="/integrations" element={<Integrations />} />
-                <Route path="/protocol" element={<Protocol />} />
-                <Route path="/manifesto" element={<Manifesto />} />
-                {/* Old entry points of the Command Center now land on the hub. */}
-                <Route path="/command" element={<Navigate to="/" replace />} />
-                <Route path="/gate" element={<Navigate to="/" replace />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-          <Toaster position="bottom-right" />
-        </TooltipProvider>
-      </RealtimeProvider>
+      <TooltipProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              element={
+                <AuthGate>
+                  <HubLayout />
+                </AuthGate>
+              }
+            >
+              <Route path="/" element={<Voice />} />
+              <Route path="/conversations/:id?" element={<Conversations />} />
+              <Route path="/roadmap" element={<Roadmap />} />
+              <Route path="/github" element={<Navigate to="/github/GenJess" replace />} />
+              <Route path="/github/:login" element={<GitHubAccount />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/protocol" element={<Protocol />} />
+              <Route path="/manifesto" element={<Manifesto />} />
+              {/* Earlier entry points. */}
+              <Route path="/voice" element={<Navigate to="/" replace />} />
+              <Route path="/inbox" element={<Navigate to="/conversations" replace />} />
+              <Route path="/skills" element={<Navigate to="/resources" replace />} />
+              <Route path="/command" element={<Navigate to="/" replace />} />
+              <Route path="/gate" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+        <Toaster position="bottom-right" />
+      </TooltipProvider>
     </QueryClientProvider>
   </ThemeProvider>
 );

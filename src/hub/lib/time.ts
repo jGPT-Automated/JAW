@@ -1,7 +1,7 @@
 import { format, formatDistanceToNowStrict, isToday } from "date-fns";
 
 export function ago(iso: string | null | undefined) {
-  if (!iso) return "never";
+  if (!iso) return "not yet";
   return `${formatDistanceToNowStrict(new Date(iso))} ago`;
 }
 

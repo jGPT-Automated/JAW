@@ -31,7 +31,7 @@ function H3({ children }: { children: ReactNode }) {
 function Pull({ children }: { children: ReactNode }) {
   return (
     <blockquote className="my-8 border-l-2 border-primary pl-6">
-      <p className="font-serif text-xl leading-normal text-foreground italic md:text-2xl">{children}</p>
+      <p className="text-xl leading-normal font-medium text-foreground md:text-2xl">{children}</p>
     </blockquote>
   );
 }
@@ -51,7 +51,7 @@ function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
         <TableHeader>
           <TableRow>
             {headers.map((h) => (
-              <TableHead key={h} className="font-mono text-[10px] tracking-widest uppercase">
+              <TableHead key={h}>
                 {h}
               </TableHead>
             ))}
@@ -65,7 +65,7 @@ function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
                   key={j}
                   className={
                     j === 0
-                      ? "align-top font-mono text-[11px] whitespace-normal text-foreground/80"
+                      ? "align-top text-xs font-medium whitespace-normal text-foreground"
                       : "align-top text-xs whitespace-normal text-muted-foreground"
                   }
                 >
@@ -85,7 +85,7 @@ function StageList({ items }: { items: { num: string; name: string; fn: string }
     <ol className="my-6 divide-y border-y">
       {items.map((it) => (
         <li key={it.num} className="flex items-baseline gap-5 py-4">
-          <span className="min-w-6 font-mono text-[11px] text-primary">{it.num}</span>
+          <span className="min-w-6 text-xs text-muted-foreground tabular-nums">{it.num}</span>
           <div className="flex-1">
             <div className="text-sm font-medium text-foreground">{it.name}</div>
             <div className="mt-1 text-xs leading-relaxed text-muted-foreground">{it.fn}</div>
@@ -356,7 +356,7 @@ then:
           'Diversity without randomness.',
         ].map((p, i) => (
           <li key={i} className="flex items-baseline gap-4">
-            <span className="min-w-6 font-mono text-[11px] text-primary">
+            <span className="min-w-6 text-xs text-muted-foreground tabular-nums">
               {String(i + 1).padStart(2, '0')}
             </span>
             <span className="text-sm text-muted-foreground leading-[1.7]">{p}</span>

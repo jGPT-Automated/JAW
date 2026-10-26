@@ -51,8 +51,10 @@ export function agentStatus(status: string) {
   return AGENT_STATUS[status] ?? { label: status, badge: "neutral" as const };
 }
 
+export type ExternalProvider = Exclude<Provider, "internal">;
+
 export const PROVIDERS: Record<
-  Provider,
+  ExternalProvider,
   { label: string; auth: string; secretLabel: string; urlPlaceholder: string; async: boolean }
 > = {
   hyperagent: {
@@ -78,8 +80,11 @@ export const PROVIDERS: Record<
   },
 };
 
+const INTERNAL = { label: "JAW", auth: "Built in", secretLabel: "", urlPlaceholder: "", async: false };
+
 export function providerMeta(provider: string | null | undefined) {
-  return PROVIDERS[(provider as Provider) ?? "hyperagent"] ?? PROVIDERS.hyperagent;
+  if (provider === "internal") return INTERNAL;
+  return PROVIDERS[(provider as ExternalProvider) ?? "hyperagent"] ?? PROVIDERS.hyperagent;
 }
 
 export const EVENT_TYPES: Record<string, { label: string; icon: LucideIcon; tone: "default" | "success" | "danger" | "warning" }> = {
