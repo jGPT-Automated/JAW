@@ -3,6 +3,8 @@ import { api } from "@/hub/lib/api";
 import type {
   ActivityLog,
   Cached,
+  CatalogComponent,
+  ComponentLibrary,
   FileChange,
   GitHubSnapshot,
   Agent,
@@ -13,6 +15,7 @@ import type {
   Memory,
   Provider,
   QueueItem,
+  Resource,
   RoadmapTask,
   Skill,
 } from "@/hub/lib/types";
@@ -74,6 +77,70 @@ export function useReviewDecision() {
   return useMutation({
     mutationFn: (b: { repo: string; pr_number: number; path: string; decision: string }) =>
       api<{ ok: true }>("/github/reviews", { method: "PUT", json: b }),
+  });
+}
+
+export function useComponentLibraries() {
+  return useQuery({ queryKey: ["component-libraries"], queryFn: () => api<ComponentLibrary[]>("/component-libraries") });
+}
+
+export function useCatalog() {
+  return useQuery({ queryKey: ["components"], queryFn: () => api<CatalogComponent[]>("/components"), staleTime: 5 * 60_000 });
+}
+
+export function useAddLibrary() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (b: { name: string; registry_url: string; site_url?: string; namespace?: string }) =>
+      api<ComponentLibrary>("/component-libraries", { method: "POST", json: b }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["component-libraries"] });
+      void qc.invalidateQueries({ queryKey: ["components"] });
+    },
+  });
+}
+
+export function useSyncLibrary() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (slug: string) => api<ComponentLibrary>(`/component-libraries/${slug}/sync`, { method: "POST" }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["component-libraries"] });
+      void qc.invalidateQueries({ queryKey: ["components"] });
+    },
+  });
+}
+
+export function useResources() {
+  return useQuery({ queryKey: ["resources"], queryFn: () => api<Resource[]>("/resources?kind=design") });
+}
+
+export function useAddResource() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (b: { url: string; collection?: string }) => api<Resource>("/resources", { method: "POST", json: b }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["resources"] }),
+  });
+}
+
+export function useUploadResource() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (b: { file: File; collection?: string }) => {
+      const form = new FormData();
+      form.set("file", b.file);
+      if (b.collection) form.set("collection", b.collection);
+      return api<Resource>("/resources/upload", { method: "POST", body: form });
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["resources"] }),
+  });
+}
+
+export function useDeleteResource() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api<{ ok: true }>(`/resources/${id}`, { method: "DELETE" }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["resources"] }),
   });
 }
 

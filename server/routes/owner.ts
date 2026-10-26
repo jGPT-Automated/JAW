@@ -5,7 +5,9 @@ import { RoomAgentDispatch, RoomConfiguration } from "@livekit/protocol";
 import { AccessToken } from "livekit-server-sdk";
 import type { Env } from "../auth.js";
 import { one, q } from "../db.js";
+import { addLibrary, listComponents, listLibraries, syncLibrary } from "../lib/catalog-store.js";
 import { saveMemory, searchMemories } from "../lib/memory.js";
+import { addResource, listResources, storeUpload } from "../lib/resources.js";
 import { enqueue, processQueue } from "../lib/queue.js";
 import { inboundUrl } from "../lib/urls.js";
 
@@ -188,6 +190,49 @@ owner.put("/docs/:slug", async (c) => {
     [slug, b.title.trim(), b.body ?? "", b.source_url ?? null, !!b.public, b.tags ?? []],
   );
   return c.json(row);
+});
+
+// Component catalog: libraries (shadcn registries) and their items by category -----------
+owner.get("/component-libraries", async (c) => c.json(await listLibraries()));
+owner.post("/component-libraries", async (c) => c.json(await addLibrary(await c.req.json(), "owner"), 201));
+owner.post("/component-libraries/:slug/sync", async (c) => c.json(await syncLibrary(c.req.param("slug"))));
+owner.delete("/component-libraries/:slug", async (c) => {
+  await q(`DELETE FROM component_libraries WHERE slug = $1`, [c.req.param("slug")]);
+  return c.json({ ok: true });
+});
+owner.get("/components", async (c) => c.json(await listComponents(c.req.query("category"), c.req.query("q"))));
+
+// Resources: design references by link, upload or agent --------------------------------
+owner.get("/resources", async (c) => c.json(await listResources(c.req.query("kind"))));
+owner.post("/resources", async (c) => c.json(await addResource(await c.req.json(), "owner"), 201));
+owner.post("/resources/upload", async (c) => {
+  const form = await c.req.formData();
+  const file = form.get("file");
+  if (!(file instanceof File)) throw new HTTPException(400, { message: "Attach an image as 'file'" });
+  const image_url = await storeUpload(file);
+  return c.json(
+    await addResource(
+      { image_url, title: String(form.get("title") || file.name.replace(/\.[^.]+$/, "")), collection: String(form.get("collection") || "") },
+      "owner",
+    ),
+    201,
+  );
+});
+owner.patch("/resources/:id", async (c) => {
+  const b = await c.req.json<{ title?: string; collection?: string; notes?: string }>();
+  const row = await one(
+    `UPDATE resources SET title = coalesce($2, title), collection = coalesce($3, collection), notes = coalesce($4, notes)
+     WHERE id = $1 RETURNING *`,
+    [c.req.param("id"), b.title?.trim() || null, b.collection?.trim() || null, b.notes ?? null],
+  );
+  if (!row) throw new HTTPException(404, { message: "Not found" });
+  return c.json(row);
+});
+owner.delete("/resources/:id", async (c) => {
+  const row = await one<{ image_url: string | null }>(`DELETE FROM resources WHERE id = $1 RETURNING image_url`, [c.req.param("id")]);
+  const file = row?.image_url?.match(/^\/api\/public\/files\/([0-9a-f-]{36})$/)?.[1];
+  if (file) await q(`DELETE FROM resource_files WHERE id = $1`, [file]);
+  return c.json({ ok: true });
 });
 
 // Conversations: voice calls, summary first, transcript from agent_messages -------------

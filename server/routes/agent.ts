@@ -5,7 +5,9 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { requireAgent, type Env } from "../auth.js";
 import { one, q } from "../db.js";
+import { addLibrary } from "../lib/catalog-store.js";
 import { saveMemory, searchMemories } from "../lib/memory.js";
+import { addResource } from "../lib/resources.js";
 import { enqueue, processQueue } from "../lib/queue.js";
 import { inboundUrl } from "../lib/urls.js";
 
@@ -166,3 +168,9 @@ agentApi.get("/reviews", async (c) => {
     ),
   );
 });
+
+/** Add a component library by its registry index URL; it is synced into the catalog at once. */
+agentApi.post("/component-libraries", async (c) => c.json(await addLibrary(await c.req.json(), c.get("agent").name), 201));
+
+/** Add a design reference or other resource by link: { url, title?, collection?, notes?, kind? }. */
+agentApi.post("/resources", async (c) => c.json(await addResource(await c.req.json(), c.get("agent").name), 201));

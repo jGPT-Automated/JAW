@@ -148,3 +148,38 @@ export interface Cached<T> {
   stale: boolean;
   error: string | null;
 }
+
+export interface ComponentLibrary {
+  slug: string;
+  name: string;
+  site_url: string;
+  registry_url: string;
+  namespace: string | null;
+  added_by: string;
+  synced_at: string | null;
+  item_count: number;
+  sync_error: string | null;
+}
+
+export interface CatalogComponent {
+  library: string;
+  library_name: string;
+  name: string;
+  title: string;
+  description: string | null;
+  category: string;
+  docs_url: string | null;
+  install: string;
+}
+
+export interface Resource {
+  id: string;
+  kind: string;
+  title: string;
+  url: string | null;
+  image_url: string | null;
+  collection: string;
+  notes: string | null;
+  added_by: string;
+  created_at: string;
+}

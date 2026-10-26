@@ -72,7 +72,7 @@ function Account({ login }: { login: string }) {
               </p>
               {a.bio ? <p className="max-w-xl text-[15px] text-muted-foreground">{a.bio}</p> : null}
             </div>
-            <div className="flex gap-2">
+            <div className="flex w-full gap-2 sm:w-auto">
               <Button
                 variant="outline"
                 size="sm"

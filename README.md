@@ -13,10 +13,13 @@ The dashboard is mobile-friendly and gated behind sign-in. A small read-only sur
 | `/` **Talk** | Voice conversation with JAW (beUI voice orb + LiveKit). The orb breathes until the agent's audio arrives |
 | `/conversations` | Every call, read summary first: main points, decisions, follow-ups, then the full transcript (Kokonut synced transcript) |
 | `/roadmap` | LocalCheck's locked requests on a cult-ui kanban board, from `public/localcheck/data/decisions.json` |
-| `/resources` | Skills (plain text agents fetch), the owner's taste references, the component libraries |
+| `/github/:account` | Per account (GenJess, AgenticJess-Star, jGPT-Automated, Generative-Jesse): profile, contribution terrain, open pull requests with per-file review, recent activity, projects |
+| `/resources` | **Components**: every item from each component library, by category, with docs and install command; add a library by its registry URL. **Designs**: references added by link, upload, paste or agent. **Skills**: plain text agents fetch |
 | `/protocol`, `/manifesto` | Reference writing |
 
-Agents can fetch without signing in: `/skills/index.json`, `/skills/<name>.md`, `/taste.json`.
+Agents can fetch without signing in: `/skills/index.json`, `/skills/<name>.md`, `/api/public/resources?kind=design`, `/api/public/components?category=&q=`, `/api/public/component-libraries`.
+
+With their inbound token, agents can also add a design (`POST /api/agent/resources {url, collection?, notes?}`), add a component library (`POST /api/agent/component-libraries {name, registry_url, namespace?}`) and read your pull request reviews (`GET /api/agent/reviews?repo=`).
 
 `⌘K` / `Ctrl K` opens the command palette anywhere.
 
@@ -84,6 +87,7 @@ Server-side only (Vercel → Project → Settings → Environment Variables). Ne
 | `JAW_OWNER_EMAILS` | Comma-separated emails allowed into the dashboard |
 | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | Voice rooms and agent dispatch |
 | `JAW_PUBLIC_URL` | Optional: canonical origin for the inbound URL sent to agents |
+| `GITHUB_TOKEN` | Optional: raises GitHub's rate limit for the account pages (public data only; no scopes needed) |
 
 Browser (public by design): `VITE_NEON_AUTH_URL`, the Neon Auth base URL.
 
