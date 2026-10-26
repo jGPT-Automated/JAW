@@ -78,6 +78,13 @@
       "bytes": 11515
     },
     {
+      "name": "libraries-dev",
+      "description": "Use the Libraries.dev UI effect libraries correctly and find where they fit in a project. Covers Border beam (border-beam), Thinking orbs (thinking-orbs), Gooey (liquid-gooey), Voice (voice-glow), Bot avatars (bot-avatars), Liquid metal (metal-fx) and Image (img-fx). Use when adding an AI thinking or loading state, a glowing or animated border around an input or card, a voice or microphone visualizer, an animated bot or agent avatar, a liquid metal button or badge, an image generation placeholder or reveal, a gooey blob or liquid menu, or when the user mentions libraries.dev or any of these packages. Also \"review my project for libraries.dev\", \"where could I use these effects\", and the commands libraries reveal, libraries review, libraries apply.",
+      "url": "/skills/libraries-dev.md",
+      "source": "https://github.com/Jakubantalik/Libraries.dev",
+      "bytes": 10234
+    },
+    {
       "name": "neon-auth",
       "description": "Add authentication to a new app. Use for \"add auth\", \"add login\", Neon Auth (Managed Better Auth), identity routing, sign-up, sign-in, password reset, email OTP, magic links, organizations, phone OTP, OAuth, passkeys, MFA, trusted domains, invalid domain, and @neondatabase/auth. No existing identity: default to Managed Better Auth. Keep working Better Auth, Clerk, Supabase Auth, or another IdP. User asked to migrate from Supabase Auth: Managed Better Auth. A required plugin outside Managed support: self-managed Better Auth on a Neon Function or the existing app host. Also use for auth APIs in @neondatabase/neon-js.",
       "url": "/skills/neon-auth.md",

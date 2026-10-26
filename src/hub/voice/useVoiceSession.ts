@@ -13,6 +13,29 @@ type AgentState = "initializing" | "idle" | "listening" | "thinking" | "speaking
 
 export type VoiceStatus = "idle" | "connecting" | "waiting" | AgentState | "ended" | "error";
 
+/** A tool the agent ran, as broadcast on the room's tool-call topic. */
+export interface LiveToolCall {
+  call_id: string;
+  name: string;
+  args: Record<string, unknown>;
+  status: "running" | "done" | "error";
+  output?: string;
+  at: string;
+}
+
+// Must match agent/src/config.ts TOOL_TOPIC.
+const TOOL_TOPIC = "jaw.tool-calls";
+
+/** Loudness of an analyser's current frame, scaled to roughly 0–1 for speech. */
+function rms(node: AnalyserNode | null, buf: { current: Float32Array<ArrayBuffer> | null }) {
+  if (!node) return 0;
+  if (buf.current?.length !== node.fftSize) buf.current = new Float32Array(node.fftSize);
+  node.getFloatTimeDomainData(buf.current);
+  let sum = 0;
+  for (const v of buf.current) sum += v * v;
+  return Math.min(1, Math.sqrt(sum / buf.current.length) * 8);
+}
+
 export interface Caption {
   id: string;
   from: "user" | "agent";
@@ -34,6 +57,14 @@ export function useVoiceSession() {
   const [captions, setCaptions] = useState<Caption[]>([]);
   const [muted, setMuted] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [toolCalls, setToolCalls] = useState<LiveToolCall[]>([]);
+  const micAnalyser = useRef<AnalyserNode | null>(null);
+  const agentAnalyser = useRef<AnalyserNode | null>(null);
+  const micBuf = useRef<Float32Array<ArrayBuffer> | null>(null);
+  const agentBuf = useRef<Float32Array<ArrayBuffer> | null>(null);
+
+  /** Per-frame level for the voice glow: whichever side is speaking. */
+  const level = useCallback(() => Math.max(rms(micAnalyser.current, micBuf), rms(agentAnalyser.current, agentBuf)), []);
 
   const teardown = useCallback(() => {
     roomRef.current?.disconnect();
@@ -41,6 +72,8 @@ export function useVoiceSession() {
     void audioCtx.current?.close();
     audioCtx.current = null;
     setAnalyser(null);
+    micAnalyser.current = null;
+    agentAnalyser.current = null;
     document.querySelectorAll("audio[data-jaw-voice]").forEach((el) => el.remove());
   }, []);
 
@@ -49,6 +82,7 @@ export function useVoiceSession() {
   const start = useCallback(async () => {
     setError(null);
     setCaptions([]);
+    setToolCalls([]);
     setStatus("connecting");
     try {
       const { server_url, token: jwt, conversation_id } = await token.mutateAsync();
@@ -75,6 +109,7 @@ export function useVoiceSession() {
           const node = ctx.createAnalyser();
           node.fftSize = 256;
           ctx.createMediaStreamSource(new MediaStream([track.mediaStreamTrack])).connect(node);
+          agentAnalyser.current = node;
           setAnalyser(node);
         }
       });
@@ -100,8 +135,28 @@ export function useVoiceSession() {
         }
       });
 
+      room.registerTextStreamHandler(TOOL_TOPIC, async (reader) => {
+        try {
+          const call = JSON.parse(await reader.readAll()) as LiveToolCall;
+          if (!call.call_id || !call.name) return;
+          setToolCalls((list) => {
+            const i = list.findIndex((c) => c.call_id === call.call_id);
+            return i < 0 ? [...list, call] : list.map((c, j) => (j === i ? { ...c, ...call } : c));
+          });
+        } catch {
+          // Ignore malformed events; the hub keeps the record.
+        }
+      });
+
       await room.connect(server_url, jwt);
-      await room.localParticipant.setMicrophoneEnabled(true);
+      const mic = await room.localParticipant.setMicrophoneEnabled(true);
+      const micTrack = mic?.track?.mediaStreamTrack;
+      if (micTrack && audioCtx.current) {
+        const node = audioCtx.current.createAnalyser();
+        node.fftSize = 1024;
+        audioCtx.current.createMediaStreamSource(new MediaStream([micTrack])).connect(node);
+        micAnalyser.current = node;
+      }
       setMuted(false);
       setStatus(room.remoteParticipants.size ? "listening" : "waiting");
     } catch (e) {
@@ -129,5 +184,5 @@ export function useVoiceSession() {
   }, [muted]);
 
   const live = !["idle", "ended", "error"].includes(status);
-  return { status, error, analyser, captions, muted, live, conversationId, start, stop, toggleMute };
+  return { status, error, analyser, captions, toolCalls, level, muted, live, conversationId, start, stop, toggleMute };
 }

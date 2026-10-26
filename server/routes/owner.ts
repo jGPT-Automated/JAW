@@ -238,6 +238,14 @@ owner.delete("/resources/:id", async (c) => {
 // Conversations: voice calls, summary first, transcript from agent_messages -------------
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+const TOOL_CALL_COLUMNS = "call_id, conversation_id, name, args, output, status, started_at, ended_at";
+
+/** The agent's most recent tool calls across conversations, newest first. */
+owner.get("/tool-calls", async (c) => {
+  const limit = Math.min(Number(c.req.query("limit")) || 30, 200);
+  return c.json(await q(`SELECT ${TOOL_CALL_COLUMNS} FROM tool_calls ORDER BY started_at DESC LIMIT $1`, [limit]));
+});
+
 owner.get("/conversations", async (c) => {
   const rows = await q(
     `SELECT s.conversation_id AS id, s.title, s.summary, s.started_at, s.ended_at,
@@ -262,12 +270,15 @@ owner.get("/conversations/:id", async (c) => {
     [id],
   );
   if (!session) throw new HTTPException(404, { message: "Conversation not found" });
-  const messages = await q(
-    `SELECT id, from_kind, from_label, content, created_at FROM agent_messages
-     WHERE conversation_id = $1 ORDER BY created_at`,
-    [id],
-  );
-  return c.json({ ...session, messages });
+  const [messages, tool_calls] = await Promise.all([
+    q(
+      `SELECT id, from_kind, from_label, content, created_at FROM agent_messages
+       WHERE conversation_id = $1 ORDER BY created_at`,
+      [id],
+    ),
+    q(`SELECT ${TOOL_CALL_COLUMNS} FROM tool_calls WHERE conversation_id = $1 ORDER BY started_at`, [id]),
+  ]);
+  return c.json({ ...session, messages, tool_calls });
 });
 
 // Voice: a LiveKit room with the JAW voice agent dispatched into it ---------------------

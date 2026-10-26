@@ -18,6 +18,7 @@ import type {
   Resource,
   RoadmapTask,
   Skill,
+  ToolCall,
 } from "@/hub/lib/types";
 
 export const keys = {
@@ -142,6 +143,10 @@ export function useDeleteResource() {
     mutationFn: (id: string) => api<{ ok: true }>(`/resources/${id}`, { method: "DELETE" }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["resources"] }),
   });
+}
+
+export function useToolCalls(limit = 30) {
+  return useQuery({ queryKey: ["tool-calls", limit], queryFn: () => api<ToolCall[]>(`/tool-calls?limit=${limit}`) });
 }
 
 export function useAgents() {
