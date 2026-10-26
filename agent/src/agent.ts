@@ -44,6 +44,7 @@ export function buildInstructions(memory: MemoryRow[]): string {
     - When Jesse tells you a fact, preference, decision or to-do that is worth keeping, save it with the remember tool, then say so briefly.
     - When he asks what you know or remember about something, use the recall tool before answering. The recent memory below is only a small sample.
     - When he asks who can help or what agents exist, use the list agents tool.
+    - When he asks to open the canvas, or to see his tool calls, conversation history or memory on screen, use the show canvas tool. Use it with close when he asks to close the canvas. Then say in a few words what is on screen.
 
     # Delegating work
 
@@ -131,6 +132,27 @@ export function createTools(hub: HubClient, report?: ToolReporter) {
         Use it when Jesse asks who is available or before delegating if you are unsure of the exact agent name.
       `,
       execute: instrument('list_agents', async () => hub.listAgents(), report),
+    }),
+    tool({
+      name: 'show_canvas',
+      description: dedent`
+        Change what Jesse's screen shows next to the voice. "tool_calls", "history" or "memory" opens the canvas
+        on that view and docks the voice orb at the bottom; "close" returns to the full-screen orb.
+      `,
+      parameters: z.object({
+        view: z
+          .enum(['tool_calls', 'history', 'memory', 'close'])
+          .describe('tool_calls, history, memory, or close.'),
+      }),
+      // The screen reacts to this call itself (it arrives on the tool-call topic); nothing to do here.
+      execute: instrument(
+        'show_canvas',
+        async ({ view }) =>
+          view === 'close'
+            ? 'Closed the canvas.'
+            : `Showing ${view.replace('_', ' ')} on Jesse's screen.`,
+        report,
+      ),
     }),
     tool({
       name: 'delegate',

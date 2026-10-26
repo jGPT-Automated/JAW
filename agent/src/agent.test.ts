@@ -33,7 +33,7 @@ describe('tools', () => {
   it('registers the four hub tools', () => {
     const hub = new HubClient({ baseUrl: 'https://x.test', token: 't', conversationId: null });
     const names = createTools(hub).map((t) => t.id);
-    expect(names).toEqual(['remember', 'recall', 'list_agents', 'delegate']);
+    expect(names).toEqual(['remember', 'recall', 'list_agents', 'show_canvas', 'delegate']);
   });
 
   it('delegate tool forwards to the hub and returns its factual result', async () => {

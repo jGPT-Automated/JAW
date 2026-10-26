@@ -10,7 +10,7 @@ The dashboard is mobile-friendly and gated behind sign-in. A small read-only sur
 
 | Route | What it does |
 |---|---|
-| `/` **Talk** | Voice conversation with JAW (beUI voice orb in a libraries.dev voice glow, LiveKit). Beside it: every tool JAW runs, live; past conversations; and memory (search, add, forget) |
+| `/` **Talk** | Voice conversation with JAW (beUI voice orb in a libraries.dev voice glow, LiveKit). Open the canvas (button, or ask JAW) and the orb docks at the bottom while tool calls, history and memory fill the screen |
 | `/conversations` | Every call, read summary first: main points, decisions, follow-ups, then the full transcript (Kokonut synced transcript) |
 | `/roadmap` | LocalCheck's locked requests on a cult-ui kanban board, from `public/localcheck/data/decisions.json` |
 | `/github/:account` | Per account (GenJess, AgenticJess-Star, jGPT-Automated, Generative-Jesse): profile, contribution terrain, open pull requests with per-file review, recent activity, projects |
@@ -84,7 +84,8 @@ Server-side only (Vercel → Project → Settings → Environment Variables). Ne
 |---|---|
 | `DATABASE_URL` | Neon pooled connection string (NeonJess, production branch) |
 | `NEON_AUTH_JWKS_URL` | Neon Auth JWKS, to verify sign-in tokens |
-| `JAW_OWNER_EMAILS` | Comma-separated emails allowed into the dashboard |
+| `JAW_OWNER_KEY` | The owner's sign-in key (16+ characters), typed once per device. Simplest way in |
+| `JAW_OWNER_EMAILS` | Comma-separated emails allowed into the dashboard (Neon Auth only) |
 | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | Voice rooms and agent dispatch |
 | `JAW_PUBLIC_URL` | Optional: canonical origin for the inbound URL sent to agents |
 | `GITHUB_TOKEN` | Optional: raises GitHub's rate limit for the account pages (public data only; no scopes needed) |
@@ -109,7 +110,7 @@ npm run build
 
 Node 22+. Behind an HTTP proxy, run with `NODE_USE_ENV_PROXY=1` so server-side fetch uses it.
 
-The voice worker lives in `agent/` with its own README (local dev and `lk agent create` deploy).
+The voice worker lives in `agent/` with its own README. It deploys to LiveKit Cloud from GitHub with `.github/workflows/voice-agent.yml` (run it once with "create"; after that every push to main that changes `agent/` deploys). Repository secrets: `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `SECRET_LIST` (`JAW_API_URL=…,JAW_AGENT_TOKEN=…`).
 
 ---
 
