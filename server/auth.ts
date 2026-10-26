@@ -1,5 +1,6 @@
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
+import { timingSafeEqual } from "node:crypto";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { one } from "./db.js";
 
@@ -16,8 +17,22 @@ function bearer(header: string | undefined) {
   return header?.toLowerCase().startsWith("bearer ") ? header.slice(7).trim() : "";
 }
 
+/** Owner key: one long secret set in JAW_OWNER_KEY. Too short to be safe means not configured. */
+export const OWNER_KEY_MIN = 16;
+export function ownerKeyMode(): "ok" | "short" | "unset" {
+  const key = process.env.JAW_OWNER_KEY ?? "";
+  return !key ? "unset" : key.length < OWNER_KEY_MIN ? "short" : "ok";
+}
+
+function matchesOwnerKey(token: string) {
+  if (ownerKeyMode() !== "ok" || !token) return false;
+  const a = Buffer.from(token);
+  const b = Buffer.from(process.env.JAW_OWNER_KEY!);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 /**
- * The owner's dashboard. A Neon Auth (managed Better Auth) JWT is verified against the
+ * The owner's dashboard. Either the owner key (JAW_OWNER_KEY) or a Neon Auth (managed Better Auth) JWT is verified against the
  * branch JWKS. Fails closed: without NEON_AUTH_JWKS_URL every request is refused, unless
  * JAW_AUTH_DISABLED=1 is set for local development.
  */
@@ -26,9 +41,16 @@ export const requireOwner = createMiddleware<Env>(async (c, next) => {
     c.set("ownerId", "local-dev");
     return next();
   }
-  const jwksUrl = process.env.NEON_AUTH_JWKS_URL;
-  if (!jwksUrl) throw new HTTPException(503, { message: "Sign-in is not configured on the server" });
   const token = bearer(c.req.header("authorization"));
+  if (matchesOwnerKey(token)) {
+    c.set("ownerId", "owner");
+    return next();
+  }
+  const jwksUrl = process.env.NEON_AUTH_JWKS_URL;
+  if (!jwksUrl) {
+    if (ownerKeyMode() === "ok") throw new HTTPException(401, { message: token ? "That owner key is not right" : "Enter your owner key" });
+    throw new HTTPException(503, { message: "Sign-in is not configured on the server" });
+  }
   if (!token) throw new HTTPException(401, { message: "Sign in to continue" });
   jwks ??= createRemoteJWKSet(new URL(jwksUrl));
   try {

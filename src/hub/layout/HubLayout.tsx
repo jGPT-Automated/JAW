@@ -10,7 +10,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "./AppSidebar";
 import { HubCommand } from "./HubCommand";
 import { navFor } from "@/hub/nav";
-import { authClient } from "@/hub/lib/auth";
+import { canSignOut, signOut } from "@/hub/lib/auth";
 
 export function HubLayout() {
   const { pathname } = useLocation();
@@ -47,8 +47,8 @@ export function HubLayout() {
           >
             {resolvedTheme === "dark" ? <Sun /> : <Moon />}
           </Button>
-          {authClient ? (
-            <Button variant="ghost" size="icon" aria-label="Sign out" onClick={() => authClient?.signOut()}>
+          {canSignOut() ? (
+            <Button variant="ghost" size="icon" aria-label="Sign out" onClick={() => void signOut()}>
               <LogOut />
             </Button>
           ) : null}
