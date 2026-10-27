@@ -35,7 +35,11 @@ app.get("/status", async (c) => {
     auth,
     owner_key: ownerKeyMode() === "short" ? `JAW_OWNER_KEY must be at least ${OWNER_KEY_MIN} characters` : null,
     missing,
-    optional_missing: ["LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET", "GITHUB_TOKEN"].filter((k) => !process.env[k]),
+    voice: {
+      gemini: !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY),
+      livekit: !!(process.env.LIVEKIT_URL && process.env.LIVEKIT_API_KEY && process.env.LIVEKIT_API_SECRET),
+    },
+    optional_missing: ["GEMINI_API_KEY", "LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET", "GITHUB_TOKEN"].filter((k) => !process.env[k]),
   });
 });
 

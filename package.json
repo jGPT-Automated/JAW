@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0",
+    "@google/genai": "^2.31.0",
     "@hono/node-server": "^2.1.5",
     "@livekit/protocol": "^1.51.0",
     "@neondatabase/auth": "^0.6.0-beta",

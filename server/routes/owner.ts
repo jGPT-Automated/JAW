@@ -3,6 +3,8 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { RoomAgentDispatch, RoomConfiguration } from "@livekit/protocol";
 import { AccessToken } from "livekit-server-sdk";
+import { GoogleGenAI, Modality } from "@google/genai";
+import { runVoiceTool, VOICE_TOOLS, voiceInstructions } from "../lib/voice-tools.js";
 import { OWNER_KEY_MIN, setOwnerKey, type Env } from "../auth.js";
 import { one, q } from "../db.js";
 import { addLibrary, listComponents, listLibraries, syncLibrary } from "../lib/catalog-store.js";
@@ -290,6 +292,66 @@ owner.get("/conversations/:id", async (c) => {
     q(`SELECT ${TOOL_CALL_COLUMNS} FROM tool_calls WHERE conversation_id = $1 ORDER BY started_at`, [id]),
   ]);
   return c.json({ ...session, messages, tool_calls });
+});
+
+// Voice with Gemini Live: the browser talks to Gemini directly with a short-lived token.
+// Instructions and tools are locked into the token here, so the browser can't change them.
+export const GEMINI_LIVE_MODEL = process.env.GEMINI_LIVE_MODEL || "gemini-3.8-live";
+export const geminiKey = () => process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+
+owner.post("/voice/gemini-token", async (c) => {
+  const apiKey = geminiKey();
+  if (!apiKey) throw new HTTPException(503, { message: "Voice needs GEMINI_API_KEY in Vercel" });
+  const session = await one<{ conversation_id: string }>(
+    `INSERT INTO voice_sessions (room) VALUES ($1) RETURNING conversation_id`,
+    [`gemini-${crypto.randomUUID()}`],
+  );
+  const ai = new GoogleGenAI({ apiKey });
+  const token = await ai.authTokens.create({
+    config: {
+      uses: 1,
+      expireTime: new Date(Date.now() + 30 * 60_000).toISOString(),
+      newSessionExpireTime: new Date(Date.now() + 60_000).toISOString(),
+      liveConnectConstraints: {
+        model: GEMINI_LIVE_MODEL,
+        config: {
+          responseModalities: [Modality.AUDIO],
+          systemInstruction: await voiceInstructions(),
+          tools: [{ functionDeclarations: VOICE_TOOLS as never }],
+          inputAudioTranscription: {},
+          outputAudioTranscription: {},
+          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: process.env.GEMINI_VOICE || "Kore" } } },
+        },
+      },
+    },
+  });
+  if (!token.name) throw new HTTPException(502, { message: "Gemini didn't return a token" });
+  return c.json({ token: token.name, model: GEMINI_LIVE_MODEL, conversation_id: session!.conversation_id });
+});
+
+owner.post("/voice/tool", async (c) => {
+  const b = await c.req.json<{ call_id?: string; name?: string; args?: Record<string, unknown>; conversation_id?: string }>();
+  if (!b.call_id || !b.name) throw new HTTPException(400, { message: "call_id and name are required" });
+  const conversation = b.conversation_id && UUID_RE.test(b.conversation_id) ? b.conversation_id : null;
+  return c.json(
+    await runVoiceTool({ call_id: b.call_id.slice(0, 200), name: b.name, args: b.args ?? {}, conversation_id: conversation, inboundUrl: inboundUrl(c.req.url) }),
+  );
+});
+
+/** One finished line of a voice call (yours or JAW's), so the call shows up in Conversations. */
+owner.post("/voice/transcript", async (c) => {
+  const b = await c.req.json<{ conversation_id?: string; role?: string; text?: string }>();
+  if (!b.conversation_id || !UUID_RE.test(b.conversation_id) || !b.text?.trim()) {
+    throw new HTTPException(400, { message: "conversation_id and text are required" });
+  }
+  const you = b.role === "user";
+  await q(
+    `INSERT INTO agent_messages (conversation_id, from_kind, from_label, to_kind, to_label, channel, content)
+     VALUES ($1, $2, $3, $4, $5, 'voice', $6)`,
+    [b.conversation_id, you ? "voice" : "agent", you ? "You" : "JAW", you ? "agent" : "user", you ? "JAW" : "You", b.text.trim().slice(0, 8000)],
+  );
+  await q(`UPDATE voice_sessions SET ended_at = now() WHERE conversation_id = $1`, [b.conversation_id]);
+  return c.json({ ok: true });
 });
 
 // Voice: a LiveKit room with the JAW voice agent dispatched into it ---------------------
