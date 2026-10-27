@@ -43,7 +43,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create the agent on LiveKit Cloud
-        uses: livekit/deploy-action@v2
+        uses: livekit/deploy-action@v2.12.2
         env:
           LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
           LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
@@ -68,7 +68,7 @@ jobs:
         with:
           ref: voice-agent-config-${{ github.run_id }}
       - name: Wait until the agent is running
-        uses: livekit/deploy-action@v2
+        uses: livekit/deploy-action@v2.12.2
         env:
           LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
           LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
@@ -86,7 +86,7 @@ jobs:
       # Until "create" has run and its PR is merged there is no agent to deploy to.
       - name: Deploy a new version
         if: hashFiles('agent/livekit.toml') != ''
-        uses: livekit/deploy-action@v2
+        uses: livekit/deploy-action@v2.12.2
         env:
           LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
           LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}

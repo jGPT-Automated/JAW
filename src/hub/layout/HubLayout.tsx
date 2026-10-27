@@ -10,7 +10,8 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "./AppSidebar";
 import { HubCommand } from "./HubCommand";
 import { navFor } from "@/hub/nav";
-import { canSignOut, signOut } from "@/hub/lib/auth";
+import { canSignOut, ownerKey, signOut } from "@/hub/lib/auth";
+import { ChangePassword } from "./ChangePassword";
 
 export function HubLayout() {
   const { pathname } = useLocation();
@@ -47,6 +48,7 @@ export function HubLayout() {
           >
             {resolvedTheme === "dark" ? <Sun /> : <Moon />}
           </Button>
+          {ownerKey.get() ? <ChangePassword /> : null}
           {canSignOut() ? (
             <Button variant="ghost" size="icon" aria-label="Sign out" onClick={() => void signOut()}>
               <LogOut />
