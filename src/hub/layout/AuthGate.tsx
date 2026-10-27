@@ -19,7 +19,7 @@ interface Status {
 const WHAT: Record<string, string> = {
   DATABASE_URL: "Set, but the database didn't answer. Check the Neon connection string.",
   NEON_KEY: "Neon API key. JAW uses it to find the NeonJess database (or set DATABASE_URL directly).",
-  JAW_OWNER_KEY: "Any long password you choose (16+ characters). You type it once on each device to sign in.",
+  JAW_OWNER_KEY: "Your JAW password (16+ characters).",
 };
 
 /**
@@ -107,7 +107,7 @@ function OwnerKey() {
     const res = await fetch("/api/conversations", { headers: { Authorization: `Bearer ${value.trim()}` } }).catch(() => null);
     setPending(false);
     if (res?.ok) return ownerKey.set(value.trim());
-    setError(res?.status === 401 ? "That key doesn't match JAW_OWNER_KEY." : "Couldn't check the key. Try again.");
+    setError(res?.status === 401 ? "That password isn't right." : "Couldn't check the password. Try again.");
   };
 
   return (
@@ -117,12 +117,12 @@ function OwnerKey() {
           <CardHeader>
             <img src="/jaw-icon.svg" alt="" className="mb-2 size-10 rounded-lg" />
             <CardTitle className="text-subheading">Sign in to JAW</CardTitle>
-            <CardDescription>Enter your owner key. It's saved on this device only.</CardDescription>
+            <CardDescription>Enter your JAW password. This device stays signed in.</CardDescription>
           </CardHeader>
           <CardContent>
             <FieldGroup>
               <Field data-invalid={!!error || undefined}>
-                <FieldLabel htmlFor="owner-key">Owner key</FieldLabel>
+                <FieldLabel htmlFor="owner-key">Password</FieldLabel>
                 <Input
                   id="owner-key"
                   type="password"
@@ -132,7 +132,6 @@ function OwnerKey() {
                   aria-invalid={!!error || undefined}
                   required
                 />
-                <FieldDescription>The value of JAW_OWNER_KEY in Vercel.</FieldDescription>
                 {error ? <FieldError>{error}</FieldError> : null}
               </Field>
             </FieldGroup>
