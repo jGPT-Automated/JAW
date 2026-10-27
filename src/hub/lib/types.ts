@@ -137,6 +137,7 @@ export interface Conversation {
   started_at: string;
   ended_at: string | null;
   messages: { id: string; from_kind: string; from_label: string | null; content: string; created_at: string }[];
+  tool_calls: ToolCall[];
 }
 
 export type { GitHubSnapshot, RepoSummary, EventSummary, PullSummary, FileChange } from "../../../server/lib/github";
@@ -182,4 +183,15 @@ export interface Resource {
   notes: string | null;
   added_by: string;
   created_at: string;
+}
+
+export interface ToolCall {
+  call_id: string;
+  conversation_id: string | null;
+  name: string;
+  args: Record<string, unknown>;
+  output: string | null;
+  status: "running" | "done" | "error";
+  started_at: string;
+  ended_at: string | null;
 }

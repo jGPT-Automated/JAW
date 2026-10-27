@@ -1,4 +1,4 @@
-import { ExternalLink, Feather, FolderGit2, History, Library, ListTodo, type LucideIcon, Mic, ScrollText } from "lucide-react";
+import { ExternalLink, Feather, FolderGit2, History, Library, ListTodo, type LucideIcon, MessagesSquare, Mic, ScrollText } from "lucide-react";
 import { GITHUB_ACCOUNTS } from "./github-accounts";
 
 export interface NavItem {
@@ -18,6 +18,7 @@ export const NAV: { label: string; items: NavItem[] }[] = [
     items: [
       { title: "Talk", url: "/", icon: Mic, description: "Voice conversation with JAW" },
       { title: "Conversations", url: "/conversations", icon: History, description: "Every call, summary first" },
+      { title: "Rooms", url: "/rooms", icon: MessagesSquare, description: "Message your agents' rooms (Hyperagent and more)" },
       { title: "Roadmap", url: "/roadmap", icon: ListTodo, description: "LocalCheck's tracked requests" },
       { title: "Resources", url: "/resources", icon: Library, description: "Skills and taste references agents read" },
     ],

@@ -174,3 +174,27 @@ agentApi.post("/component-libraries", async (c) => c.json(await addLibrary(await
 
 /** Add a design reference or other resource by link: { url, title?, collection?, notes?, kind? }. */
 agentApi.post("/resources", async (c) => c.json(await addResource(await c.req.json(), c.get("agent").name), 201));
+
+/** A tool the agent ran: once with status "running", again with "done" or "error" and the output. */
+agentApi.post("/tool-calls", async (c) => {
+  const b = await c.req.json<{
+    call_id?: string;
+    conversation_id?: string;
+    name?: string;
+    args?: unknown;
+    output?: string;
+    status?: string;
+  }>();
+  if (!b.call_id || !b.name || !["running", "done", "error"].includes(b.status ?? "")) {
+    throw new HTTPException(400, { message: "call_id, name and status (running, done, error) are required" });
+  }
+  const conversation = b.conversation_id && UUID_RE.test(b.conversation_id) ? b.conversation_id : null;
+  await q(
+    `INSERT INTO tool_calls (call_id, conversation_id, agent_id, name, args, output, status, ended_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, CASE WHEN $7 = 'running' THEN NULL ELSE now() END)
+     ON CONFLICT (call_id) DO UPDATE SET output = coalesce($6, tool_calls.output), status = $7,
+       ended_at = CASE WHEN $7 = 'running' THEN tool_calls.ended_at ELSE now() END`,
+    [b.call_id.slice(0, 200), conversation, c.get("agent").id, b.name.slice(0, 100), JSON.stringify(b.args ?? {}), b.output?.slice(0, 4000) ?? null, b.status],
+  );
+  return c.json({ ok: true });
+});

@@ -15,6 +15,9 @@ export const DEFAULT_MODELS = {
   ttsVoice: '9626c31c-bec5-4cca-baa8-f8ba9e84c8bc',
 } as const;
 
+/** Room text-stream topic the agent publishes tool calls on; the Talk screen listens to it. */
+export const TOOL_TOPIC = 'jaw.tool-calls';
+
 export const AGENT_NAME = 'jaw-voice';
 
 const nonEmpty = (name: string) =>

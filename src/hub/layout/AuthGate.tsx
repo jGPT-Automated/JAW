@@ -1,24 +1,161 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Item, ItemContent, ItemDescription, ItemGroup, ItemTitle } from "@/components/ui/item";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/hub/lib/auth";
+import { AUTH_CHANGED, authClient, ownerKey } from "@/hub/lib/auth";
 
-/** Shows the dashboard only to a signed-in owner. Without auth configured (local dev) it passes through. */
+interface Status {
+  database: "ok" | "unreachable";
+  auth: "key" | "neon" | "none" | "disabled";
+  owner_key: string | null;
+  missing: string[];
+  optional_missing: string[];
+}
+
+const WHAT: Record<string, string> = {
+  DATABASE_URL: "Set, but the database didn't answer. Check the Neon connection string.",
+  NEON_KEY: "Neon API key. JAW uses it to find the NeonJess database (or set DATABASE_URL directly).",
+  JAW_OWNER_KEY: "Any long password you choose (16+ characters). You type it once on each device to sign in.",
+};
+
+/**
+ * Decides what the owner sees first: setup (the deployment is missing settings), the owner-key
+ * screen, Neon Auth sign-in, or the app.
+ */
 export function AuthGate({ children }: { children: ReactNode }) {
-  if (!authClient) return <>{children}</>;
+  const status = useQuery({
+    queryKey: ["status"],
+    queryFn: async () => {
+      const res = await fetch("/api/status");
+      if (!res.ok) throw new Error(`The server answered ${res.status}`);
+      return (await res.json()) as Status;
+    },
+    staleTime: 60_000,
+  });
+  const [key, setKey] = useState(ownerKey.get());
+  useEffect(() => {
+    const sync = () => setKey(ownerKey.get());
+    window.addEventListener(AUTH_CHANGED, sync);
+    return () => window.removeEventListener(AUTH_CHANGED, sync);
+  }, []);
+
+  if (status.isPending) return <Centered><Spinner className="text-muted-foreground" /></Centered>;
+  if (status.isError) return <Setup error={status.error.message} onRetry={() => status.refetch()} />;
+  const s = status.data;
+  if (s.missing.length || s.owner_key) return <Setup status={s} onRetry={() => status.refetch()} />;
+  if (s.auth === "disabled") return <>{children}</>;
+  if (s.auth === "key") return key ? <>{children}</> : <OwnerKey />;
+  if (!authClient) return <Setup status={{ ...s, missing: ["JAW_OWNER_KEY"] }} onRetry={() => status.refetch()} />;
   return <SessionGate>{children}</SessionGate>;
+}
+
+function Centered({ children }: { children: ReactNode }) {
+  return <main className="grid min-h-dvh place-items-center bg-background p-4">{children}</main>;
+}
+
+function Setup({ status, error, onRetry }: { status?: Status; error?: string; onRetry: () => void }) {
+  return (
+    <Centered>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <img src="/jaw-icon.svg" alt="" className="mb-2 size-10 rounded-lg" />
+          <CardTitle className="text-subheading">Almost there</CardTitle>
+          <CardDescription>
+            {error
+              ? `Couldn't reach the server: ${error}.`
+              : "This deployment is missing a setting. Add it in Vercel → Project → Settings → Environment Variables, then redeploy."}
+          </CardDescription>
+        </CardHeader>
+        {status ? (
+          <CardContent className="flex flex-col gap-4">
+            <ItemGroup className="gap-2">
+              {status.missing.map((name) => (
+                <Item key={name} variant="outline" className="rounded-xl">
+                  <ItemContent>
+                    <ItemTitle className="font-mono text-sm">{name}</ItemTitle>
+                    <ItemDescription className="line-clamp-none">{WHAT[name] ?? "Required."}</ItemDescription>
+                  </ItemContent>
+                </Item>
+              ))}
+            </ItemGroup>
+            {status.owner_key ? <p className="text-caption text-destructive">{status.owner_key}</p> : null}
+          </CardContent>
+        ) : null}
+        <CardFooter>
+          <Button variant="outline" onClick={onRetry}>
+            Check again
+          </Button>
+        </CardFooter>
+      </Card>
+    </Centered>
+  );
+}
+
+function OwnerKey() {
+  const [value, setValue] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    setPending(true);
+    setError(null);
+    const res = await fetch("/api/conversations", { headers: { Authorization: `Bearer ${value.trim()}` } }).catch(() => null);
+    setPending(false);
+    if (res?.ok) return ownerKey.set(value.trim());
+    setError(res?.status === 401 ? "That key doesn't match JAW_OWNER_KEY." : "Couldn't check the key. Try again.");
+  };
+
+  return (
+    <Centered>
+      <Card className="w-full max-w-sm">
+        <form onSubmit={submit} className="contents">
+          <CardHeader>
+            <img src="/jaw-icon.svg" alt="" className="mb-2 size-10 rounded-lg" />
+            <CardTitle className="text-subheading">Sign in to JAW</CardTitle>
+            <CardDescription>Enter your owner key. It's saved on this device only.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FieldGroup>
+              <Field data-invalid={!!error || undefined}>
+                <FieldLabel htmlFor="owner-key">Owner key</FieldLabel>
+                <Input
+                  id="owner-key"
+                  type="password"
+                  autoComplete="current-password"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  aria-invalid={!!error || undefined}
+                  required
+                />
+                <FieldDescription>The value of JAW_OWNER_KEY in Vercel.</FieldDescription>
+                {error ? <FieldError>{error}</FieldError> : null}
+              </Field>
+            </FieldGroup>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" className="w-full" disabled={pending || !value.trim()}>
+              {pending ? <Spinner data-icon="inline-start" /> : null}
+              Sign in
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    </Centered>
+  );
 }
 
 function SessionGate({ children }: { children: ReactNode }) {
   const session = authClient!.useSession();
   if (session.isPending) {
     return (
-      <div className="grid min-h-dvh place-items-center">
+      <Centered>
         <Spinner className="text-muted-foreground" />
-      </div>
+      </Centered>
     );
   }
   if (!session.data?.user) return <SignIn />;

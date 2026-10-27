@@ -1,4 +1,4 @@
-import { authToken } from "./auth";
+import { authToken, ownerKey } from "./auth";
 
 export class ApiError extends Error {
   constructor(
@@ -22,6 +22,8 @@ export async function api<T>(path: string, init: RequestInit & { json?: unknown 
   const res = await fetch(`/api${path}`, { ...init, headers, body });
   const text = await res.text();
   const data = text ? JSON.parse(text) : null;
+  // A saved owner key that no longer works (changed in Vercel): forget it so the key screen returns.
+  if (res.status === 401 && token && token === ownerKey.get()) ownerKey.clear();
   if (!res.ok) throw new ApiError(data?.error ?? `Request failed (${res.status})`, res.status);
   return data as T;
 }

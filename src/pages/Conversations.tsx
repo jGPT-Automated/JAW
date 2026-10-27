@@ -8,7 +8,9 @@ import { Item, ItemActions, ItemContent, ItemDescription, ItemGroup, ItemTitle }
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import SyncedTranscript, { type TranscriptSegment } from "@/components/kokonutui/synced-transcript";
+import { AgentActivity } from "@/components/agents/agent-activity";
 import { LoadError } from "@/hub/components/LoadError";
+import { toolCallItem } from "@/hub/components/ToolCallsPanel";
 import { useConversation, useConversations } from "@/hub/data/queries";
 import type { Conversation, ConversationListItem } from "@/hub/lib/types";
 import { cn } from "@/lib/utils";
@@ -122,6 +124,13 @@ function ConversationDetail({ id }: { id: string }) {
           <Points title="Follow-ups" items={c.action_items} />
         </div>
       )}
+
+      {c.tool_calls?.length ? (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-caption font-medium text-muted-foreground">What JAW did</h2>
+          <AgentActivity items={c.tool_calls.map(toolCallItem)} status="complete" defaultOpen />
+        </section>
+      ) : null}
 
       <Separator />
 

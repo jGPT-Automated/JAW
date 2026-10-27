@@ -1,6 +1,12 @@
 import { Agent, dedent, tool } from '@livekit/agents';
 import { z } from 'zod';
-import { HubClient, MEMORY_KINDS, type MemoryRow, formatMemoryLine } from './hub.ts';
+import {
+  HubClient,
+  MEMORY_KINDS,
+  type MemoryRow,
+  type ToolCallReport,
+  formatMemoryLine,
+} from './hub.ts';
 
 const MEMORY_BLOCK_MAX_CHARS = 1500;
 
@@ -38,6 +44,7 @@ export function buildInstructions(memory: MemoryRow[]): string {
     - When Jesse tells you a fact, preference, decision or to-do that is worth keeping, save it with the remember tool, then say so briefly.
     - When he asks what you know or remember about something, use the recall tool before answering. The recent memory below is only a small sample.
     - When he asks who can help or what agents exist, use the list agents tool.
+    - When he asks to open the canvas, or to see his tool calls, conversation history or memory on screen, use the show canvas tool. Use it with close when he asks to close the canvas. Then say in a few words what is on screen.
 
     # Delegating work
 
@@ -54,8 +61,37 @@ export function buildInstructions(memory: MemoryRow[]): string {
   return `${persona}\n\n${formatMemoryBlock(memory)}`;
 }
 
+/** Receives each tool call as it starts and as it finishes. Must not throw. */
+export type ToolReporter = (call: ToolCallReport) => void;
+
+/** Wraps a tool body so every call is reported at start and finish, including failures. */
+export function instrument<A extends Record<string, unknown>>(
+  name: string,
+  run: (args: A) => Promise<string>,
+  report?: ToolReporter,
+) {
+  return async (args: A, opts?: { toolCallId?: string }): Promise<string> => {
+    const call_id = opts?.toolCallId || `${name}-${Date.now()}`;
+    report?.({ call_id, name, args, status: 'running' });
+    try {
+      const output = await run(args);
+      report?.({ call_id, name, args, status: 'done', output });
+      return output;
+    } catch (err) {
+      report?.({
+        call_id,
+        name,
+        args,
+        status: 'error',
+        output: String((err as Error)?.message ?? err),
+      });
+      throw err;
+    }
+  };
+}
+
 /** Function tools backed by the hub API. Descriptions say when to use each tool. */
-export function createTools(hub: HubClient) {
+export function createTools(hub: HubClient, report?: ToolReporter) {
   return [
     tool({
       name: 'remember',
@@ -72,7 +108,11 @@ export function createTools(hub: HubClient) {
           .describe('The item to remember, as a standalone sentence.'),
         kind: z.enum(MEMORY_KINDS).describe('fact, preference, decision, note or todo.'),
       }),
-      execute: async ({ content, kind }) => hub.remember(content, kind),
+      execute: instrument(
+        'remember',
+        async ({ content, kind }) => hub.remember(content, kind),
+        report,
+      ),
     }),
     tool({
       name: 'recall',
@@ -83,7 +123,7 @@ export function createTools(hub: HubClient) {
       parameters: z.object({
         query: z.string().min(1).max(200).describe('Short search keywords or topic.'),
       }),
-      execute: async ({ query }) => hub.recall(query),
+      execute: instrument('recall', async ({ query }) => hub.recall(query), report),
     }),
     tool({
       name: 'list_agents',
@@ -91,7 +131,28 @@ export function createTools(hub: HubClient) {
         List the other agents in Jesse's hub that work can be delegated to, with what each one does and its status.
         Use it when Jesse asks who is available or before delegating if you are unsure of the exact agent name.
       `,
-      execute: async () => hub.listAgents(),
+      execute: instrument('list_agents', async () => hub.listAgents(), report),
+    }),
+    tool({
+      name: 'show_canvas',
+      description: dedent`
+        Change what Jesse's screen shows next to the voice. "tool_calls", "history" or "memory" opens the canvas
+        on that view and docks the voice orb at the bottom; "close" returns to the full-screen orb.
+      `,
+      parameters: z.object({
+        view: z
+          .enum(['tool_calls', 'history', 'memory', 'close'])
+          .describe('tool_calls, history, memory, or close.'),
+      }),
+      // The screen reacts to this call itself (it arrives on the tool-call topic); nothing to do here.
+      execute: instrument(
+        'show_canvas',
+        async ({ view }) =>
+          view === 'close'
+            ? 'Closed the canvas.'
+            : `Showing ${view.replace('_', ' ')} on Jesse's screen.`,
+        report,
+      ),
     }),
     tool({
       name: 'delegate',
@@ -113,14 +174,14 @@ export function createTools(hub: HubClient) {
             'Complete, self-contained description of the task, including any needed context.',
           ),
       }),
-      execute: async ({ to, task }) => hub.delegate(to, task),
+      execute: instrument('delegate', async ({ to, task }) => hub.delegate(to, task), report),
     }),
   ];
 }
 
-export function createAgent(hub: HubClient, memory: MemoryRow[]) {
+export function createAgent(hub: HubClient, memory: MemoryRow[], report?: ToolReporter) {
   return Agent.create({
     instructions: buildInstructions(memory),
-    tools: createTools(hub),
+    tools: createTools(hub, report),
   });
 }

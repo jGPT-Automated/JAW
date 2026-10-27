@@ -1,0 +1,97 @@
+# Deploys the JAW voice agent (agent/) to LiveKit Cloud from GitHub, so no local machine is needed.
+#
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET  LiveKit Cloud project keys
+#   SECRET_LIST  the agent's own settings, comma separated:
+#                JAW_API_URL=https://<your app>,JAW_AGENT_TOKEN=<JAW's inbound token>
+#
+# First time: Actions → "Voice agent" → Run workflow → operation "create". It creates the agent,
+# deploys it, and opens a PR adding agent/livekit.toml. Merge that PR. After that, every push to
+# main that changes agent/ deploys a new version (or run the workflow with "deploy").
+name: Voice agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: create (first time) or deploy
+        required: true
+        type: choice
+        options: [create, deploy]
+        default: create
+  push:
+    branches: [main]
+    paths:
+      - "agent/**"
+      - "!agent/livekit.toml"
+      - "!agent/**/*.md"
+
+concurrency:
+  group: voice-agent
+  cancel-in-progress: true
+
+jobs:
+  create:
+    if: github.event_name == 'workflow_dispatch' && inputs.operation == 'create'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create the agent on LiveKit Cloud
+        uses: livekit/deploy-action@v2
+        env:
+          LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+          LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+          LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+          SECRET_LIST: ${{ secrets.SECRET_LIST }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          OPERATION: create
+          WORKING_DIRECTORY: agent
+      - name: Open a PR with agent/livekit.toml
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: agent/livekit.toml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: voice-agent-config-${{ github.run_id }}
+          title: Add LiveKit voice agent config
+          commit-message: Add LiveKit voice agent config
+          body: Created by the Voice agent workflow. Merge so later pushes deploy to this agent.
+          base: main
+          delete-branch: true
+      - uses: actions/checkout@v4
+        with:
+          ref: voice-agent-config-${{ github.run_id }}
+      - name: Wait until the agent is running
+        uses: livekit/deploy-action@v2
+        env:
+          LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+          LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+          LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+        with:
+          OPERATION: status-retry
+          WORKING_DIRECTORY: agent
+          TIMEOUT: 10m
+
+  deploy:
+    if: github.event_name == 'push' || inputs.operation == 'deploy'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Until "create" has run and its PR is merged there is no agent to deploy to.
+      - name: Deploy a new version
+        if: hashFiles('agent/livekit.toml') != ''
+        uses: livekit/deploy-action@v2
+        env:
+          LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+          LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
+          LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
+          SECRET_LIST: ${{ secrets.SECRET_LIST }}
+        with:
+          OPERATION: deploy
+          WORKING_DIRECTORY: agent

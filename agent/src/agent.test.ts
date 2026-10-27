@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { buildInstructions, createTools, formatMemoryBlock } from './agent.ts';
+import { buildInstructions, createTools, formatMemoryBlock, instrument } from './agent.ts';
 import { ConfigError, loadConfig, parseConversationId } from './config.ts';
 import { HubClient } from './hub.ts';
 
@@ -33,7 +33,7 @@ describe('tools', () => {
   it('registers the four hub tools', () => {
     const hub = new HubClient({ baseUrl: 'https://x.test', token: 't', conversationId: null });
     const names = createTools(hub).map((t) => t.id);
-    expect(names).toEqual(['remember', 'recall', 'list_agents', 'delegate']);
+    expect(names).toEqual(['remember', 'recall', 'list_agents', 'show_canvas', 'delegate']);
   });
 
   it('delegate tool forwards to the hub and returns its factual result', async () => {
@@ -100,5 +100,31 @@ describe('config', () => {
     expect(parseConversationId('')).toBeNull();
     expect(parseConversationId('not json')).toBeNull();
     expect(parseConversationId('{"conversation_id":42}')).toBeNull();
+  });
+});
+
+describe('instrument', () => {
+  it('reports a call when it starts and when it finishes', async () => {
+    const seen: string[] = [];
+    const run = instrument(
+      'recall',
+      async ({ query }: { query: string }) => `found ${query}`,
+      (c) => seen.push(`${c.call_id}:${c.status}:${c.output ?? ''}`),
+    );
+    await expect(run({ query: 'release' }, { toolCallId: 'c1' })).resolves.toBe('found release');
+    expect(seen).toEqual(['c1:running:', 'c1:done:found release']);
+  });
+
+  it('reports failures and rethrows', async () => {
+    const seen: string[] = [];
+    const run = instrument(
+      'remember',
+      async () => {
+        throw new Error('hub down');
+      },
+      (c) => seen.push(`${c.status}:${c.output ?? ''}`),
+    );
+    await expect(run({}, { toolCallId: 'c2' })).rejects.toThrow('hub down');
+    expect(seen).toEqual(['running:', 'error:hub down']);
   });
 });

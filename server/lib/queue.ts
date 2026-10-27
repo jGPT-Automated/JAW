@@ -138,7 +138,10 @@ async function deliver(item: QueueRow, inboundUrl: string) {
     await q(`UPDATE message_queue SET status = 'failed', last_error = 'agent missing', updated_at = now() WHERE id = $1`, [item.id]);
     return;
   }
-  const cred = await one<{ webhook_secret: string | null }>(`SELECT webhook_secret FROM agent_credentials WHERE agent_id = $1`, [agent.id]);
+  const cred = await one<{ webhook_secret: string | null; inbound_token: string }>(
+    `SELECT webhook_secret, inbound_token FROM agent_credentials WHERE agent_id = $1`,
+    [agent.id],
+  );
   const conversationId = item.conversation_id ?? crypto.randomUUID();
 
   const outbound = await one<{ id: string }>(
@@ -171,6 +174,9 @@ async function deliver(item: QueueRow, inboundUrl: string) {
         conversation_id: conversationId,
         source: item.source,
         reply_url: inboundUrl,
+        // This agent's own token for replying into the hub (it can only post as this agent).
+        reply_token: cred?.inbound_token,
+        reply_how: `To reply, POST {"content": "...", "conversation_id": "${conversationId}"} to reply_url with the header Authorization: Bearer <reply_token>.`,
       }),
       signal: AbortSignal.timeout(25_000),
     });

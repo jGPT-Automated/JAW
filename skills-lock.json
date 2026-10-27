@@ -67,6 +67,12 @@
       "skillPath": "skills/inngest-steps/SKILL.md",
       "computedHash": "f37a3a423739fba256a5cd8cfa35b6121bf3192a0fe2a964e5c41af1036f3de0"
     },
+    "libraries-dev": {
+      "source": "Jakubantalik/Libraries.dev",
+      "sourceType": "github",
+      "skillPath": "skills/libraries-dev/SKILL.md",
+      "computedHash": "122cf598efd945b5d2dffcd61079101059ad4ef813f1feb8563b48e0e6f90964"
+    },
     "neon-auth": {
       "source": "neondatabase/agent-skills",
       "sourceType": "github",

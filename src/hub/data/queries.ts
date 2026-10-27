@@ -18,6 +18,7 @@ import type {
   Resource,
   RoadmapTask,
   Skill,
+  ToolCall,
 } from "@/hub/lib/types";
 
 export const keys = {
@@ -144,6 +145,10 @@ export function useDeleteResource() {
   });
 }
 
+export function useToolCalls(limit = 30) {
+  return useQuery({ queryKey: ["tool-calls", limit], queryFn: () => api<ToolCall[]>(`/tool-calls?limit=${limit}`) });
+}
+
 export function useAgents() {
   return useQuery({ queryKey: keys.agents, queryFn: () => api<Agent[]>("/agents"), ...LIVE });
 }
@@ -238,7 +243,7 @@ export function useSendMessage() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: { agent_id: string; payload: string; conversation_id?: string }) =>
-      api<{ id: string; status: string; scheduled_for?: string }>("/messages", { method: "POST", json: input }),
+      api<{ id: string; status: string; scheduled_for?: string; last_error?: string | null }>("/messages", { method: "POST", json: input }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: keys.queue });
       qc.invalidateQueries({ queryKey: ["messages"] });

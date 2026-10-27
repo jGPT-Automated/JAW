@@ -105,7 +105,7 @@ export const githubFetch: FetchText = async (url) => {
   try {
     return await directFetch(url);
   } catch (e) {
-    const key = process.env.FIRECRAWL_API_KEY;
+    const key = process.env.FIRECRAWL_API_KEY || process.env.FIRECRAWL_KEY;
     if (!key) throw e;
     try {
       return await firecrawlFetch(url, key);

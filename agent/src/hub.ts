@@ -160,6 +160,15 @@ export class HubClient {
     return `Delegated to ${target}. Status: ${d.status ?? 'unknown'}.${d.id ? ` Task id ${d.id}.` : ''}`;
   }
 
+  /** Record a tool call (start or finish). Never throws; resolves to an error string on failure. */
+  async sendToolCall(call: ToolCallReport): Promise<string | null> {
+    const r = await this.request<unknown>('POST', '/api/agent/tool-calls', {
+      ...call,
+      conversation_id: this.conversationId,
+    });
+    return r.ok ? null : r.error;
+  }
+
   /** Mirror one transcript line to the hub. Never throws; resolves to an error string on failure. */
   async sendTranscript(role: 'user' | 'assistant', text: string): Promise<string | null> {
     const r = await this.request<unknown>('POST', '/api/agent/transcript', {
@@ -169,6 +178,14 @@ export class HubClient {
     });
     return r.ok ? null : r.error;
   }
+}
+
+export interface ToolCallReport {
+  call_id: string;
+  name: string;
+  args: Record<string, unknown>;
+  status: 'running' | 'done' | 'error';
+  output?: string;
 }
 
 function parseMemoryRows(data: unknown): MemoryRow[] {

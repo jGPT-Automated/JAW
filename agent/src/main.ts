@@ -11,8 +11,8 @@ import {
 import { EnhancerModel, audioEnhancement } from '@livekit/plugins-ai-coustics';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'node:url';
-import { createAgent } from './agent.ts';
-import { AGENT_NAME, ConfigError, loadConfig, parseConversationId } from './config.ts';
+import { type ToolReporter, createAgent } from './agent.ts';
+import { AGENT_NAME, ConfigError, TOOL_TOPIC, loadConfig, parseConversationId } from './config.ts';
 import { HubClient } from './hub.ts';
 
 // Load a local env file for `dev`. In LiveKit Cloud, values arrive as injected secrets.
@@ -90,13 +90,27 @@ export default defineAgent({
     // Let queued transcript posts finish inside the shutdown drain.
     ctx.addShutdownCallback(async () => {
       await mirrorTail;
+      await toolTail;
     });
+
+    // Each tool call goes to the room (the Talk screen shows it live) and to the hub
+    // (history). Both are fire-and-forget; hub posts are serialized so start precedes finish.
+    let toolTail: Promise<void> = Promise.resolve();
+    const reportTool: ToolReporter = (call) => {
+      ctx.room.localParticipant
+        ?.sendText(JSON.stringify({ ...call, at: new Date().toISOString() }), { topic: TOOL_TOPIC })
+        .catch((error: unknown) => logger.warn({ error }, 'tool call broadcast failed'));
+      toolTail = toolTail.then(async () => {
+        const error = await hub.sendToolCall(call);
+        if (error) logger.warn({ tool: call.name, error }, 'tool call report failed');
+      });
+    };
 
     const memory = await memoryPromise;
     logger.info({ memoryItems: memory.length }, 'starting voice session');
 
     await session.start({
-      agent: createAgent(hub, memory),
+      agent: createAgent(hub, memory, reportTool),
       room: ctx.room,
       inputOptions: {
         // ai-coustics audio enhancement, as in the current LiveKit Node starter.

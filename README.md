@@ -10,8 +10,9 @@ The dashboard is mobile-friendly and gated behind sign-in. A small read-only sur
 
 | Route | What it does |
 |---|---|
-| `/` **Talk** | Voice conversation with JAW (beUI voice orb + LiveKit). The orb breathes until the agent's audio arrives |
+| `/` **Talk** | Voice conversation with JAW (beUI voice orb in a libraries.dev voice glow, LiveKit). Open the canvas (button, or ask JAW) and the orb docks at the bottom while tool calls, history and memory fill the screen |
 | `/conversations` | Every call, read summary first: main points, decisions, follow-ups, then the full transcript (Kokonut synced transcript) |
+| `/rooms` | Message any agent with a webhook (the Hyperagent #JAWS room first). Replies posted back to `/api/agent/inbound` appear in the thread |
 | `/roadmap` | LocalCheck's locked requests on a cult-ui kanban board, from `public/localcheck/data/decisions.json` |
 | `/github/:account` | Per account (GenJess, AgenticJess-Star, jGPT-Automated, Generative-Jesse): profile, contribution terrain, open pull requests with per-file review, recent activity, projects |
 | `/resources` | **Components**: every item from each component library, by category, with docs and install command; add a library by its registry URL. **Designs**: references added by link, upload, paste or agent. **Skills**: plain text agents fetch |
@@ -19,7 +20,7 @@ The dashboard is mobile-friendly and gated behind sign-in. A small read-only sur
 
 Agents can fetch without signing in: `/skills/index.json`, `/skills/<name>.md`, `/api/public/resources?kind=design`, `/api/public/components?category=&q=`, `/api/public/component-libraries`.
 
-With their inbound token, agents can also add a design (`POST /api/agent/resources {url, collection?, notes?}`), add a component library (`POST /api/agent/component-libraries {name, registry_url, namespace?}`) and read your pull request reviews (`GET /api/agent/reviews?repo=`).
+With their inbound token, agents can also report tool calls (`POST /api/agent/tool-calls`), add a design (`POST /api/agent/resources {url, collection?, notes?}`), add a component library (`POST /api/agent/component-libraries {name, registry_url, namespace?}`) and read your pull request reviews (`GET /api/agent/reviews?repo=`).
 
 `⌘K` / `Ctrl K` opens the command palette anywhere.
 
@@ -82,13 +83,15 @@ Server-side only (Vercel → Project → Settings → Environment Variables). Ne
 
 | Variable | Purpose |
 |---|---|
-| `DATABASE_URL` | Neon pooled connection string (NeonJess, production branch) |
+| `DATABASE_URL` | Neon pooled connection string (NeonJess). Optional when `NEON_KEY` is set: the server looks it up from the Neon API |
+| `NEON_KEY` | Neon API key. Enough on its own for the database |
 | `NEON_AUTH_JWKS_URL` | Neon Auth JWKS, to verify sign-in tokens |
-| `JAW_OWNER_EMAILS` | Comma-separated emails allowed into the dashboard |
+| `JAW_OWNER_KEY` | Optional. The owner's sign-in key (16+ characters). Without it, the key stored hashed in the database (`settings.owner_key_hash`, changeable with `PUT /api/owner-key`) is used |
+| `JAW_OWNER_EMAILS` | Comma-separated emails allowed into the dashboard (Neon Auth only) |
 | `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | Voice rooms and agent dispatch |
 | `JAW_PUBLIC_URL` | Optional: canonical origin for the inbound URL sent to agents |
 | `GITHUB_TOKEN` | Optional: raises GitHub's rate limit for the account pages (public data only; no scopes needed) |
-| `FIRECRAWL_API_KEY` | Optional: when GitHub refuses a request (rate limit, block, outage), the same public URL is fetched through Firecrawl |
+| `FIRECRAWL_API_KEY` (or `FIRECRAWL_KEY`) | Optional: when GitHub refuses a request (rate limit, block, outage), the same public URL is fetched through Firecrawl |
 
 Browser (public by design): `VITE_NEON_AUTH_URL`, the Neon Auth base URL.
 
@@ -109,7 +112,7 @@ npm run build
 
 Node 22+. Behind an HTTP proxy, run with `NODE_USE_ENV_PROXY=1` so server-side fetch uses it.
 
-The voice worker lives in `agent/` with its own README (local dev and `lk agent create` deploy).
+The voice worker lives in `agent/` with its own README. It deploys to LiveKit Cloud from GitHub with `.github/workflows/voice-agent.yml` (run it once with "create"; after that every push to main that changes `agent/` deploys). Repository secrets: `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `SECRET_LIST` (`JAW_API_URL=…,JAW_AGENT_TOKEN=…`).
 
 ---
 
