@@ -48,7 +48,11 @@ jobs:
         id: settings
         env:
           RAW: ${{ secrets.SECRET_LIST }}
+          RAW_URL: ${{ secrets.LIVEKIT_URL }}
         run: |
+          # The deploy tool calls LiveKit over HTTPS; the stored URL is the wss:// one apps use.
+          url=$(printf '%s' "$RAW_URL" | sed -e 's#^wss://#https://#' -e 's#^ws://#http://#')
+          echo "url=$url" >> "$GITHUB_OUTPUT"
           token=$(printf '%s' "$RAW" | grep -oE 'jaw_[0-9a-f]{48}' | head -n1)
           if [ -z "$token" ]; then
             echo "::error::SECRET_LIST doesn't contain JAW's agent token (starts with jaw_)."
@@ -59,7 +63,7 @@ jobs:
       - name: Create the agent on LiveKit Cloud
         uses: livekit/deploy-action@v2.12.2
         env:
-          LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+          LIVEKIT_URL: ${{ steps.settings.outputs.url }}
           LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
           LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
           SECRET_LIST: ${{ steps.settings.outputs.list }}
@@ -84,7 +88,7 @@ jobs:
       - name: Wait until the agent is running
         uses: livekit/deploy-action@v2.12.2
         env:
-          LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+          LIVEKIT_URL: ${{ steps.settings.outputs.url }}
           LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
           LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
         with:
@@ -105,7 +109,11 @@ jobs:
         id: settings
         env:
           RAW: ${{ secrets.SECRET_LIST }}
+          RAW_URL: ${{ secrets.LIVEKIT_URL }}
         run: |
+          # The deploy tool calls LiveKit over HTTPS; the stored URL is the wss:// one apps use.
+          url=$(printf '%s' "$RAW_URL" | sed -e 's#^wss://#https://#' -e 's#^ws://#http://#')
+          echo "url=$url" >> "$GITHUB_OUTPUT"
           token=$(printf '%s' "$RAW" | grep -oE 'jaw_[0-9a-f]{48}' | head -n1)
           if [ -z "$token" ]; then
             echo "::error::SECRET_LIST doesn't contain JAW's agent token (starts with jaw_)."
@@ -117,7 +125,7 @@ jobs:
         if: hashFiles('agent/livekit.toml') != ''
         uses: livekit/deploy-action@v2.12.2
         env:
-          LIVEKIT_URL: ${{ secrets.LIVEKIT_URL }}
+          LIVEKIT_URL: ${{ steps.settings.outputs.url }}
           LIVEKIT_API_KEY: ${{ secrets.LIVEKIT_API_KEY }}
           LIVEKIT_API_SECRET: ${{ secrets.LIVEKIT_API_SECRET }}
           SECRET_LIST: ${{ steps.settings.outputs.list }}
