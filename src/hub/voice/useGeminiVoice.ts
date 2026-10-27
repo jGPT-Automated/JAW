@@ -243,7 +243,7 @@ export function useGeminiVoice() {
     turn.current = { user: "", agent: "", n: turn.current.n + 1 };
     teardown();
     setStatus("ended");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [teardown]);
 
   const toggleMute = useCallback(async () => {
