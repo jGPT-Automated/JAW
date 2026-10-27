@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { ownerKeyMode, OWNER_KEY_MIN, requireOwner, type Env } from "./auth.js";
+import { ownerKeyConfigured, ownerKeyMode, OWNER_KEY_MIN, requireOwner, type Env } from "./auth.js";
 import { one } from "./db.js";
 import { agentApi } from "./routes/agent.js";
 import { github } from "./routes/github.js";
@@ -21,21 +21,24 @@ app.get("/health", (c) => c.json({ ok: true }));
  * show one setup screen instead of failing page by page.
  */
 app.get("/status", async (c) => {
-  let database: "ok" | "unset" | "unreachable" = process.env.DATABASE_URL ? "ok" : "unset";
-  if (database === "ok") database = await one("SELECT 1 AS ok").then(() => "ok" as const, () => "unreachable" as const);
-  const key = ownerKeyMode();
-  const auth = process.env.JAW_AUTH_DISABLED === "1" ? "disabled" : key === "ok" ? "key" : process.env.NEON_AUTH_JWKS_URL ? "neon" : "none";
+  const database: "ok" | "unreachable" = await one("SELECT 1 AS ok").then(
+    () => "ok" as const,
+    () => "unreachable" as const,
+  );
+  const key = database === "ok" ? await ownerKeyConfigured() : ownerKeyMode() === "ok";
+  const auth = process.env.JAW_AUTH_DISABLED === "1" ? "disabled" : key ? "key" : process.env.NEON_AUTH_JWKS_URL ? "neon" : "none";
   const missing: string[] = [];
-  if (database !== "ok") missing.push("DATABASE_URL");
+  if (database !== "ok") missing.push(process.env.DATABASE_URL ? "DATABASE_URL" : "NEON_KEY");
   if (auth === "none") missing.push("JAW_OWNER_KEY");
   return c.json({
     database,
     auth,
-    owner_key: key === "short" ? `JAW_OWNER_KEY must be at least ${OWNER_KEY_MIN} characters` : null,
+    owner_key: ownerKeyMode() === "short" ? `JAW_OWNER_KEY must be at least ${OWNER_KEY_MIN} characters` : null,
     missing,
-    optional_missing: ["LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET", "FIRECRAWL_API_KEY", "GITHUB_TOKEN"].filter((k) => !process.env[k]),
+    optional_missing: ["LIVEKIT_URL", "LIVEKIT_API_KEY", "LIVEKIT_API_SECRET", "GITHUB_TOKEN"].filter((k) => !process.env[k]),
   });
 });
+
 app.route("/public", publicApi);
 app.route("/agent", agentApi);
 app.route("/github", github);

@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { RoomAgentDispatch, RoomConfiguration } from "@livekit/protocol";
 import { AccessToken } from "livekit-server-sdk";
-import type { Env } from "../auth.js";
+import { OWNER_KEY_MIN, setOwnerKey, type Env } from "../auth.js";
 import { one, q } from "../db.js";
 import { addLibrary, listComponents, listLibraries, syncLibrary } from "../lib/catalog-store.js";
 import { saveMemory, searchMemories } from "../lib/memory.js";
@@ -25,6 +25,15 @@ function clampInt(v: unknown, min: number, max: number, fallback: number) {
 }
 
 export const owner = new Hono<Env>();
+
+/** Change the owner sign-in key (stored as a scrypt hash). Every device signs in again with the new one. */
+owner.put("/owner-key", async (c) => {
+  const b = await c.req.json<{ key?: string }>();
+  const key = b.key?.trim() ?? "";
+  if (key.length < OWNER_KEY_MIN) throw new HTTPException(400, { message: `Use at least ${OWNER_KEY_MIN} characters` });
+  await setOwnerKey(key);
+  return c.json({ ok: true });
+});
 
 
 // Agents ----------------------------------------------------------------------
@@ -137,7 +146,9 @@ owner.post("/messages", async (c) => {
   const queued = await enqueue({ agent_id: b.agent_id, payload: b.payload.trim(), conversation_id: b.conversation_id, source: "ui" });
   // Deliver right away when the agent's pacing allows; the scheduled sweep covers the rest.
   if (queued.status === "pending") await processQueue(inboundUrl(c.req.url), 5);
-  return c.json(queued, 201);
+  // Report what actually happened: sent, still pending (pacing or a retry), or failed with the reason.
+  const result = await one(`SELECT id, status, scheduled_for, last_error FROM message_queue WHERE id = $1`, [queued.id]);
+  return c.json(result ?? queued, 201);
 });
 
 owner.get("/queue", async (c) => c.json(await q(`SELECT * FROM message_queue ORDER BY created_at DESC LIMIT 200`)));

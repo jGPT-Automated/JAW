@@ -9,7 +9,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { AUTH_CHANGED, authClient, ownerKey } from "@/hub/lib/auth";
 
 interface Status {
-  database: "ok" | "unset" | "unreachable";
+  database: "ok" | "unreachable";
   auth: "key" | "neon" | "none" | "disabled";
   owner_key: string | null;
   missing: string[];
@@ -17,7 +17,8 @@ interface Status {
 }
 
 const WHAT: Record<string, string> = {
-  DATABASE_URL: "Neon connection string for NeonJess (Neon → NeonJess → Connect → pooled connection string).",
+  DATABASE_URL: "Set, but the database didn't answer. Check the Neon connection string.",
+  NEON_KEY: "Neon API key. JAW uses it to find the NeonJess database (or set DATABASE_URL directly).",
   JAW_OWNER_KEY: "Any long password you choose (16+ characters). You type it once on each device to sign in.",
 };
 
@@ -82,9 +83,6 @@ function Setup({ status, error, onRetry }: { status?: Status; error?: string; on
               ))}
             </ItemGroup>
             {status.owner_key ? <p className="text-caption text-destructive">{status.owner_key}</p> : null}
-            {status.database === "unreachable" ? (
-              <p className="text-caption text-muted-foreground">DATABASE_URL is set but the database didn't answer. Check the value.</p>
-            ) : null}
           </CardContent>
         ) : null}
         <CardFooter>
