@@ -10,7 +10,8 @@ import { VoiceOrb } from "@/components/agents/voice-orb";
 import { HistoryPanel } from "@/hub/components/HistoryPanel";
 import { MemoryPanel } from "@/hub/components/MemoryPanel";
 import { ToolCallsPanel } from "@/hub/components/ToolCallsPanel";
-import { useVoiceSession, type VoiceStatus } from "@/hub/voice/useVoiceSession";
+import { type VoiceStatus } from "@/hub/voice/useVoiceSession";
+import { useVoice } from "@/hub/voice/useVoice";
 import { cn } from "@/lib/utils";
 
 // Orb pigment from the brand palette: lime pulse, linen highlight, graphite shadow.
@@ -59,7 +60,7 @@ function useBreathing(scale: number) {
 }
 
 export default function Voice() {
-  const voice = useVoiceSession();
+  const voice = useVoice();
   const { resolvedTheme } = useTheme();
   const theme = resolvedTheme === "light" ? "light" : "dark";
   const activity = useBreathing(voice.live ? 0.6 : 0.35);

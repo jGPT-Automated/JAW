@@ -88,7 +88,8 @@ Server-side only (Vercel → Project → Settings → Environment Variables). Ne
 | `NEON_AUTH_JWKS_URL` | Neon Auth JWKS, to verify sign-in tokens |
 | `JAW_OWNER_KEY` | Optional. The owner's sign-in key (16+ characters). Without it, the key stored hashed in the database (`settings.owner_key_hash`, changeable with `PUT /api/owner-key`) is used |
 | `JAW_OWNER_EMAILS` | Comma-separated emails allowed into the dashboard (Neon Auth only) |
-| `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | Voice rooms and agent dispatch |
+| `GEMINI_API_KEY` | Voice (primary): Gemini Live straight from the browser with a short-lived token; tools run on the server. Optional `GEMINI_LIVE_MODEL` (default `gemini-3.8-live`), `GEMINI_VOICE` (default `Kore`) |
+| `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET` | Voice fallback: LiveKit rooms with the `agent/` worker (needs deploying) |
 | `JAW_PUBLIC_URL` | Optional: canonical origin for the inbound URL sent to agents |
 | `GITHUB_TOKEN` | Optional: raises GitHub's rate limit for the account pages (public data only; no scopes needed) |
 | `FIRECRAWL_API_KEY` (or `FIRECRAWL_KEY`) | Optional: when GitHub refuses a request (rate limit, block, outage), the same public URL is fetched through Firecrawl |
