@@ -51,7 +51,9 @@ jobs:
           RAW_URL: ${{ secrets.LIVEKIT_URL }}
         run: |
           # The deploy tool calls LiveKit over HTTPS; the stored URL is the wss:// one apps use.
-          url=$(printf '%s' "$RAW_URL" | sed -e 's#^wss://#https://#' -e 's#^ws://#http://#')
+          # Trimmed and lowercased (hosts are case-insensitive), whatever case it was pasted in.
+          url=$(printf '%s' "$RAW_URL" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' | sed -e 's#^wss://#https://#' -e 's#^ws://#http://#')
+          case "$url" in https://*|http://*) ;; *) url="https://$url" ;; esac
           echo "url=$url" >> "$GITHUB_OUTPUT"
           token=$(printf '%s' "$RAW" | grep -oE 'jaw_[0-9a-f]{48}' | head -n1)
           if [ -z "$token" ]; then
@@ -112,7 +114,9 @@ jobs:
           RAW_URL: ${{ secrets.LIVEKIT_URL }}
         run: |
           # The deploy tool calls LiveKit over HTTPS; the stored URL is the wss:// one apps use.
-          url=$(printf '%s' "$RAW_URL" | sed -e 's#^wss://#https://#' -e 's#^ws://#http://#')
+          # Trimmed and lowercased (hosts are case-insensitive), whatever case it was pasted in.
+          url=$(printf '%s' "$RAW_URL" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]' | sed -e 's#^wss://#https://#' -e 's#^ws://#http://#')
+          case "$url" in https://*|http://*) ;; *) url="https://$url" ;; esac
           echo "url=$url" >> "$GITHUB_OUTPUT"
           token=$(printf '%s' "$RAW" | grep -oE 'jaw_[0-9a-f]{48}' | head -n1)
           if [ -z "$token" ]; then
