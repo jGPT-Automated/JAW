@@ -41,18 +41,19 @@ function column(status: string): ColumnStatus {
   return "todo";
 }
 
+// The card shows the request's first clause; the full request and the rest open in the sheet.
+const headline = (request: string) => request.split(/(?<=[a-z0-9)])[.;:] /)[0].replace(/\.$/, "");
+
 function toColumns(items: Decision[]): ColumnData[] {
   const cards = (status: ColumnStatus): CardData[] =>
     items
       .filter((d) => column(d.status) === status)
       .map((d) => ({
         id: d.id,
-        title: d.locked_request,
-        tags: [
-          { label: d.priority, variant: d.priority === "P1" ? "bug" : "improvement" },
-          { label: d.area, variant: "docs" },
-        ],
-        date: d.id,
+        title: headline(d.locked_request),
+        // One accent for what matters most; everything else stays quiet.
+        tags: d.priority === "P1" ? [{ label: "P1", variant: "bug" }] : undefined,
+        date: d.area,
       }));
   return [
     { id: "todo", title: "To do", status: "todo", cards: cards("todo") },

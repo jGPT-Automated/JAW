@@ -107,6 +107,20 @@ agentApi.post("/delegate", async (c) => {
   return c.json({ to: target.name, ...queued }, 201);
 });
 
+/** A call that didn't start on the Talk screen (a phone call) opens its own conversation. */
+agentApi.post("/conversations", async (c) => {
+  const b = await c.req.json<{ room?: string; title?: string }>().catch(() => ({}) as { room?: string; title?: string });
+  const room = b.room?.trim().slice(0, 200) || `call-${crypto.randomUUID()}`;
+  const title = b.title?.trim().slice(0, 120) || null;
+  const row = await one<{ conversation_id: string }>(
+    `INSERT INTO voice_sessions (room, title) VALUES ($1, $2)
+     ON CONFLICT (room) DO UPDATE SET title = coalesce(voice_sessions.title, EXCLUDED.title)
+     RETURNING conversation_id`,
+    [room, title],
+  );
+  return c.json({ conversation_id: row!.conversation_id }, 201);
+});
+
 /** Voice transcript lines, so a call shows up in the Inbox. */
 agentApi.post("/transcript", async (c) => {
   const agent = c.get("agent");

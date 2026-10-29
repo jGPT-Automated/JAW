@@ -6,10 +6,11 @@ import { type OrbState, ThinkingOrb } from "thinking-orbs";
 import { VoiceBeam } from "voice-glow";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AgentActivity } from "@/components/agents/agent-activity";
 import { VoiceOrb } from "@/components/agents/voice-orb";
 import { HistoryPanel } from "@/hub/components/HistoryPanel";
 import { MemoryPanel } from "@/hub/components/MemoryPanel";
-import { ToolCallsPanel } from "@/hub/components/ToolCallsPanel";
+import { ToolCallsPanel, toolCallItem } from "@/hub/components/ToolCallsPanel";
 import { type VoiceStatus } from "@/hub/voice/useVoiceSession";
 import { useVoice } from "@/hub/voice/useVoice";
 import { cn } from "@/lib/utils";
@@ -68,6 +69,7 @@ export default function Voice() {
   const hint = voice.error ?? HINT[voice.status];
   const orbState = voice.error ? undefined : ORB_STATE[voice.status];
   const [view, setView] = useState<View | null>(null);
+  const toolRunning = voice.toolCalls.some((c) => c.status === "running");
 
   // "Open the canvas" by voice: the agent's show_canvas call arrives with the other tool calls.
   const handled = useRef(new Set<string>());
@@ -176,6 +178,19 @@ export default function Voice() {
                   </motion.p>
                 </AnimatePresence>
               </div>
+              {/* What JAW is doing right now, without opening the canvas: the last few tool calls, live. */}
+              {voice.toolCalls.length ? (
+                <AgentActivity
+                  items={voice.toolCalls.slice(-3).map(toolCallItem)}
+                  status={toolRunning ? "working" : "complete"}
+                  defaultOpen
+                  collapseOnComplete={false}
+                  activeLabel="Running a tool…"
+                  summary={`${voice.toolCalls.length} ${voice.toolCalls.length === 1 ? "step" : "steps"} this conversation`}
+                  maxHeight={132}
+                  className="w-full max-w-sm"
+                />
+              ) : null}
             </div>
           )}
 

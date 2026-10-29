@@ -6,6 +6,8 @@ The dashboard is mobile-friendly and gated behind sign-in. A small read-only sur
 
 ---
 
+See [FRAMEWORK.md](FRAMEWORK.md) for the repeatable core: which keys are needed and the setup order.
+
 ## What's in the hub
 
 | Route | What it does |

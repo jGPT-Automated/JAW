@@ -189,3 +189,26 @@ describe('HubClient error paths', () => {
     });
   });
 });
+
+describe('HubClient.startConversation', () => {
+  it('opens a conversation for a call without one and uses it afterwards', async () => {
+    const fetchMock = vi.fn(async () => json({ conversation_id: CONV }, 201));
+    const hub = makeHub(fetchMock as unknown as typeof fetch, null);
+
+    expect(await hub.startConversation('call-_+15550001111_abc', 'Phone call')).toBe(CONV);
+    expect(hub.conversationId).toBe(CONV);
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe(`${BASE}/api/agent/conversations`);
+    expect(JSON.parse(init.body as string)).toEqual({
+      room: 'call-_+15550001111_abc',
+      title: 'Phone call',
+    });
+  });
+
+  it('returns null and keeps no conversation when the hub fails', async () => {
+    const fetchMock = vi.fn(async () => json({ error: 'nope' }, 500));
+    const hub = makeHub(fetchMock as unknown as typeof fetch, null);
+    expect(await hub.startConversation('call-x', 'Phone call')).toBeNull();
+    expect(hub.conversationId).toBeNull();
+  });
+});

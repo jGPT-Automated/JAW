@@ -2,8 +2,9 @@
 #
 # Repository secrets (Settings → Secrets and variables → Actions):
 #   LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET  LiveKit Cloud project keys
-#   SECRET_LIST  must contain JAW's agent token (jaw_...). The workflow finds it in whatever
-#                is pasted there and adds JAW_API_URL itself, so the exact format doesn't matter.
+#   JAW_AGENT_TOKEN  JAW's agent token (jaw_...). The older SECRET_LIST secret still works; the
+#                    token is found in whatever was pasted, so the exact format doesn't matter.
+# Optional repository variable JAW_API_URL: the app's address (default https://jaw-three.vercel.app).
 #
 # First time: Actions → "Voice agent" → Run workflow → operation "create". It creates the agent,
 # deploys it, and opens a PR adding agent/livekit.toml. Merge that PR. After that, every push to
@@ -42,12 +43,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      # Build the agent's settings from SECRET_LIST, tolerant of how it was pasted: take the
+      # Build the agent's settings from JAW_AGENT_TOKEN (or SECRET_LIST), tolerant of how it was pasted: take the
       # jaw_... token wherever it appears and add the (public) app address.
       - name: Prepare agent settings
         id: settings
         env:
-          RAW: ${{ secrets.SECRET_LIST }}
+          RAW: ${{ secrets.JAW_AGENT_TOKEN || secrets.SECRET_LIST }}
+          APP_URL: ${{ vars.JAW_API_URL || 'https://jaw-three.vercel.app' }}
           RAW_URL: ${{ secrets.LIVEKIT_URL }}
         run: |
           # The deploy tool calls LiveKit over HTTPS; the stored URL is the wss:// one apps use.
@@ -57,11 +59,11 @@ jobs:
           echo "url=$url" >> "$GITHUB_OUTPUT"
           token=$(printf '%s' "$RAW" | grep -oE 'jaw_[0-9a-f]{48}' | head -n1)
           if [ -z "$token" ]; then
-            echo "::error::SECRET_LIST doesn't contain JAW's agent token (starts with jaw_)."
+            echo "::error::JAW_AGENT_TOKEN (or SECRET_LIST) doesn't contain JAW's agent token (starts with jaw_)."
             exit 1
           fi
           echo "::add-mask::$token"
-          echo "list=JAW_API_URL=https://jaw-three.vercel.app,JAW_AGENT_TOKEN=$token" >> "$GITHUB_OUTPUT"
+          echo "list=JAW_API_URL=$APP_URL,JAW_AGENT_TOKEN=$token" >> "$GITHUB_OUTPUT"
       - name: Create the agent on LiveKit Cloud
         uses: livekit/deploy-action@v2.12.2
         env:
@@ -104,13 +106,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # Until "create" has run and its PR is merged there is no agent to deploy to.
-      # Build the agent's settings from SECRET_LIST, tolerant of how it was pasted: take the
+      # Build the agent's settings from JAW_AGENT_TOKEN (or SECRET_LIST), tolerant of how it was pasted: take the
       # jaw_... token wherever it appears and add the (public) app address.
       - name: Prepare agent settings
         if: hashFiles('agent/livekit.toml') != ''
         id: settings
         env:
-          RAW: ${{ secrets.SECRET_LIST }}
+          RAW: ${{ secrets.JAW_AGENT_TOKEN || secrets.SECRET_LIST }}
+          APP_URL: ${{ vars.JAW_API_URL || 'https://jaw-three.vercel.app' }}
           RAW_URL: ${{ secrets.LIVEKIT_URL }}
         run: |
           # The deploy tool calls LiveKit over HTTPS; the stored URL is the wss:// one apps use.
@@ -120,11 +123,11 @@ jobs:
           echo "url=$url" >> "$GITHUB_OUTPUT"
           token=$(printf '%s' "$RAW" | grep -oE 'jaw_[0-9a-f]{48}' | head -n1)
           if [ -z "$token" ]; then
-            echo "::error::SECRET_LIST doesn't contain JAW's agent token (starts with jaw_)."
+            echo "::error::JAW_AGENT_TOKEN (or SECRET_LIST) doesn't contain JAW's agent token (starts with jaw_)."
             exit 1
           fi
           echo "::add-mask::$token"
-          echo "list=JAW_API_URL=https://jaw-three.vercel.app,JAW_AGENT_TOKEN=$token" >> "$GITHUB_OUTPUT"
+          echo "list=JAW_API_URL=$APP_URL,JAW_AGENT_TOKEN=$token" >> "$GITHUB_OUTPUT"
       - name: Deploy a new version
         if: hashFiles('agent/livekit.toml') != ''
         uses: livekit/deploy-action@v2.12.2
