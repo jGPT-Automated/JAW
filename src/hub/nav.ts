@@ -1,4 +1,18 @@
-import { ExternalLink, Feather, FolderGit2, History, Library, ListTodo, type LucideIcon, MessagesSquare, Mic, ScrollText } from "lucide-react";
+import {
+  ExternalLink,
+  Feather,
+  FolderGit2,
+  FolderKanban,
+  History,
+  Library,
+  ListChecks,
+  ListTodo,
+  type LucideIcon,
+  MessagesSquare,
+  Mic,
+  ScrollText,
+  SlidersHorizontal,
+} from "lucide-react";
 import { GITHUB_ACCOUNTS } from "./github-accounts";
 
 export interface NavItem {
@@ -17,9 +31,11 @@ export const NAV: { label: string; items: NavItem[] }[] = [
     label: "JAW",
     items: [
       { title: "Talk", url: "/", icon: Mic, description: "Voice conversation with JAW" },
+      { title: "Projects", url: "/projects", icon: FolderKanban, description: "What you're keeping top of mind" },
+      { title: "Tasks", url: "/tasks", icon: ListChecks, description: "Every project's open tasks in one list" },
       { title: "Conversations", url: "/conversations", icon: History, description: "Every call, summary first" },
       { title: "Rooms", url: "/rooms", icon: MessagesSquare, description: "Message your agents' rooms (Hyperagent and more)" },
-      { title: "Roadmap", url: "/roadmap", icon: ListTodo, description: "LocalCheck's tracked requests" },
+      { title: "Instructions", url: "/instructions", icon: SlidersHorizontal, description: "How JAW works with you, in every conversation" },
       { title: "Resources", url: "/resources", icon: Library, description: "Skills and taste references agents read" },
     ],
   },
@@ -42,6 +58,7 @@ export const NAV: { label: string; items: NavItem[] }[] = [
   {
     label: "Library",
     items: [
+      { title: "LocalCheck roadmap", url: "/roadmap", icon: ListTodo, description: "LocalCheck's tracked requests" },
       { title: "Protocol", url: "/protocol", icon: ScrollText, description: "Omni-Protocol Sentinel v2.0" },
       { title: "Manifesto", url: "/manifesto", icon: Feather, description: "The Sovereign Architecture" },
       {

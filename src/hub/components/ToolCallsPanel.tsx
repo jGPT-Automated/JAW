@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { BookmarkPlus, CircleAlert, PanelsTopLeft, Search, Send, Users } from "lucide-react";
+import { BookmarkPlus, CircleAlert, FolderKanban, ListChecks, PanelsTopLeft, Search, Send, SlidersHorizontal, Users } from "lucide-react";
 import { ThinkingOrb } from "thinking-orbs";
 import { AgentActivity, type AgentActivityItem } from "@/components/agents/agent-activity";
 import { Spinner } from "@/components/ui/spinner";
@@ -24,6 +24,39 @@ export function toolCallItem(c: Call): AgentActivityItem {
       return { id: c.call_id, type: "trace", kind: "read", icon: icon ?? <Users className="size-4" />, label: "Checked which agents can help", detail: c.output ?? undefined };
     case "delegate":
       return { id: c.call_id, type: "trace", kind: "run", icon: icon ?? <Send className="size-4" />, label: `Delegated to ${str(c.args.to)}`, detail: c.output ?? str(c.args.task) };
+    case "list_projects":
+      return { id: c.call_id, type: "trace", kind: "read", icon: icon ?? <FolderKanban className="size-4" />, label: "Checked your projects", detail: c.output ?? undefined };
+    case "add_project":
+      return { id: c.call_id, type: "trace", kind: "write", icon: icon ?? <FolderKanban className="size-4" />, label: `Saved project ${str(c.args.name)}`, detail: str(c.args.summary) || undefined };
+    case "list_tasks":
+      return {
+        id: c.call_id,
+        type: "trace",
+        kind: "read",
+        icon: icon ?? <ListChecks className="size-4" />,
+        label: str(c.args.project) ? `Checked tasks for ${str(c.args.project)}` : "Checked open tasks",
+        detail: c.output ?? undefined,
+      };
+    case "add_task":
+      return {
+        id: c.call_id,
+        type: "trace",
+        kind: "write",
+        icon: icon ?? <ListChecks className="size-4" />,
+        label: `Added a task${str(c.args.project) ? ` to ${str(c.args.project)}` : ""}`,
+        detail: str(c.args.title),
+      };
+    case "update_task":
+      return {
+        id: c.call_id,
+        type: "trace",
+        kind: "write",
+        icon: icon ?? <ListChecks className="size-4" />,
+        label: str(c.args.status) ? `Marked a task ${str(c.args.status)}` : "Updated a task",
+        detail: c.output ?? str(c.args.task),
+      };
+    case "update_instructions":
+      return { id: c.call_id, type: "trace", kind: "write", icon: icon ?? <SlidersHorizontal className="size-4" />, label: "Updated its instructions", detail: c.output ?? undefined };
     case "show_canvas":
       return {
         id: c.call_id,

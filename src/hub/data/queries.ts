@@ -19,6 +19,10 @@ import type {
   RoadmapTask,
   Skill,
   ToolCall,
+  Project,
+  ProjectActivity,
+  Task,
+  TaskStatus,
 } from "@/hub/lib/types";
 
 export const keys = {
@@ -259,15 +263,6 @@ export function useProcessQueue() {
   });
 }
 
-export function useUpdateTask() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, patch }: { id: string; patch: Partial<RoadmapTask> }) =>
-      api(`/roadmap/${id}`, { method: "PATCH", json: patch }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: keys.roadmap }),
-  });
-}
-
 export function useSaveMemory() {
   const qc = useQueryClient();
   return useMutation({
@@ -298,5 +293,72 @@ export function useVoiceToken() {
   return useMutation({
     mutationFn: () =>
       api<{ server_url: string; token: string; room: string; conversation_id: string }>("/voice/token", { method: "POST" }),
+  });
+}
+
+// Projects and tasks -------------------------------------------------------------------
+// Voice and phone calls change these too, so they refresh while the page is open.
+export function useProjects() {
+  return useQuery({ queryKey: ["projects"], queryFn: () => api<Project[]>("/projects"), ...LIVE });
+}
+
+export function useProject(id: string | undefined) {
+  return useQuery({ queryKey: ["projects", id], queryFn: () => api<Project>(`/projects/${id}`), enabled: !!id, ...LIVE });
+}
+
+export function useProjectActivity(id: string | undefined, hasRepo: boolean) {
+  return useQuery({
+    queryKey: ["projects", id, "activity"],
+    queryFn: () => api<ProjectActivity>(`/projects/${id}/activity`),
+    enabled: !!id && hasRepo,
+    staleTime: 5 * 60_000,
+  });
+}
+
+/** project: a project id, "inbox" for tasks without a project, or undefined for everything. */
+export function useTasks(project?: string) {
+  return useQuery({
+    queryKey: ["tasks", project ?? "all"],
+    queryFn: () => api<Task[]>(project ? `/tasks?project=${project}` : "/tasks"),
+    ...LIVE,
+  });
+}
+
+function useWorkMutation<T, R = unknown>(fn: (input: T) => Promise<R>) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: fn,
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: ["tasks"] });
+      void qc.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+export const useAddProject = () =>
+  useWorkMutation((input: { name: string; summary?: string; repo?: string }) =>
+    api<{ id: string; name: string }>("/projects", { method: "POST", json: input }),
+  );
+export const useUpdateProject = () =>
+  useWorkMutation(({ id, ...patch }: { id: string; name?: string; summary?: string; repo?: string; status?: Project["status"] }) =>
+    api(`/projects/${id}`, { method: "PATCH", json: patch }),
+  );
+export const useAddTask = () =>
+  useWorkMutation((input: { title: string; project_id?: string | null; notes?: string }) => api("/tasks", { method: "POST", json: input }));
+export const useUpdateTask = () =>
+  useWorkMutation(({ id, ...patch }: { id: string; title?: string; notes?: string; status?: TaskStatus; project_id?: string | null }) =>
+    api(`/tasks/${id}`, { method: "PATCH", json: patch }),
+  );
+export const useDeleteTask = () => useWorkMutation((id: string) => api(`/tasks/${id}`, { method: "DELETE" }));
+
+export function useInstructions() {
+  return useQuery({ queryKey: ["instructions"], queryFn: () => api<{ text: string; updated_at: string | null; base: string }>("/instructions") });
+}
+
+export function useSaveInstructions() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (text: string) => api<{ text: string }>("/instructions", { method: "PUT", json: { text } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["instructions"] }),
   });
 }

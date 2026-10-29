@@ -13,6 +13,9 @@ See [FRAMEWORK.md](FRAMEWORK.md) for the repeatable core: which keys are needed 
 | Route | What it does |
 |---|---|
 | `/` **Talk** | Voice conversation with JAW (beUI voice orb in a libraries.dev voice glow, LiveKit). Open the canvas (button, or ask JAW) and the orb docks at the bottom while tool calls, history and memory fill the screen |
+| `/projects` | Projects you keep top of mind: each has a task list and its repo's latest commits and open pull requests. JAW adds and updates them by voice and phone |
+| `/tasks` | Every project's open tasks in one list, plus the Inbox for tasks without a project |
+| `/instructions` | Your standing instructions for JAW, used in every conversation. JAW can edit them too, after reading the change back |
 | `/conversations` | Every call, read summary first: main points, decisions, follow-ups, then the full transcript (Kokonut synced transcript) |
 | `/rooms` | Message any agent with a webhook (the Hyperagent #JAWS room first). Replies posted back to `/api/agent/inbound` appear in the thread |
 | `/roadmap` | LocalCheck's locked requests on a cult-ui kanban board, from `public/localcheck/data/decisions.json` |
@@ -21,6 +24,8 @@ See [FRAMEWORK.md](FRAMEWORK.md) for the repeatable core: which keys are needed 
 | `/protocol`, `/manifesto` | Reference writing |
 
 Agents can fetch without signing in: `/skills/index.json`, `/skills/<name>.md`, `/api/public/resources?kind=design`, `/api/public/components?category=&q=`, `/api/public/component-libraries`.
+
+JAW's own voice agent (provider `internal`) reads its instructions and your current projects from `GET /api/agent/context` and runs the project and task tools through `POST /api/agent/tools/:name` (`list_projects`, `add_project`, `list_tasks`, `add_task`, `update_task`, `update_instructions`), the same code the Gemini voice uses.
 
 With their inbound token, agents can also report tool calls (`POST /api/agent/tool-calls`), add a design (`POST /api/agent/resources {url, collection?, notes?}`), add a component library (`POST /api/agent/component-libraries {name, registry_url, namespace?}`) and read your pull request reviews (`GET /api/agent/reviews?repo=`).
 
