@@ -30,7 +30,7 @@ export interface HubPeer {
 export interface HubClientOptions {
   baseUrl: string;
   token: string;
-  /** Hub conversation this session belongs to. Null when the dispatch metadata had none. */
+  /** Hub conversation this session belongs to. Null until one is known (see startConversation). */
   conversationId: string | null;
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
@@ -46,7 +46,7 @@ export class HubClient {
   private readonly token: string;
   private readonly fetchImpl: typeof fetch;
   private readonly timeoutMs: number;
-  readonly conversationId: string | null;
+  conversationId: string | null;
 
   constructor(opts: HubClientOptions) {
     this.baseUrl = opts.baseUrl.replace(/\/+$/, '');
@@ -94,6 +94,20 @@ export class HubClient {
       }
       return { ok: false, error: 'the hub could not be reached' };
     }
+  }
+
+  /**
+   * Open a hub conversation for a call that didn't start on the Talk screen (a phone call
+   * dispatched by a SIP rule carries no metadata). Sets and returns the id, or null on failure.
+   */
+  async startConversation(room: string, title: string): Promise<string | null> {
+    const r = await this.request<{ conversation_id?: string }>('POST', '/api/agent/conversations', {
+      room,
+      title,
+    });
+    const id = r.ok && typeof r.data?.conversation_id === 'string' ? r.data.conversation_id : null;
+    if (id) this.conversationId = id;
+    return id;
   }
 
   /** Raw memory rows, for building instructions at session start. Returns [] on any failure. */

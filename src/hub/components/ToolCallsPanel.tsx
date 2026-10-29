@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { BookmarkPlus, CircleAlert, Search, Send, Users } from "lucide-react";
+import { BookmarkPlus, CircleAlert, PanelsTopLeft, Search, Send, Users } from "lucide-react";
 import { ThinkingOrb } from "thinking-orbs";
 import { AgentActivity, type AgentActivityItem } from "@/components/agents/agent-activity";
 import { Spinner } from "@/components/ui/spinner";
@@ -24,6 +24,14 @@ export function toolCallItem(c: Call): AgentActivityItem {
       return { id: c.call_id, type: "trace", kind: "read", icon: icon ?? <Users className="size-4" />, label: "Checked which agents can help", detail: c.output ?? undefined };
     case "delegate":
       return { id: c.call_id, type: "trace", kind: "run", icon: icon ?? <Send className="size-4" />, label: `Delegated to ${str(c.args.to)}`, detail: c.output ?? str(c.args.task) };
+    case "show_canvas":
+      return {
+        id: c.call_id,
+        type: "trace",
+        kind: "run",
+        icon: icon ?? <PanelsTopLeft className="size-4" />,
+        label: c.args.view === "close" ? "Closed the canvas" : `Opened ${str(c.args.view).replace("_", " ")} on screen`,
+      };
     default:
       return { id: c.call_id, type: "trace", kind: "run", icon, label: c.name, detail: c.output ?? undefined };
   }

@@ -30,17 +30,19 @@ try {
 
 export default defineAgent({
   entry: async (ctx: JobContext) => {
-    const conversationId = parseConversationId(ctx.job.metadata);
-    const logger = log().child({ conversationId, room: ctx.room.name });
-    if (!conversationId) {
-      logger.warn('dispatch metadata has no conversation_id; transcript mirroring is disabled');
-    }
-
     const hub = new HubClient({
       baseUrl: config.jawApiUrl,
       token: config.jawAgentToken,
-      conversationId,
+      conversationId: parseConversationId(ctx.job.metadata),
     });
+    // The Talk screen passes its conversation in the dispatch metadata. A phone call comes in
+    // through the SIP dispatch rule with none, so it opens its own conversation in the hub.
+    if (!hub.conversationId) await hub.startConversation(ctx.job.room?.name ?? '', 'Phone call');
+    const conversationId = hub.conversationId;
+    const logger = log().child({ conversationId, room: ctx.room.name });
+    if (!conversationId) {
+      logger.warn('no hub conversation for this call; transcript mirroring is disabled');
+    }
 
     // Recall recent memory in parallel with building the pipeline. Short timeout so a slow
     // hub delays the greeting by at most a few seconds; an empty list is the fallback.
