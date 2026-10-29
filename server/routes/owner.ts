@@ -4,7 +4,7 @@ import { HTTPException } from "hono/http-exception";
 import { RoomAgentDispatch, RoomConfiguration } from "@livekit/protocol";
 import { AccessToken } from "livekit-server-sdk";
 import { GoogleGenAI, Modality } from "@google/genai";
-import { BASE_INSTRUCTIONS, runVoiceTool, VOICE_TOOLS, voiceInstructions } from "../lib/voice-tools.js";
+import { runVoiceTool, VOICE_TOOLS, voiceInstructions } from "../lib/voice-tools.js";
 import { OWNER_KEY_MIN, setOwnerKey, type Env } from "../auth.js";
 import { one, q } from "../db.js";
 import { addLibrary, listComponents, listLibraries, syncLibrary } from "../lib/catalog-store.js";
@@ -459,7 +459,7 @@ owner.delete("/tasks/:id", async (c) => {
 });
 
 // JAW's standing instructions: what Jesse wants in every conversation.
-owner.get("/instructions", async (c) => c.json({ ...(await getInstructions()), base: BASE_INSTRUCTIONS }));
+owner.get("/instructions", async (c) => c.json(await getInstructions()));
 owner.put("/instructions", async (c) => {
   const b = await c.req.json<{ text?: string }>();
   return c.json(await setInstructions(b.text ?? ""));

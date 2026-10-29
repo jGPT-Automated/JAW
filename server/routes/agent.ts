@@ -10,7 +10,7 @@ import { saveMemory, searchMemories } from "../lib/memory.js";
 import { addResource } from "../lib/resources.js";
 import { enqueue, processQueue } from "../lib/queue.js";
 import { inboundUrl } from "../lib/urls.js";
-import { BASE_INSTRUCTIONS, executeVoiceTool } from "../lib/voice-tools.js";
+import { executeVoiceTool } from "../lib/voice-tools.js";
 import { briefing, getInstructions } from "../lib/work.js";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -111,8 +111,8 @@ agentApi.post("/delegate", async (c) => {
 
 /** What the voice agent needs at the start of a call: its instructions and Jesse's current plate. */
 agentApi.get("/context", async (c) => {
-  const [standing, plate] = await Promise.all([getInstructions(), briefing()]);
-  return c.json({ base: BASE_INSTRUCTIONS, instructions: standing.text, briefing: plate });
+  const [instructions, plate] = await Promise.all([getInstructions(), briefing()]);
+  return c.json({ instructions: instructions.text, briefing: plate });
 });
 
 // Project and task tools, run here so the LiveKit agent and Gemini share one implementation.

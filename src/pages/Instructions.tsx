@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { formatDistanceToNowStrict } from "date-fns";
-import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { LoadError } from "@/hub/components/LoadError";
 import { useInstructions, useSaveInstructions } from "@/hub/data/queries";
 
-/** Jesse's standing instructions: added to every voice, phone and web conversation with JAW. */
+/** JAW's instructions, all of them: used in every voice, phone and web conversation. */
 export default function Instructions() {
   const current = useInstructions();
   const save = useSaveInstructions();
@@ -27,8 +25,9 @@ export default function Instructions() {
       <header className="flex flex-col gap-1">
         <h2 className="text-subheading font-semibold">Instructions</h2>
         <p className="text-caption text-muted-foreground">
-          How JAW should work with you, in every conversation: on the web, on the phone and in texts. You can also say
-          &ldquo;from now on…&rdquo; on a call; JAW reads the change back and saves it here when you say yes.
+          Everything JAW is told before each conversation, on the web and on the phone. All of it is yours to edit. You can
+          also say &ldquo;from now on…&rdquo; on a call; JAW reads the change back and saves it here when you say yes. Your
+          memory and current projects are added after this automatically.
         </p>
       </header>
 
@@ -36,11 +35,10 @@ export default function Instructions() {
         <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          rows={14}
-          maxLength={8000}
-          aria-label="Standing instructions"
-          placeholder={"For example:\nCall me Jess. Start each call with my top three open tasks.\nWhen I mention LocalCheck, file tasks under the LocalCheck project."}
-          className="min-h-64 text-body"
+          rows={24}
+          maxLength={12000}
+          aria-label="JAW's instructions"
+          className="min-h-96 font-mono text-caption leading-relaxed"
         />
         <div className="flex items-center gap-3">
           <Button
@@ -54,23 +52,27 @@ export default function Instructions() {
           >
             Save
           </Button>
-          {current.data.updated_at ? (
-            <span className="text-caption text-muted-foreground">
-              Last changed {formatDistanceToNowStrict(new Date(current.data.updated_at), { addSuffix: true })}
-            </span>
+          {!current.data.is_default ? (
+            <Button
+              variant="ghost"
+              disabled={save.isPending}
+              onClick={() =>
+                save.mutate("", {
+                  onSuccess: () => toast.success("Back to the default instructions."),
+                  onError: (e) => toast.error((e as Error).message),
+                })
+              }
+            >
+              Reset to default
+            </Button>
           ) : null}
+          <span className="text-caption text-muted-foreground">
+            {current.data.updated_at
+              ? `Last changed ${formatDistanceToNowStrict(new Date(current.data.updated_at), { addSuffix: true })}`
+              : "Using the default"}
+          </span>
         </div>
       </section>
-
-      <Collapsible className="rounded-2xl border bg-card p-4">
-        <CollapsibleTrigger className="group flex w-full items-center justify-between text-caption font-medium text-muted-foreground">
-          JAW&apos;s built-in rules (always on)
-          <ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180" />
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <pre className="mt-3 whitespace-pre-wrap font-sans text-caption leading-relaxed text-muted-foreground">{current.data.base}</pre>
-        </CollapsibleContent>
-      </Collapsible>
     </div>
   );
 }

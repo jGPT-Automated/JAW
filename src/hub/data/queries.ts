@@ -352,7 +352,7 @@ export const useUpdateTask = () =>
 export const useDeleteTask = () => useWorkMutation((id: string) => api(`/tasks/${id}`, { method: "DELETE" }));
 
 export function useInstructions() {
-  return useQuery({ queryKey: ["instructions"], queryFn: () => api<{ text: string; updated_at: string | null; base: string }>("/instructions") });
+  return useQuery({ queryKey: ["instructions"], queryFn: () => api<{ text: string; updated_at: string | null; is_default: boolean }>("/instructions") });
 }
 
 export function useSaveInstructions() {
