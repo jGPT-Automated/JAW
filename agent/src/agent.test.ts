@@ -67,10 +67,15 @@ describe('tools', () => {
     });
   });
 
-  it('puts standing instructions and the briefing in the prompt', () => {
+  it("uses Jesse's instructions from the hub instead of the built-in persona", () => {
     const text = buildInstructions([], { instructions: 'Call me J.', briefing: 'Project: JAW' });
     expect(text).toContain('Call me J.');
     expect(text).toContain('Project: JAW');
+    expect(text).not.toContain('You are JAW, the personal voice assistant');
+  });
+
+  it('falls back to the built-in persona when the hub sent no instructions', () => {
+    expect(buildInstructions([])).toContain('You are JAW, the personal voice assistant');
   });
 
   it('delegate tool forwards to the hub and returns its factual result', async () => {

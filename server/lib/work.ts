@@ -159,22 +159,87 @@ export async function findTask(ref: unknown, projectId?: string | null) {
   );
 }
 
-// Jesse's standing instructions: added to every voice and phone conversation, editable on the
-// Instructions page and, with his go-ahead, by JAW itself.
-const INSTRUCTIONS_KEY = "jaw_instructions";
+// JAW's instructions: one text, all of it Jesse's to edit (Instructions page, or by voice with his
+// go-ahead). Until he saves his own, JAW uses DEFAULT_INSTRUCTIONS. Memory and the current projects
+// are added after it on every call; they are data, not rules.
+const PROMPT_KEY = "jaw_prompt";
+const OLD_NOTES_KEY = "jaw_instructions"; // the earlier "standing instructions" box, folded in below
+
+export const DEFAULT_INSTRUCTIONS = `You are JAW, the personal voice assistant and chief of staff of Jesse, the owner of JAW Hub. You are speaking with Jesse live, in the web app or on the phone.
+
+Your job: keep Jesse's projects and their task lists current, remember what matters, and hand work to other agents.
+
+How to speak:
+- You are heard through text-to-speech. Plain spoken sentences only: no lists, markdown, emojis or symbols.
+- Keep replies to one to three sentences and ask at most one question at a time. Lead with the answer or the next step.
+- Say numbers, dates and times the way you would out loud. Don't read out ids, links or technical details.
+- If a request is unclear, ask one short question instead of guessing.
+
+Projects and tasks:
+- When Jesse names a project he wants to keep top of mind, use add_project. When he says something needs doing, use add_task under the right project, and ask which project only if it is unclear.
+- When he asks what is on his plate, for an update, or about a project, use list_tasks or list_projects first, then answer from the result.
+- When he says something is started, finished or blocked, use update_task.
+- When he asks you to change how you behave, say the change back in one sentence, wait for his yes, then use update_instructions.
+
+Memory, agents and the screen:
+- When he tells you something worth keeping that is not a task, use remember. When he asks what you know, use recall first.
+- When he asks who can help, use list_agents. Before delegating, say which agent and what you will ask, and wait for him to agree. Then use delegate. Delegated work runs in the background; don't describe results you haven't been given.
+- When he asks to open the canvas, or to see tool calls, history or memory on screen, use show_canvas.
+
+Honesty:
+- Never say something was saved, added, updated, sent or delegated unless the tool result says so. If a tool fails, say so plainly and offer to try again.`;
 
 export async function getInstructions() {
-  const row = await one<{ value: string; updated_at: string }>(`SELECT value, updated_at FROM settings WHERE key = $1`, [INSTRUCTIONS_KEY]);
-  return { text: row?.value ?? "", updated_at: row?.updated_at ?? null };
+  const rows = await q<{ key: string; value: string; updated_at: string }>(
+    `SELECT key, value, updated_at FROM settings WHERE key IN ($1, $2)`,
+    [PROMPT_KEY, OLD_NOTES_KEY],
+  );
+  const saved = rows.find((r) => r.key === PROMPT_KEY);
+  if (saved) return { text: saved.value, updated_at: saved.updated_at, is_default: false };
+  const notes = rows.find((r) => r.key === OLD_NOTES_KEY)?.value.trim();
+  return {
+    text: notes ? `${DEFAULT_INSTRUCTIONS}\n\nJesse's notes:\n${notes}` : DEFAULT_INSTRUCTIONS,
+    updated_at: null,
+    is_default: true,
+  };
 }
 
+/** Saves the full instructions. Empty text goes back to the default. */
 export async function setInstructions(text: unknown) {
-  const value = clean(text, 8000);
+  const value = clean(text, 12000);
+  if (!value) {
+    await q(`DELETE FROM settings WHERE key IN ($1, $2)`, [PROMPT_KEY, OLD_NOTES_KEY]);
+    return getInstructions();
+  }
   await q(
     `INSERT INTO settings (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = $2, updated_at = now()`,
-    [INSTRUCTIONS_KEY, value],
+    [PROMPT_KEY, value],
   );
-  return { text: value };
+  return getInstructions();
+}
+
+/** A spoken edit: add a line, replace a phrase, or remove the line containing a phrase. */
+export async function editInstructions(action: string, text: string, find: string) {
+  const current = (await getInstructions()).text;
+  if (action === "add") {
+    if (!text) return "Nothing to add.";
+    await setInstructions(`${current}\n- ${text}`);
+    return "Added that to my instructions.";
+  }
+  if (!find) return "Tell me which part to change.";
+  const at = current.toLowerCase().indexOf(find.toLowerCase());
+  if (at < 0) return `I couldn't find "${find}" in my instructions, so nothing changed.`;
+  if (action === "replace") {
+    await setInstructions(current.slice(0, at) + text + current.slice(at + find.length));
+    return "Changed that in my instructions.";
+  }
+  if (action === "remove") {
+    const lines = current.split("\n");
+    const kept = lines.filter((l) => !l.toLowerCase().includes(find.toLowerCase()));
+    await setInstructions(kept.join("\n"));
+    return `Removed ${lines.length - kept.length} line${lines.length - kept.length === 1 ? "" : "s"} from my instructions.`;
+  }
+  return "Use add, replace or remove.";
 }
 
 /** Active projects and their open tasks, compact enough to sit in a voice prompt. */
