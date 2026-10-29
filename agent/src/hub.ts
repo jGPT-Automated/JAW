@@ -110,6 +110,33 @@ export class HubClient {
     return id;
   }
 
+  /**
+   * Jesse's standing instructions and his current projects and open tasks, for the prompt.
+   * Never throws: on failure both are empty strings.
+   */
+  async fetchContext(timeoutMs?: number): Promise<HubContext> {
+    const r = await this.request<Partial<HubContext>>(
+      'GET',
+      '/api/agent/context',
+      undefined,
+      timeoutMs,
+    );
+    return {
+      instructions: r.ok && typeof r.data?.instructions === 'string' ? r.data.instructions : '',
+      briefing: r.ok && typeof r.data?.briefing === 'string' ? r.data.briefing : '',
+    };
+  }
+
+  /** Run one of the hub's project and task tools. Returns what the model should hear. */
+  async runTool(name: string, args: Record<string, unknown>): Promise<string> {
+    const r = await this.request<{ output?: string }>('POST', `/api/agent/tools/${name}`, {
+      args,
+      conversation_id: this.conversationId,
+    });
+    if (!r.ok) return `Error: ${name} did not run; ${r.error}.`;
+    return r.data?.output ?? 'Done.';
+  }
+
   /** Raw memory rows, for building instructions at session start. Returns [] on any failure. */
   async fetchMemory(limit: number, timeoutMs?: number): Promise<MemoryRow[]> {
     const r = await this.request<unknown>(
@@ -192,6 +219,11 @@ export class HubClient {
     });
     return r.ok ? null : r.error;
   }
+}
+
+export interface HubContext {
+  instructions: string;
+  briefing: string;
 }
 
 export interface ToolCallReport {

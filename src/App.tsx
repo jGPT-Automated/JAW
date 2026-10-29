@@ -16,6 +16,9 @@ const Protocol = lazy(() => import("./pages/Protocol"));
 const Resources = lazy(() => import("./pages/Resources"));
 const Rooms = lazy(() => import("./pages/Rooms"));
 const Roadmap = lazy(() => import("./pages/Roadmap"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Tasks = lazy(() => import("./pages/Tasks"));
+const Instructions = lazy(() => import("./pages/Instructions"));
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 15_000, refetchOnWindowFocus: false, retry: 1 } },
@@ -38,6 +41,9 @@ const App = () => (
               <Route path="/conversations/:id?" element={<Conversations />} />
               <Route path="/rooms/:agentId?" element={<Rooms />} />
               <Route path="/roadmap" element={<Roadmap />} />
+              <Route path="/projects/:id?" element={<Projects />} />
+              <Route path="/tasks" element={<Tasks />} />
+              <Route path="/instructions" element={<Instructions />} />
               <Route path="/github" element={<Navigate to="/github/GenJess" replace />} />
               <Route path="/github/:login" element={<GitHubAccount />} />
               <Route path="/resources" element={<Resources />} />

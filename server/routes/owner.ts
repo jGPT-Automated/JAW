@@ -4,7 +4,7 @@ import { HTTPException } from "hono/http-exception";
 import { RoomAgentDispatch, RoomConfiguration } from "@livekit/protocol";
 import { AccessToken } from "livekit-server-sdk";
 import { GoogleGenAI, Modality } from "@google/genai";
-import { runVoiceTool, VOICE_TOOLS, voiceInstructions } from "../lib/voice-tools.js";
+import { BASE_INSTRUCTIONS, runVoiceTool, VOICE_TOOLS, voiceInstructions } from "../lib/voice-tools.js";
 import { OWNER_KEY_MIN, setOwnerKey, type Env } from "../auth.js";
 import { one, q } from "../db.js";
 import { addLibrary, listComponents, listLibraries, syncLibrary } from "../lib/catalog-store.js";
@@ -12,6 +12,19 @@ import { saveMemory, searchMemories } from "../lib/memory.js";
 import { addResource, listResources, storeUpload } from "../lib/resources.js";
 import { enqueue, processQueue } from "../lib/queue.js";
 import { inboundUrl } from "../lib/urls.js";
+import { githubFetch } from "../lib/github.js";
+import {
+  addProject,
+  addTask,
+  deleteTask,
+  getInstructions,
+  getProject,
+  listProjects,
+  listTasks,
+  setInstructions,
+  updateProject,
+  updateTask,
+} from "../lib/work.js";
 
 const PROVIDERS = ["hyperagent", "letta", "webhook", "internal"];
 export const VOICE_AGENT_NAME = "jaw-voice";
@@ -352,6 +365,104 @@ owner.post("/voice/transcript", async (c) => {
   );
   await q(`UPDATE voice_sessions SET ended_at = now() WHERE conversation_id = $1`, [b.conversation_id]);
   return c.json({ ok: true });
+});
+
+// Projects and tasks ------------------------------------------------------------------
+const isUuid = (v: string | undefined) => !!v && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+const notFound = (what: string) => new HTTPException(404, { message: `${what} not found` });
+const badRequest = (e: unknown) => new HTTPException(400, { message: (e as Error).message });
+
+owner.get("/projects", async (c) => c.json(await listProjects(c.req.query("all") === "1")));
+owner.post("/projects", async (c) => {
+  try {
+    return c.json(await addProject(await c.req.json()), 201);
+  } catch (e) {
+    throw badRequest(e);
+  }
+});
+owner.get("/projects/:id", async (c) => {
+  const id = c.req.param("id");
+  const project = isUuid(id) ? await getProject(id) : null;
+  if (!project) throw notFound("Project");
+  return c.json(project);
+});
+owner.patch("/projects/:id", async (c) => {
+  const id = c.req.param("id");
+  const row = isUuid(id) ? await updateProject(id, await c.req.json()) : null;
+  if (!row) throw notFound("Project");
+  return c.json(row);
+});
+owner.delete("/projects/:id", async (c) => {
+  const row = await one(`DELETE FROM projects WHERE id = $1 RETURNING id`, [c.req.param("id")]);
+  if (!row) throw notFound("Project");
+  return c.json(row);
+});
+
+/** Recent commits and open pull requests for a project's repo, straight from GitHub. */
+owner.get("/projects/:id/activity", async (c) => {
+  const id = c.req.param("id");
+  const project = isUuid(id) ? await getProject(id) : null;
+  if (!project) throw notFound("Project");
+  if (!project.repo) return c.json({ repo: null, commits: [], pulls: [] });
+  const [commits, pulls] = await Promise.all([
+    githubFetch(`https://api.github.com/repos/${project.repo}/commits?per_page=10`).then(JSON.parse),
+    githubFetch(`https://api.github.com/repos/${project.repo}/pulls?state=open&per_page=10`).then(JSON.parse),
+  ]).catch((e: Error) => {
+    throw new HTTPException(502, { message: `GitHub: ${e.message}` });
+  });
+  type RawCommit = { sha: string; html_url: string; commit: { message: string; author?: { name?: string; date?: string } } };
+  type RawPull = { number: number; title: string; html_url: string; user?: { login?: string }; updated_at: string; draft?: boolean };
+  return c.json({
+    repo: project.repo,
+    commits: (commits as RawCommit[]).map((x) => ({
+      sha: x.sha.slice(0, 7),
+      url: x.html_url,
+      message: x.commit.message.split("\n")[0].slice(0, 200),
+      author: x.commit.author?.name ?? null,
+      at: x.commit.author?.date ?? null,
+    })),
+    pulls: (pulls as RawPull[]).map((x) => ({ number: x.number, title: x.title, url: x.html_url, author: x.user?.login ?? null, at: x.updated_at, draft: !!x.draft })),
+  });
+});
+
+owner.get("/tasks", async (c) => {
+  const project = c.req.query("project");
+  return c.json(
+    await listTasks({
+      project_id: isUuid(project) ? project : null,
+      inbox: project === "inbox",
+      open: c.req.query("open") === "1",
+    }),
+  );
+});
+owner.post("/tasks", async (c) => {
+  const b = await c.req.json<{ project_id?: string | null; title?: string; notes?: string }>();
+  try {
+    return c.json(await addTask({ project_id: isUuid(b.project_id ?? undefined) ? b.project_id : null, title: b.title, notes: b.notes }), 201);
+  } catch (e) {
+    throw badRequest(e);
+  }
+});
+owner.patch("/tasks/:id", async (c) => {
+  const id = c.req.param("id");
+  const b = await c.req.json<{ title?: string; notes?: string; status?: string; project_id?: string | null }>();
+  const projectId = b.project_id === undefined ? undefined : isUuid(b.project_id ?? undefined) ? b.project_id : null;
+  const row = isUuid(id) ? await updateTask(id, { ...b, project_id: projectId }) : null;
+  if (!row) throw notFound("Task");
+  return c.json(row);
+});
+owner.delete("/tasks/:id", async (c) => {
+  const id = c.req.param("id");
+  const row = isUuid(id) ? await deleteTask(id) : null;
+  if (!row) throw notFound("Task");
+  return c.json(row);
+});
+
+// JAW's standing instructions: what Jesse wants in every conversation.
+owner.get("/instructions", async (c) => c.json({ ...(await getInstructions()), base: BASE_INSTRUCTIONS }));
+owner.put("/instructions", async (c) => {
+  const b = await c.req.json<{ text?: string }>();
+  return c.json(await setInstructions(b.text ?? ""));
 });
 
 // Voice: a LiveKit room with the JAW voice agent dispatched into it ---------------------

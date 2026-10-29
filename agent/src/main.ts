@@ -47,6 +47,7 @@ export default defineAgent({
     // Recall recent memory in parallel with building the pipeline. Short timeout so a slow
     // hub delays the greeting by at most a few seconds; an empty list is the fallback.
     const memoryPromise = hub.fetchMemory(6, 4_000);
+    const contextPromise = hub.fetchContext(4_000);
 
     const session = new voice.AgentSession({
       // unverified: docs show inference.TurnDetector in the starter paired with AssemblyAI STT;
@@ -108,11 +109,11 @@ export default defineAgent({
       });
     };
 
-    const memory = await memoryPromise;
+    const [memory, context] = await Promise.all([memoryPromise, contextPromise]);
     logger.info({ memoryItems: memory.length }, 'starting voice session');
 
     await session.start({
-      agent: createAgent(hub, memory, reportTool),
+      agent: createAgent(hub, memory, reportTool, context),
       room: ctx.room,
       inputOptions: {
         // ai-coustics audio enhancement, as in the current LiveKit Node starter.

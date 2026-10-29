@@ -30,10 +30,47 @@ describe('instructions', () => {
 });
 
 describe('tools', () => {
-  it('registers the four hub tools', () => {
+  it('registers the hub tools', () => {
     const hub = new HubClient({ baseUrl: 'https://x.test', token: 't', conversationId: null });
     const names = createTools(hub).map((t) => t.id);
-    expect(names).toEqual(['remember', 'recall', 'list_agents', 'show_canvas', 'delegate']);
+    expect(names).toEqual([
+      'remember',
+      'recall',
+      'list_agents',
+      'show_canvas',
+      'list_projects',
+      'add_project',
+      'list_tasks',
+      'add_task',
+      'update_task',
+      'update_instructions',
+      'delegate',
+    ]);
+  });
+
+  it('project and task tools run through the hub tools endpoint', async () => {
+    const fetchMock = vi.fn(
+      async () => new Response(JSON.stringify({ output: 'Added to Inbox: x.' })),
+    );
+    const hub = new HubClient({
+      baseUrl: 'https://x.test',
+      token: 't',
+      conversationId: null,
+      fetchImpl: fetchMock as unknown as typeof fetch,
+    });
+    expect(await hub.runTool('add_task', { title: 'x' })).toBe('Added to Inbox: x.');
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe('https://x.test/api/agent/tools/add_task');
+    expect(JSON.parse(init.body as string)).toEqual({
+      args: { title: 'x' },
+      conversation_id: null,
+    });
+  });
+
+  it('puts standing instructions and the briefing in the prompt', () => {
+    const text = buildInstructions([], { instructions: 'Call me J.', briefing: 'Project: JAW' });
+    expect(text).toContain('Call me J.');
+    expect(text).toContain('Project: JAW');
   });
 
   it('delegate tool forwards to the hub and returns its factual result', async () => {

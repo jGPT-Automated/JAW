@@ -10,6 +10,8 @@ import { saveMemory, searchMemories } from "../lib/memory.js";
 import { addResource } from "../lib/resources.js";
 import { enqueue, processQueue } from "../lib/queue.js";
 import { inboundUrl } from "../lib/urls.js";
+import { BASE_INSTRUCTIONS, executeVoiceTool } from "../lib/voice-tools.js";
+import { briefing, getInstructions } from "../lib/work.js";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EVENT_RE = /^[a-z_]{1,40}$/;
@@ -105,6 +107,29 @@ agentApi.post("/delegate", async (c) => {
   ]);
   if (queued.status === "pending") await processQueue(inboundUrl(c.req.url), 5);
   return c.json({ to: target.name, ...queued }, 201);
+});
+
+/** What the voice agent needs at the start of a call: its instructions and Jesse's current plate. */
+agentApi.get("/context", async (c) => {
+  const [standing, plate] = await Promise.all([getInstructions(), briefing()]);
+  return c.json({ base: BASE_INSTRUCTIONS, instructions: standing.text, briefing: plate });
+});
+
+// Project and task tools, run here so the LiveKit agent and Gemini share one implementation.
+// Only JAW's own (internal) agent may use them: they include rewriting JAW's instructions.
+const WORK_TOOLS = ["list_projects", "add_project", "list_tasks", "add_task", "update_task", "update_instructions"];
+agentApi.post("/tools/:name", async (c) => {
+  const name = c.req.param("name");
+  if (!WORK_TOOLS.includes(name)) throw new HTTPException(404, { message: "Unknown tool" });
+  const internal = await one(`SELECT 1 FROM agents WHERE id = $1 AND provider = 'internal'`, [c.get("agent").id]);
+  if (!internal) throw new HTTPException(403, { message: "Only JAW's own agent can use these tools" });
+  const b = await c.req.json<{ args?: Record<string, unknown>; conversation_id?: string }>().catch(() => ({}) as { args?: Record<string, unknown>; conversation_id?: string });
+  const conversation = b.conversation_id && UUID_RE.test(b.conversation_id) ? b.conversation_id : null;
+  try {
+    return c.json({ output: await executeVoiceTool(name, b.args ?? {}, inboundUrl(c.req.url), conversation) });
+  } catch (e) {
+    return c.json({ output: `That didn't work: ${(e as Error).message}` });
+  }
 });
 
 /** A call that didn't start on the Talk screen (a phone call) opens its own conversation. */

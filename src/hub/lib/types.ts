@@ -195,3 +195,35 @@ export interface ToolCall {
   started_at: string;
   ended_at: string | null;
 }
+
+export type TaskStatus = "todo" | "doing" | "done";
+
+export interface Project {
+  id: string;
+  name: string;
+  summary: string | null;
+  repo: string | null;
+  status: "active" | "paused" | "done";
+  open_tasks: number;
+  done_tasks: number;
+  updated_at: string;
+}
+
+export interface Task {
+  id: string;
+  project_id: string | null;
+  project_name: string | null;
+  title: string;
+  notes: string | null;
+  status: TaskStatus;
+  source: string;
+  created_at: string;
+  updated_at: string;
+  done_at: string | null;
+}
+
+export interface ProjectActivity {
+  repo: string | null;
+  commits: { sha: string; url: string; message: string; author: string | null; at: string | null }[];
+  pulls: { number: number; title: string; url: string; author: string | null; at: string; draft: boolean }[];
+}
