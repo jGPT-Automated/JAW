@@ -1,0 +1,4 @@
+interface:
+  display_name: "Human-Readable AI Outputs"
+  short_description: "Make repeated short text scannable and accurate"
+  default_prompt: "Use $human-readable-ai-outputs to rewrite these items for fast scanning while preserving their meaning and evidence."

@@ -1,0 +1,36 @@
+{
+  "validator": "local structural and content checks: YAML, required files, ZIP integrity and safe paths, reference resolution, routing and audience rules",
+  "scope": "Package structure and instruction checks; not official skills-ref validation or live behavioral evaluation",
+  "skills": {
+    "guiding-step-by-step-processes": {
+      "status": "PASS",
+      "errors": [],
+      "file_count": 3,
+      "size_bytes": 5744,
+      "sha256": "3d6d9d880461dacc8f552639b24ed11f89bc16506f5a952db5c1904de40dcac3"
+    },
+    "pragmatic-software-engineering": {
+      "status": "PASS",
+      "errors": [],
+      "file_count": 3,
+      "size_bytes": 5597,
+      "sha256": "f69e83efdf28533ae1e89951cea7dbadfccd75bc0f7ad771bc4aaf7e7c5a604a"
+    },
+    "human-readable-ai-outputs": {
+      "status": "PASS",
+      "errors": [],
+      "file_count": 3,
+      "size_bytes": 4758,
+      "sha256": "7181818e08b5b9494d956e5a30ebd527a94f354ba72dd072e07ea28f31b7c9f8"
+    }
+  },
+  "all_passed": true,
+  "AGENTS.md": {
+    "status": "PASS",
+    "errors": []
+  },
+  "RESPONSE-PREFERENCES.md": {
+    "status": "PASS",
+    "errors": []
+  }
+}

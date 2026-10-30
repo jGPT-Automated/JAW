@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pragmatic Software Engineering"
+  short_description: "Build durably; document clearly for agents"
+  default_prompt: "Use $pragmatic-software-engineering to implement this change with the smallest durable design and report what was verified."

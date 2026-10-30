@@ -1,0 +1,4 @@
+interface:
+  display_name: "Step-by-Step Guide"
+  short_description: "Thoughtful, complete walkthroughs with checkpoints"
+  default_prompt: "Use $guiding-step-by-step-processes to walk me through this task one step at a time."
